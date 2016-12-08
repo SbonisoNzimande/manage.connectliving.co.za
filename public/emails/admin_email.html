@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+	<meta content="width=device-width; initial-scale=1.0; maximum-scale=1.0;"
+	name="viewport">
+	<title>Admin Email</title>
+	<style type="text/css">
+
+		div, p, a, li, td { -webkit-text-size-adjust:none; }
+
+		*{
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+		}
+
+		.ReadMsgBody
+		{width: 100%; background-color: #ffffff;}
+		.ExternalClass
+		{width: 100%; background-color: #ffffff;}
+		body{width: 100%; height: 100%; background-color: #ffffff; margin:0; padding:0; -webkit-font-smoothing: antialiased;}
+		html{width: 100%;}
+
+		@font-face {font-family: 'proxima_nova_softmedium';src: url('http://rocketway.net/themebuilder/template/templates/entity/font/mark_simonson_-_proxima_nova_soft_medium-webfont.eot');src: url('http://rocketway.net/themebuilder/template/templates/entity/font/mark_simonson_-_proxima_nova_soft_medium-webfont.eot?#iefix') format('embedded-opentype'),url('http://rocketway.net/themebuilder/template/templates/entity/font/mark_simonson_-_proxima_nova_soft_medium-webfont.woff') format('woff'),url('http://rocketway.net/themebuilder/template/templates/entity/font/mark_simonson_-_proxima_nova_soft_medium-webfont.ttf') format('truetype');font-weight: normal;font-style: normal;
+	}
+
+	@font-face {font-family: 'proxima_nova_softregular';src: url('http://rocketway.net/themebuilder/template/templates/entity/font/mark_simonson_-_proxima_nova_soft_regular-webfont.eot'); src: url('http://rocketway.net/themebuilder/template/templates/entity/font/mark_simonson_-_proxima_nova_soft_regular-webfont.eot?#iefix') format('embedded-opentype'),url('http://rocketway.net/themebuilder/template/templates/entity/font/mark_simonson_-_proxima_nova_soft_regular-webfont.woff') format('woff'),url('http://rocketway.net/themebuilder/template/templates/entity/font/mark_simonson_-_proxima_nova_soft_regular-webfont.ttf') format('truetype');font-weight: normal;font-style: normal;
+}
+
+
+@font-face {font-family: 'proxima_nova_softsemibold';src: url('http://rocketway.net/themebuilder/template/templates/entity/font/mark_simonson_-_proxima_nova_soft_semibold-webfont.eot'); src: url('http://rocketway.net/themebuilder/template/templates/entity/font/mark_simonson_-_proxima_nova_soft_semibold-webfont.eot?#iefix') format('embedded-opentype'),url('http://rocketway.net/themebuilder/template/templates/entity/font/mark_simonson_-_proxima_nova_soft_semibold-webfont.woff') format('woff'),url('http://rocketway.net/themebuilder/template/templates/entity/font/mark_simonson_-_proxima_nova_soft_semibold-webfont.ttf') format('truetype');font-weight: normal;font-style: normal;
+
+}
+
+@font-face {font-family: 'proxima_nova_softbold';src: url('http://rocketway.net/themebuilder/template/templates/entity/font/mark_simonson_-_proxima_nova_soft_bold-webfont.eot');src: url('http://rocketway.net/themebuilder/template/templates/entity/font/mark_simonson_-_proxima_nova_soft_bold-webfont.eot?#iefix') format('embedded-opentype'),url('http://rocketway.net/themebuilder/template/templates/entity/font/mark_simonson_-_proxima_nova_soft_bold-webfont.woff') format('woff'),url('http://rocketway.net/themebuilder/template/templates/entity/font/mark_simonson_-_proxima_nova_soft_bold-webfont.ttf') format('truetype');font-weight: normal;font-style: normal;
+
+}
+
+
+p {padding: 0!important; margin-top: 0!important; margin-right: 0!important; margin-bottom: 0!important; margin-left: 0!important;}
+
+.headerScale img {width: 600px; height: auto!important;}
+.header2 img {width: 347px; height: auto!important;}
+.icons img {width: 38px; height: auto!important;}
+.icons30 img {width: 30px!important; height: 30px!important;}
+.icons38 img {width: 38px!important; height: auto!important;}
+.avatars100 img {width: 100px!important; height: auto!important;}
+.imageMobile img {width: 290px; height: auto!important;}
+.icon img {width: 14px!important; height: auto!important;}
+.icons43 img {width: 43px!important; height: auto!important;}
+.smallImages113 img {width: 113px!important;}
+.wordBreak {-ms-word-break: break-all; word-break: break-all; word-break: break-word; -webkit-hyphens: auto; -moz-hyphens: auto; hyphens: auto;}
+
+	</style><!-- @media only screen and (max-width: 640px) 
+		   {*/
+		-->
+
+		<style type="text/css">
+			@media only screen and (max-width: 640px){
+				body{width:auto!important;}
+				table[class=full] {width: 100%!important; clear: both; }
+				table[class=mobile] {width: 100%!important; padding-left: 20px; padding-right: 20px; clear: both; }
+				table[class=fullCenter] {width: 100%!important; text-align: center!important; clear: both; }
+				td[class=fullCenter] {width: 100%!important; text-align: center!important; clear: both; }
+				td[class=textCenter] {width: 100%!important; text-align: center!important; clear: both; }
+				.headerBG {background-position: center center!important;}
+				.erase {display: none;}
+				table[class=header] {width: 100%!important; text-align: center!important; clear: both; }
+				.header2 img {width: 347px!important; text-align: center!important; clear: both; }
+				table[class=imageMobile] {width: 100%; text-align: center!important; clear: both;}
+				table[class=icons38] {width: 100%!important; padding-left: 10px; padding-right: 10px; text-align: center!important; clear: both; }
+				.icons38 img {width: 38px!important;}
+				table[class=icons43] {width: 100%!important; text-align: center!important; clear: both; }
+				.icons43 img {width: 43px!important;}
+				table[class=headerScale] {width: 100%!important; text-align: center!important; clear: both; }
+				.headerScale img {width: 100%!important; height: auto;}
+				.font40 {text-align: center!important;}
+				.headerBG {background-position: center center!important;}
+				td[class=w30] {width: 40px!important;}
+				table[class=icon] {width: 100%; text-align: center!important; clear: both; }
+				td[class=h40] {height: 40px!important;}
+				td[class=wordBreak] {text-align: center!important; -ms-word-break: break-all; word-break: break-all; word-break: break-word; -webkit-hyphens: auto; -moz-hyphens: auto; hyphens: auto;}
+				.w10 {width: 40px!important;}
+				td[class=centerMiddle] {text-align: center!important;}
+				.w50Left {width: 58%!important; text-align: left!important;}
+				.w50Right {width: 42%!important; text-align: right!important;}
+				
+				
+				
+				
+			} 
+	</style><!--
+
+@media only screen and (max-width: 479px) 
+		   {
+		-->
+
+		<style type="text/css">
+			@media only screen and (max-width: 479px){
+				body{width:auto!important;}
+				table[class=full] {width: 100%!important; clear: both; }
+				table[class=mobile] {width: 100%!important; padding-left: 20px; padding-right: 20px; clear: both; }
+				table[class=fullCenter] {width: 100%!important; text-align: center!important; clear: both; }
+				td[class=fullCenter] {width: 100%!important; text-align: center!important; clear: both; }
+				td[class=textCenter] {width: 100%!important; text-align: center!important; clear: both; }
+				.headerBG {background-position: center center!important;}
+				.erase {display: none;}
+				img[class=fullImage] { width: 100%!important; height: auto!important; }
+				span[class=pad50] {padding: 40px!important;}
+				td[class=w70] {width: 70%!important;}
+				.headerBG {background-position: center center!important;}
+				table[class=header] {width: 100%!important; text-align: center!important; clear: both; }
+				.header2 img {width: 100%!important; text-align: center!important; clear: both; }
+				table[class=imageMobile] {width: 100%; clear: both;}
+				.imageMobile img {width: 90%!important; height:auto!important;}
+				table[class=icons38] {width: 100%!important; padding-left: 10px; padding-right: 10px; text-align: center!important; clear: both; }
+				.icons38 img {width: 38px!important;}
+				table[class=icons43] {width: 100%!important; text-align: center!important; clear: both; }
+				.icons43 img {width: 43px!important;}
+				table[class=headerScale] {width: 100%!important; text-align: center!important; clear: both; }
+				.headerScale img {width: 100%!important; height: auto;}
+				.font40 {font-size: 40px!important; text-align: center!important; line-height: 46px!important;}
+				.headerBG {background-position: center center!important;}
+				td[class=w30] {width: 60px!important;}
+				table[class=icon] {width: 100%; text-align: center!important; clear: both; }
+				td[class=h40] {height: 40px!important;}
+				td[class=wordBreak] {font-size: 40px!important; text-align: center!important; line-height: 46px!important; -ms-word-break: normal!important; word-break: normal!important; word-break: normal!important; -webkit-hyphens: normal; -moz-hyphens: normal; hyphens: normal;}
+				.w10 {width: 40px!important;}
+				td[class=centerMiddle] {text-align: center!important;}
+				.w50Left {width: 62%!important; text-align: left!important;}
+				.w50Right {width: 38%!important; text-align: right!important;}
+				
+			}
+
+
+		} 
+	</style>
+</head>
+<body>
+	<!-- Wrapper 1 (Header + Nav) -->
+	<div id="element_046464609982769867" style="display: none;"></div>
+	<p></p><!-- End Wrapper 1 -->
+	<!-- Wrapper 2 (Collored Banner, Center Text) -->
+	<table align="center" border="0" cellpadding="0" cellspacing="0" class=
+	"full" width="100%">
+	<tbody style="border-color: rgb(255, 199, 82);">
+		<tr style="border-color: rgb(255, 199, 82);">
+			<td align="center" style=
+			"border-color: rgb(255, 199, 82); background-color: rgb(255, 199, 82);"
+			width="100%">
+			<!-- Wrapper -->
+			<table align="center" border="0" cellpadding="0"
+			cellspacing="0" class="mobile" width="600">
+			<tr>
+				<td align="center" width="100%">
+					<!-- Headline -->
+					<table align="center" border="0" cellpadding=
+					"0" cellspacing="0" class="full" style=
+					"border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"
+					width="600">
+					<tr>
+						<td height="30" width="100%"></td>
+					</tr>
+					<tr>
+						<td style=
+						"font-size: 26px; color: #ffffff; text-align: center; font-family: 'proxima_nova_softregular', Helvetica, Arial, sans-serif; line-height: 36px; vertical-align: top;"
+						width="100%">
+						<p>ConnectLIVING - Job Detail</p>
+					</td>
+				</tr>
+				<tr>
+					<td height="30" width="100%"></td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table><!-- End Wrapper  -->
+</td>
+</tr>
+</tbody>
+</table><!-- Wrapper 2 -->
+<!-- Space -->
+<div id="element_06156488265718634" style="display: none;"></div>
+<p></p><!-- End Space -->
+<!-- Wrapper 3 (2 Column - Image Left , Text Right) -->
+<div id="element_02700990572720323" style="display: none;"></div>
+<p></p><!-- Wrapper 3 -->
+<!-- Wrapper 4 (Next - 2 Column - Image Left , Text Right) -->
+<div id="element_08765598100210967" style="display: none;"></div>
+<p></p><!-- Wrapper 4 -->
+<!-- Wrapper 3 (Divider) -->
+<div id="element_08076356792380914" style="display: none;"></div>
+<p></p><!-- End Wrapper 3 -->
+<!-- Wrapper 3 (2 Column - Image Left , Text Right) -->
+<div id="element_012604446307802575" style="display: none;"></div>
+<p></p><!-- Wrapper 4 -->
+<!-- Space -->
+<div id="element_04386415851612302" style="display: none;"></div>
+<p></p><!-- End Space -->
+<!-- Wrapper 5 (4 Columns) -->
+<div id="element_011141064764672182" style="display: none;"></div>
+<p></p><!-- Wrapper 5 -->
+<!-- Space -->
+<div id="element_040696977873326734" style="display: none;"></div>
+<p></p><!-- End Space -->
+<!-- Wrapper 3 (2 Column - Image Left , Text Right) -->
+<div id="element_012007431760070775" style="display: none;"></div>
+<p></p><!-- Wrapper 4 -->
+<!-- Wrapper 3 (Divider) -->
+<div id="element_03364255769769049" style="display: none;"></div>
+<p></p><!-- End Wrapper 3 -->
+<!-- Wrapper 3 (2 Column - Image Left , Text Right) -->
+<table align="center" border="0" cellpadding="0" cellspacing="0" class=
+"full" width="100%">
+<tr>
+	<td align="center" valign="top" width="100%">
+		<!-- Wrapper -->
+		<table align="center" border="0" cellpadding="0" cellspacing=
+		"0" class="mobile" width="100%">
+		<tr>
+			<td align="center">
+				<!-- Wrapper -->
+				<table align="center" border="0" cellpadding="0"
+				cellspacing="0" class="full" width="600">
+				<tr>
+					<td align="center" width="100%">
+						<!-- Text -->
+						<table align="right" border="0"
+						cellpadding="0" cellspacing="0" class=
+						"full" style=
+						"border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"
+						width="600">
+						<tr>
+							<td height="25" width="100%">
+							</td>
+						</tr>
+						<tr>
+							<td style=
+							"font-size: 18px; color: #080808; text-align: center; font-family: 'proxima_nova_softmedium', Helvetica, Arial, sans-serif; line-height: 24px; vertical-align: top;"
+							width="100%">
+							<p>Hi, {name}</p>
+						</td>
+					</tr>
+					<tr>
+						<td height="20" width="100%">
+						</td>
+					</tr>
+					<tr>
+						<td style=
+						"font-size: 18px; color: #080808; text-align: center; font-family: 'proxima_nova_softmedium', Helvetica, Arial, sans-serif; line-height: 24px; vertical-align: top;"
+						width="100%">
+						<p>The following company purchased SMS's on connectLiving:</p>
+					</td>
+				</tr>
+				<tr>
+					<td height="20" width="100%">
+					</td>
+				</tr>
+				
+				<tr>
+					<td style="font-size: 18px; color: #9e9e9e; text-align: center; font-family: 'proxima_nova_softregular', Helvetica, Arial, sans-serif; line-height: 24px; vertical-align: top;"
+					width="100%">
+					<div>
+						<span style=
+						"font-weight: bold;">Company ID:</span>
+						{company_id}
+					</div>
+					<div>
+						<span style=
+						"font-weight: bold;">Company Name:</span>
+						{company_name}
+					</div>
+					<div>
+						<span style=
+						"font-weight: bold;">Number of Credits:</span>
+						{number_credits}
+					</div>
+
+					<div>
+						<span style=
+						"font-weight: bold;">Transaction ID:</span>
+						{transaction_id}
+					</div>
+					
+					
+					<p></p>
+				</td>
+			</tr>
+			<tr>
+				<td height="25" width="100%">
+				</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+</table><!-- End Wrapper 2 -->
+</td>
+</tr>
+</table><!-- End Wrapper -->
+</td>
+</tr>
+</table>
+<table align="center" border="0" cellpadding="0" cellspacing="0" class=
+"full" style="position: relative; z-index: 0;" width="100%">
+<tbody style="border-color: rgb(255, 199, 82);">
+	<tr style="border-color: rgb(255, 199, 82);">
+		<td align="center" style=
+		"border-color: rgb(255, 199, 82); background-color: rgb(255, 199, 82);"
+		valign="top" width="100%">
+		<!-- Wrapper -->
+		<table align="center" border="0" cellpadding="0"
+		cellspacing="0" class="mobile" width="600">
+		<tr>
+			<td align="center" width="100%">
+				<!-- Headline -->
+				<table align="center" border="0" cellpadding=
+				"0" cellspacing="0" class="full" style=
+				"border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"
+				width="600">
+				<tr>
+					<td height="30" width="100%"></td>
+				</tr>
+				<tr>
+					<td style=
+					"font-size: 18px; color: #ffffff; text-align: center; font-family: 'proxima_nova_softmedium', Helvetica, Arial, sans-serif; line-height: 28px; vertical-align: top;"
+					width="100%">
+					<p>Some Useful Tips</p>
+				</td>
+			</tr>
+			<tr>
+				<td height="30" width="100%"></td>
+			</tr>
+			<tr>
+				<td style=
+				"font-size: 14px; color: #ffffff; text-align: center; font-family: 'proxima_nova_softregular', Helvetica, Arial, sans-serif; line-height: 24px; vertical-align: top;"
+				width="100%">
+				<p>Always make sure you SMS the
+					resident a status update</p>
+					<div>
+						Make sure you mark your queries
+						as complete
+					</div>
+					<div>
+						Don't forget to set
+						notifications for planned
+						service interruptions
+					</div>
+					<p></p>
+				</td>
+			</tr>
+			<tr>
+				<td height="40" width="100%"></td>
+			</tr>
+			<tr>
+				<td class="textCenter" style=
+				"text-align: center; color: #ffffff; font-family: 'proxima_nova_softmedium', Myriad Pro, Helvetica, Arial, sans-serif; font-size: 13px; letter-spacing: 1; text-transform: uppercase;"
+				valign="middle" width="100%">
+				<a href=
+				"http://www.connectliving.co.za"
+				style=
+				"text-decoration: none; color: #ffffff; padding: 9px 20px 9px 20px; border: 1px solid #ffffff;">
+				Learn More</a>
+			</td>
+		</tr>
+		<tr>
+			<td height="50" width="100%"></td>
+		</tr>
+	</table>
+</td>
+</tr>
+</table><!-- End Wrapper  -->
+</td>
+</tr>
+</tbody>
+</table><!-- Wrapper 4 -->
+<!-- Wrapper 3 (Divider) -->
+<div id="element_06211194275307275" style="display: none;"></div>
+<p></p><!-- End Wrapper 3 -->
+<!-- Wrapper 2 (Long Image 1) -->
+<div id="element_03417380845794664" style="display: none;"></div>
+<p></p><!-- End Wrapper 2 -->
+<!-- Wrapper 2 (Collored Banner, Center Text) -->
+<!-- Wrapper 2 -->
+<!-- Space -->
+<div id="element_05119201433174472" style="display: none;"></div>
+<p></p><!-- End Space -->
+<!-- Wrapper 3 (Headline) -->
+<div id="element_06298880881713556" style="display: none;"></div>
+<p></p><!-- End Wrapper 3 -->
+<!-- Wrapper 3 (2 Column Avatars) -->
+<div id="element_07578259809700265" style="display: none;"></div>
+<p></p><!-- Wrapper 4 -->
+<!-- Wrapper 3 (3 Column Avatars) -->
+<div id="element_027564634475634797" style="display: none;"></div>
+<p></p><!-- Wrapper 4 -->
+<!-- Space -->
+<div id="element_04623123000442628" style="display: none;"></div>
+<p></p><!-- End Space -->
+<!-- Wrapper 2 (Collored Banner, Center Text) -->
+<div id="element_07701912731473821" style="display: none;"></div>
+<p></p><!-- Wrapper 2 -->
+<!-- Space -->
+<div id="element_02865767388324054" style="display: none;"></div>
+<p></p><!-- End Space -->
+<!-- Wrapper 3 (2 Column - Image Left , Text Right) -->
+<div id="element_03113927405299697" style="display: none;"></div>
+<p></p><!-- Wrapper 4 -->
+<!-- Wrapper 3 (3 Column small Images + Buttons) -->
+<div id="element_09300345625128117" style="display: none;"></div>
+<p></p><!-- Wrapper 4 -->
+<!-- Wrapper 2 (Banner 1) -->
+<div id="element_09258284890047404" style="display: none;"></div>
+<p></p><!-- End Wrapper 2 -->
+<!-- Space -->
+<div id="element_048673979536907996" style="display: none;"></div>
+<p></p><!-- End Space -->
+<!-- Wrapper 5 (Calender) -->
+<div id="element_02944274447502291" style="display: none;"></div>
+<p></p><!-- Wrapper 5 -->
+<!-- Wrapper 3 (Divider) -->
+<div id="element_09486994966748521" style="display: none;"></div>
+<p></p><!-- End Wrapper 3 -->
+<!-- Wrapper 3 (Calendar) -->
+<div id="element_022162168185687658" style="display: none;"></div>
+<p></p><!-- Wrapper 4 -->
+<!-- Space -->
+<div id="element_08846318173766761" style="display: none;"></div>
+<p></p><!-- End Space -->
+<!-- Wrapper 3 (Headline) -->
+<div id="element_01524558701447032" style="display: none;"></div>
+<p></p><!-- End Wrapper 3 -->
+<!-- Wrapper 2 (Pricing, 4 tables) -->
+<div id="element_05485648051552798" style="display: none;"></div>
+<p></p><!-- Wrapper 2 -->
+<!-- Wrapper 2 (Pricing, 3 tables) -->
+<div id="element_022397531352192357" style="display: none;"></div>
+<p></p><!-- Wrapper 2 -->
+<!-- Wrapper 2 (Pricing, 2 tables) -->
+<div id="element_02680559028340901" style="display: none;"></div>
+<p></p><!-- Wrapper 2 -->
+<!-- Space -->
+<div id="element_0007332543468363095" style="display: none;"></div>
+<p></p><!-- End Space -->
+<!-- Wrapper 2 (Footer Social Icons) -->
+<div id="element_06010874639168902" style="display: none;"></div>
+<p></p><!-- End Wrapper 2 -->
+<!-- Wrapper 2 (Footer) -->
+<table align="center" border="0" cellpadding="0" cellspacing="0" class=
+"full" width="100%">
+<tr>
+	<td align="center" valign="top" width="100%">
+		<!-- Start Footer Wrapper -->
+		<table align="center" border="0" cellpadding="0" cellspacing=
+		"0" class="mobile" width="600">
+		<tr>
+			<td height="20" width="100%"></td>
+		</tr>
+		<tr>
+			<td align="center" width="100%">
+				<!-- Copyright -->
+				<table align="left" border="0" cellpadding="0"
+				cellspacing="0" class="fullCenter" style=
+				"border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"
+				width="250">
+				<tr>
+					<td class="textCenter" height="60" style=
+					"font-size: 12px; color: rgb(71, 71, 71); text-align: left; font-family: proxima_nova_softmedium, Helvetica, Arial, sans-serif; line-height: 24px; vertical-align: middle;"
+					width="100%">
+					<p>Copyright © 2016 ConnectLIVING</p>
+				</td>
+			</tr>
+		</table><!-- Nav -->
+		<table align="right" border="0" cellpadding="0"
+		cellspacing="0" class="fullCenter" style=
+		"border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; text-align: right;"
+		width="340">
+		<tr>
+			<td height="60" style=
+			"font-size: 12px; color: #533f73; text-align: center; font-family: 'proxima_nova_softmedium', Helvetica, Arial, sans-serif; line-height: 24px; vertical-align: middle;"
+			valign="middle" width="33%">
+			<!--subscribe--><a href="" style=
+			"text-decoration: none; color: rgb(71, 71, 71);"></a><!--unsub-->
+		</td>
+		<td style=
+		"font-size: 12px; color: #533f73; text-align: center; font-family: 'proxima_nova_softmedium', Helvetica, Arial, sans-serif; line-height: 24px; vertical-align: middle;"
+		valign="middle" width="33%">
+		<a href="" style=
+		"text-decoration: none; color: rgb(71, 71, 71);">
+	</a>
+</td>
+<td style="font-size: 12px; color: #533f73; text-align: center; font-family: 'proxima_nova_softmedium', Helvetica, Arial, sans-serif; line-height: 24px; vertical-align: middle;"
+valign="middle" width="33%">
+<a href="mailto:support@connectliving.co.za"
+style="text-decoration: none; color: rgb(71, 71, 71);">
+Contact Support</a>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table><!-- End Footer -->
+<!-- Space -->
+<table align="center" border="0" cellpadding="0" cellspacing=
+"0" class="full" width="100%">
+<tr>
+	<td height="20" width="100%"></td>
+</tr>
+<tr>
+	<td height="1" width="100%"></td>
+</tr>
+</table><!-- End Space -->
+</td>
+</tr>
+</table><!-- End Wrapper 2 -->
+<style>
+	body{ background: none !important; } 
+</style>
+</body>
+</html>

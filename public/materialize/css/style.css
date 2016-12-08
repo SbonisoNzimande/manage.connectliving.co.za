@@ -1,0 +1,55 @@
+/* Custom Stylesheet */
+/**
+ * Use this file to override Materialize files so you can update
+ * the core Materialize files in the future
+ *
+ * Made By MaterializeCSS.com
+ */
+
+.icon-block {
+  padding: 0 15px;
+}
+
+.thanks_obj {
+  display: none;
+}
+
+
+.input-field input[type=text],
+.input-field input[type=email] {
+  border: none;
+  border-bottom: 1px solid purple;
+  box-shadow: 0 1px 0 0 purple;
+}
+
+.input-field input[type=text]:valid,
+.input-field input[type=email]:valid {
+  box-shadow: 0 1px 0 0 purple;
+  border-bottom: 1px solid purple;
+}
+
+.input-field input[type=text]:invalid
+.input-field input[type=email]:invalid {
+  box-shadow: 0 1px 0 0 red;
+  border-bottom: 1px solid red;
+}
+
+.input-field input[type=text]:focus
+.input-field input[type=email]:focus {
+  box-shadow: 0 1px 0 0 purple;
+  border-bottom: 1px solid purple;
+}
+
+.input-field label{
+  color: purple;
+}
+.input-field input[type=text]:focus +label,
+.input-field input[type=email]:focus +label {
+  color: purple;
+}
+
+.input-field input[type=text]:invalid +label,
+.input-field input[type=email]:invalid +label {
+  color: red;
+}
+

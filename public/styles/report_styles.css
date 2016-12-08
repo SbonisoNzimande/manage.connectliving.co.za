@@ -1,0 +1,145 @@
+body {font-family: sans-serif;
+	font-size: 8pt;
+}
+p {    margin: 0pt;
+}
+td { vertical-align: top; }
+.items td {
+	border-left: 0.1mm solid #000000;
+	border-right: 0.1mm solid #000000;
+	border-bottom: 0.1mm solid #000000;
+}
+
+.items th {
+	border-left: 0.1mm solid #000000;
+	border-right: 0.1mm solid #000000;
+	border-bottom: 0.1mm solid #000000;
+}
+table thead td { background-color: #EEEEEE;
+	text-align: center;
+	border: 0.1mm solid #000000;
+}
+
+table thead td { background-color: #EEEEEE;
+	text-align: center;
+	border: 0.1mm solid #000000;
+}
+table thead tr {
+	border-bottom: 0.1mm solid #000000;
+}
+.items td.blanktotal {
+	background-color: #FFFFFF;
+	border: 0mm none #000000;
+	border-top: 0.1mm solid #000000;
+	border-right: 0.1mm solid #000000;
+}
+.items td.totals {
+	text-align: right;
+	border: 0.1mm solid #000000;
+}
+
+
+.ExcelTable2007 {
+	border: 1px solid #B0CBEF;
+	border-width: 1px 0px 0px 1px;
+	font-size: 11pt;
+	font-family: Calibri;
+	font-weight: 100;
+	border-spacing: 0px;
+	border-collapse: collapse;
+	margin-right: 0px!important;
+
+}
+
+.ExcelTable2007 th {
+	background-color: #E0F2F7;
+	background-repeat: repeat-x; 
+	font-weight: bold;
+	font-size: 13px;
+	border: 1px solid #9EB6CE;
+	border-width: 0px 1px 1px 0px;
+	height:40px;
+}
+
+.ExcelTable2007 .thed {
+	background-color: #E0F2F7;
+	background-repeat: repeat-x; 
+	font-weight: bold;
+	font-size: 12px;
+	border: 1px solid #9EB6CE;
+	border-width: 0px 1px 1px 0px;
+	height:30px;
+}
+
+.ExcelTable2007 td {
+	border: 0px;
+	background-color: white;
+	padding: 0px 4px 0px 2px;
+	border: 1px solid #D0D7E5;
+	border-width: 0px 1px 1px 0px;
+	height:40px;
+	vertical-align:middle;
+}
+
+.ExcelTable2007 td b {
+	border: 0px;
+	background-color: white;
+	font-weight: bold;
+}
+
+.ExcelTable2007 td.heading {
+	background-color: #E4ECF7;
+	text-align: center;
+	border: 1px solid #9EB6CE;
+	border-width: 0px 1px 1px 0px;
+}
+
+.ExcelTable2007 th.heading {
+	background-image: url(excel-2007-header-left.gif);
+	background-repeat: none;
+}
+
+.ExcelTableInner {
+	border: 0px solid #B0CBEF;
+	border-width: 0px 0px 0px 1px;
+	font-size: 11pt;
+	font-family: Calibri;
+	font-weight: 100;
+	border-spacing: 0px;
+	border-collapse: collapse;
+}
+
+.ExcelTableInner th {
+	background-image: url(../public/images/excel-2007-header-bg.gif);
+	background-repeat: repeat-x; 
+	font-weight: bold;
+	font-size: 10px;
+	border: 1px solid #9EB6CE;
+	border-width: 0px 1px 1px 0px;
+}
+
+.ExcelTableInner td {
+	border: 0px;
+	background-color: white;
+	padding: 0px 4px 0px 2px;
+	border: 1px solid #D0D7E5;
+	border-width: 0px 1px 1px 0px;
+}
+
+.ExcelTableInner td b {
+	border: 0px;
+	background-color: white;
+	font-weight: bold;
+}
+
+.ExcelTableInner td.heading {
+	background-color: #E4ECF7;
+	text-align: center;
+	border: 1px solid #9EB6CE;
+	border-width: 0px 1px 1px 0px;
+}
+
+.ExcelTableInner th.heading {
+	background-image: url(excel-2007-header-left.gif);
+	background-repeat: none;
+}

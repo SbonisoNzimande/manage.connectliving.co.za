@@ -1,0 +1,136 @@
+@media only screen and (max-width: 479px){
+    body{width:auto!important;}
+    table[class=full] {width: 100%!important; clear: both; }
+    table[class=mobile] {width: 100%!important; padding-left: 20px; padding-right: 20px; clear: both; }
+    table[class=fullCenter] {width: 100%!important; text-align: center!important; clear: both; }
+    td[class=fullCenter] {width: 100%!important; text-align: center!important; clear: both; }
+    td[class=textCenter] {width: 100%!important; text-align: center!important; clear: both; }
+    .headerBG {background-position: center center!important;}
+    .erase {display: none;}
+    img[class=fullImage] { width: 100%!important; height: auto!important; }
+    span[class=pad50] {padding: 40px!important;}
+    td[class=w70] {width: 70%!important;}
+    .headerBG {background-position: center center!important;}
+    table[class=header] {width: 100%!important; text-align: center!important; clear: both; }
+    .header2 img {width: 100%!important; text-align: center!important; clear: both; }
+    table[class=imageMobile] {width: 100%; clear: both;}
+    .imageMobile img {width: 90%!important; height:auto!important;}
+    table[class=icons38] {width: 100%!important; padding-left: 10px; padding-right: 10px; text-align: center!important; clear: both; }
+    .icons38 img {width: 38px!important;}
+    table[class=icons43] {width: 100%!important; text-align: center!important; clear: both; }
+    .icons43 img {width: 43px!important;}
+    table[class=headerScale] {width: 100%!important; text-align: center!important; clear: both; }
+    .headerScale img {width: 100%!important; height: auto;}
+    .font40 {font-size: 40px!important; text-align: center!important; line-height: 46px!important;}
+    .headerBG {background-position: center center!important;}
+    td[class=w30] {width: 60px!important;}
+    table[class=icon] {width: 100%; text-align: center!important; clear: both; }
+    td[class=h40] {height: 40px!important;}
+    td[class=wordBreak] {font-size: 40px!important; text-align: center!important; line-height: 46px!important; -ms-word-break: normal!important; word-break: normal!important; word-break: normal!important; -webkit-hyphens: normal; -moz-hyphens: normal; hyphens: normal;}
+    .w10 {width: 40px!important;}
+    td[class=centerMiddle] {text-align: center!important;}
+    .w50Left {width: 62%!important; text-align: left!important;}
+    .w50Right {width: 38%!important; text-align: right!important;}
+    
+    }
+
+
+}
+
+body {
+  -webkit-print-color-adjust: exact;
+} 
+
+div, p, a, li, td { -webkit-text-size-adjust:none; }
+
+*{
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.ReadMsgBody
+{width: 100%; background-color: #ffffff;}
+.ExternalClass
+{width: 100%; background-color: #ffffff;}
+body{width: 100%; height: 100%; background-color: #ffffff; margin:0; padding:0; -webkit-font-smoothing: antialiased;}
+html{width: 100%;}
+
+@font-face {font-family: 'proxima_nova_softmedium';src: url('http://rocketway.net/themebuilder/template/templates/entity/font/mark_simonson_-_proxima_nova_soft_medium-webfont.eot');src: url('http://rocketway.net/themebuilder/template/templates/entity/font/mark_simonson_-_proxima_nova_soft_medium-webfont.eot?#iefix') format('embedded-opentype'),url('http://rocketway.net/themebuilder/template/templates/entity/font/mark_simonson_-_proxima_nova_soft_medium-webfont.woff') format('woff'),url('http://rocketway.net/themebuilder/template/templates/entity/font/mark_simonson_-_proxima_nova_soft_medium-webfont.ttf') format('truetype');font-weight: normal;font-style: normal;
+}
+
+@font-face {font-family: 'proxima_nova_softregular';src: url('http://rocketway.net/themebuilder/template/templates/entity/font/mark_simonson_-_proxima_nova_soft_regular-webfont.eot'); src: url('http://rocketway.net/themebuilder/template/templates/entity/font/mark_simonson_-_proxima_nova_soft_regular-webfont.eot?#iefix') format('embedded-opentype'),url('http://rocketway.net/themebuilder/template/templates/entity/font/mark_simonson_-_proxima_nova_soft_regular-webfont.woff') format('woff'),url('http://rocketway.net/themebuilder/template/templates/entity/font/mark_simonson_-_proxima_nova_soft_regular-webfont.ttf') format('truetype');font-weight: normal;font-style: normal;
+}
+
+
+@font-face {font-family: 'proxima_nova_softsemibold';src: url('http://rocketway.net/themebuilder/template/templates/entity/font/mark_simonson_-_proxima_nova_soft_semibold-webfont.eot'); src: url('http://rocketway.net/themebuilder/template/templates/entity/font/mark_simonson_-_proxima_nova_soft_semibold-webfont.eot?#iefix') format('embedded-opentype'),url('http://rocketway.net/themebuilder/template/templates/entity/font/mark_simonson_-_proxima_nova_soft_semibold-webfont.woff') format('woff'),url('http://rocketway.net/themebuilder/template/templates/entity/font/mark_simonson_-_proxima_nova_soft_semibold-webfont.ttf') format('truetype');font-weight: normal;font-style: normal;
+
+}
+
+@font-face {font-family: 'proxima_nova_softbold';src: url('http://rocketway.net/themebuilder/template/templates/entity/font/mark_simonson_-_proxima_nova_soft_bold-webfont.eot');src: url('http://rocketway.net/themebuilder/template/templates/entity/font/mark_simonson_-_proxima_nova_soft_bold-webfont.eot?#iefix') format('embedded-opentype'),url('http://rocketway.net/themebuilder/template/templates/entity/font/mark_simonson_-_proxima_nova_soft_bold-webfont.woff') format('woff'),url('http://rocketway.net/themebuilder/template/templates/entity/font/mark_simonson_-_proxima_nova_soft_bold-webfont.ttf') format('truetype');font-weight: normal;font-style: normal;
+
+}
+
+
+p {padding: 0!important; margin-top: 0!important; margin-right: 0!important; margin-bottom: 0!important; margin-left: 0!important;}
+
+.headerScale img {width: 600px; height: auto!important;}
+.header2 img {width: 347px; height: auto!important;}
+.icons img {width: 38px; height: auto!important;}
+.icons30 img {width: 30px!important; height: 30px!important;}
+.icons38 img {width: 38px!important; height: auto!important;}
+.avatars100 img {width: 100px!important; height: auto!important;}
+.imageMobile img {width: 290px; height: auto!important;}
+.icon img {width: 14px!important; height: auto!important;}
+.icons43 img {width: 43px!important; height: auto!important;}
+.smallImages113 img {width: 113px!important;}
+.wordBreak {-ms-word-break: break-all; word-break: break-all; word-break: break-word; -webkit-hyphens: auto; -moz-hyphens: auto; hyphens: auto;}
+
+
+.background{
+	border-color: rgb(255, 199, 82); 
+	background-color: rgb(255, 199, 82);
+}
+
+@media print {
+	background-color: red;
+  .background {
+    border-color: rgb(255, 199, 82); 
+    background-color: rgb(255, 199, 82);
+  }
+}
+
+
+
+ @media only screen and (max-width: 640px){
+	body{width:auto!important;}
+	table[class=full] {width: 100%!important; clear: both; }
+	table[class=mobile] {width: 100%!important; padding-left: 20px; padding-right: 20px; clear: both; }
+	table[class=fullCenter] {width: 100%!important; text-align: center!important; clear: both; }
+	td[class=fullCenter] {width: 100%!important; text-align: center!important; clear: both; }
+	td[class=textCenter] {width: 100%!important; text-align: center!important; clear: both; }
+	.headerBG {background-position: center center!important;}
+	.erase {display: none;}
+	table[class=header] {width: 100%!important; text-align: center!important; clear: both; }
+	.header2 img {width: 347px!important; text-align: center!important; clear: both; }
+	table[class=imageMobile] {width: 100%; text-align: center!important; clear: both;}
+	table[class=icons38] {width: 100%!important; padding-left: 10px; padding-right: 10px; text-align: center!important; clear: both; }
+	.icons38 img {width: 38px!important;}
+	table[class=icons43] {width: 100%!important; text-align: center!important; clear: both; }
+	.icons43 img {width: 43px!important;}
+	table[class=headerScale] {width: 100%!important; text-align: center!important; clear: both; }
+	.headerScale img {width: 100%!important; height: auto;}
+	.font40 {text-align: center!important;}
+	.headerBG {background-position: center center!important;}
+	td[class=w30] {width: 40px!important;}
+	table[class=icon] {width: 100%; text-align: center!important; clear: both; }
+	td[class=h40] {height: 40px!important;}
+	td[class=wordBreak] {text-align: center!important; -ms-word-break: break-all; word-break: break-all; word-break: break-word; -webkit-hyphens: auto; -moz-hyphens: auto; hyphens: auto;}
+	.w10 {width: 40px!important;}
+	td[class=centerMiddle] {text-align: center!important;}
+	.w50Left {width: 58%!important; text-align: left!important;}
+	.w50Right {width: 42%!important; text-align: right!important;}
+	
+
+	
+	
+} 
