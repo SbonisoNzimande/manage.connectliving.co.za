@@ -439,27 +439,37 @@
 									</div>
 
 									<table data-toggle="table"
-									data-url="http://manage.connectliving.co.za/Manage/GetTable"
+									data-url="Manage/GetTable"
 									data-query-params="prop_id=<?=$data['prop_id'];?>"
 									data-search="true"
 									data-show-refresh="true"
 									data-show-toggle="true"
 									data-show-columns="true"
 									data-toolbar="#toolbar"
-
+									data-sort-name="unitNumber"
+									data-sort-order="asc"
+									data-show-pagination-switch="true"
+									data-pagination="true"
+									data-page-list="[10, 25, 50, 100, ALL]"
+									data-show-export="true"
+									data-export-options='
+											       		{
+											       			"fileName": "Residents",
+											       			"worksheetName": "Current Residents",
+											       		'
 									data-pagination="true"
 									id="dynamic-table-residents"
 									class="display table table-striped"
 									>
 									<thead>
 										<tr>
-											<th data-field = "unitNumber">Unit Number</th>
-											<th data-field = "residentName">Resident Name</th>
-											<th data-field = "residentPhone">Phone</th>
-											<th data-field = "residentCellphone">Cellphone</th>
-											<th data-field = "residentNotifyEmail">Notify Email</th>
-											<th data-field = "residentType">Type</th>
-											<th data-field = "residentTrustee">Trustee</th>
+											<th data-field = "unitNumber" data-sortable="true">Unit Number</th>
+											<th data-field = "residentName" data-sortable="true">Resident Name</th>
+											<th data-field = "residentPhone" data-sortable="true">Phone</th>
+											<th data-field = "residentCellphone" data-sortable="true">Cellphone</th>
+											<th data-field = "residentNotifyEmail" data-sortable="true">Notify Email</th>
+											<th data-field = "residentType" data-sortable="true">Type</th>
+											<th data-field = "residentTrustee" data-sortable="true">Trustee</th>
 
 											<th data-field="buttons">Action</th>
 										</tr>
@@ -473,26 +483,36 @@
 							<!--  -->
 							<div role="tabpanel" class="tab-pane animated fadeInDown" id="archive_res">
 								<table data-toggle="table"
-								data-url="http://manage.connectliving.co.za/Manage/GetTableArchived"
+								data-url="Manage/GetTableArchived"
 								data-query-params="prop_id=<?=$data['prop_id'];?>"
 								data-search="true"
 								data-show-refresh="true"
 								data-show-toggle="true"
 								data-show-columns="true"
 
+								data-sort-name="unitNumber"
+								data-sort-order="asc"
+								data-show-pagination-switch="true"
 								data-pagination="true"
+								data-page-list="[10, 25, 50, 100, ALL]"
+								data-show-export="true"
+								data-export-options='
+										       		{
+										       			"fileName": "Residents",
+										       			"worksheetName": "Current Residents",
+										       		'
 								id="archived-residents"
 								class="display table table-striped"
 								>
 								<thead>
 									<tr>
-										<th data-field = "unitNumber">Unit Number</th>
-										<th data-field = "residentName">Resident Name</th>
-										<th data-field = "residentPhone">Phone</th>
-										<th data-field = "residentCellphone">Cellphone</th>
-										<th data-field = "residentNotifyEmail">Notify Email</th>
-										<th data-field = "residentType">Type</th>
-										<th data-field = "residentTrustee">Trustee</th>
+										<th data-field = "unitNumber" data-sortable="true">Unit Number</th>
+										<th data-field = "residentName" data-sortable="true">Resident Name</th>
+										<th data-field = "residentPhone" data-sortable="true">Phone</th>
+										<th data-field = "residentCellphone" data-sortable="true">Cellphone</th>
+										<th data-field = "residentNotifyEmail" data-sortable="true">Notify Email</th>
+										<th data-field = "residentType" data-sortable="true">Type</th>
+										<th data-field = "residentTrustee" data-sortable="true">Trustee</th>
 										<th data-field = "buttons">Action</th>
 									</tr>
 								</thead>
@@ -501,14 +521,24 @@
 
 						<div role="tabpanel" class="tab-pane animated fadeInDown" id="trustees">
 								<table data-toggle="table"
-								data-url="http://manage.connectliving.co.za/Manage/GetTableTrustees"
+								data-url="Manage/GetTableTrustees"
 								data-query-params="prop_id=<?=$data['prop_id'];?>"
 								data-search="true"
 								data-show-refresh="true"
 								data-show-toggle="true"
 								data-show-columns="true"
 
+								data-sort-name="unitNumber"
+								data-sort-order="asc"
+								data-show-pagination-switch="true"
 								data-pagination="true"
+								data-page-list="[10, 25, 50, 100, ALL]"
+								data-show-export="true"
+								data-export-options='
+										       		{
+										       			"fileName": "Residents",
+										       			"worksheetName": "Current Residents",
+										       		'
 								id="trustee-residents"
 								class="display table table-striped"
 								>

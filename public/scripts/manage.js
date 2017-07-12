@@ -343,5 +343,8 @@ $(document).ready(function(){
 			}
 		});
 	};
+	
+	$("[rel='tooltip']").tooltip();
+	$('[data-tooltip="true"]').tooltip();
 
 });

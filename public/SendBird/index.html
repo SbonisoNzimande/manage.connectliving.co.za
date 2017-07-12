@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <link rel='shortcut icon' href='https://s3.amazonaws.com/sendbird-static/favicon/favicon.ico' type='image/x-icon'>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
+  <title>Pot Plant Job Test</title>
+
+  <style>
+    body {
+      margin: 0;
+      background: #E9EBEE;
+      font-family: 'Lato';
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .top {
+      width: 1100px;
+      height: 43px;
+      padding: 20px 0;
+      margin: 0 auto;
+    }
+    .top > a {
+      display: block;
+      float: left;
+    }
+    .top > span {
+      float: left;
+      line-height: 40px;
+      padding: 0 10px;
+      color: #485874;
+    }
+    .sendbird-logo {
+      height: 40px;
+    }
+
+    .content {
+      width: 1100px;
+      height: 808px;
+      margin: 0 auto;
+    }
+
+    .content-image {
+      display: inline-block;
+      width: 680px;
+      height: 808px;
+    }
+
+    .content-chat {
+      width: 400px;
+      height: 100%;
+      float: right;
+    }
+
+  </style>
+
+</head>
+<body>
+
+<div class="top">
+  <a href="https://www.connectliving.co" target="_blank">
+    <img class="sendbird-logo" src="http://www.connectliving.co.za/img/logo-2x.png" alt="SendBird">
+  </a>
+  <span>Quote Approval Chat Beta</span>
+</div>
+<div class="content">
+  <div class="content-image">
+    <img src="img/quote-example.png">
+  </div>
+  <div class="content-chat" id="sb_chat"></div>
+</div>
+
+</body>
+
+<script src="SendBird.min.js"></script>
+<script src="build/liveChat.SendBird.js"></script>
+<script>
+  var appId = '911FEBB5-2A00-484D-BE22-9B9C4F7868DD';
+  var channelUrl = 'sendbird_open_channel_16580_c2b41bec121cf024e56add940f6093b916ee3d1c'; // channel: text_chat_test
+  liveChat.start(appId, channelUrl);
+</script>
+
+</html>

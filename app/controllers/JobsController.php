@@ -50,6 +50,13 @@ class JobsController
 				$enums 		= self::$app_controller->get_enum_values ('query_jobs', 'status');
 
 			return json_encode ($enums);
+
+			case 'GetChatURL':
+				$job_id 		= self::$app_controller->sanitise_string($request->parameters['job_id']);
+
+				$url 			= self::get_chat_url ($job_id);
+
+			return json_encode ($url);
 			break;
 
 			case 'GetAllCards':
@@ -95,6 +102,15 @@ class JobsController
 				$get 		= self::$app_controller->get_queries_byid ($id);
 				return json_encode($get[0]);
 				break;
+			case 'Vote':
+
+				$type 		= self::$app_controller->sanitise_string  ($request->parameters['type']);
+				$qoute_id 	= self::$app_controller->sanitise_string  ($request->parameters['qoute_id']);
+				$user_id 	= self::$app_controller->sanitise_string  ($request->parameters['user_id']);
+
+				$vote 		= self::vote_qoute ($user_id, $qoute_id, $type);
+				return json_encode($vote);
+				break;
 
 			case 'GetSupplierEmail':
 
@@ -125,6 +141,32 @@ class JobsController
 									);
 				return json_encode(array('html' => $table));
 				break;
+
+				case 'EmailJobQuote':
+
+				$company_id 			= self::$app_controller->sanitise_string ($request->parameters['company_id']);
+				$file_name 				= self::$app_controller->sanitise_string ($request->parameters['file_name']);
+				$job_id 				= self::$app_controller->sanitise_string ($request->parameters['job_id']);
+				$prop_id 				= self::$app_controller->sanitise_string ($request->parameters['prop_id']);
+				$quote_id 				= self::$app_controller->sanitise_string ($request->parameters['quote_id']);
+				$property_name 			= self::$app_controller->sanitise_string ($request->parameters['property_name']);
+				$property_address 		= self::$app_controller->sanitise_string ($request->parameters['property_address']);
+				$job_description 		= self::$app_controller->sanitise_string ($request->parameters['job_description']);
+				
+
+
+				$table  		= self::send_job_quote_email (
+										$company_id, 
+										$property_name, 
+										$property_address, 
+										$job_description, 
+										$file_name, 
+										$job_id, 
+										$prop_id,
+										$quote_id
+									);
+				return json_encode($table);
+				break;
 			case 'GetTimeline':
 				$prop_array 	= self::$app_controller->get_propery_array ($_SESSION['modules']);
 				$company_id 	= $_SESSION['company_id'];
@@ -152,6 +194,15 @@ class JobsController
 
 			    return json_encode(array('html' => $html));
 			break;
+
+			case 'GetJobQuotes':
+				$job_id    			= self::$app_controller->sanitise_string ($request->parameters['job_id']);
+				$prop_id    		= self::$app_controller->sanitise_string ($request->parameters['prop_id']);
+
+			    $html  				= self::set_up_quote_details ($job_id, $prop_id, $company_id);
+
+			    return json_encode($html);
+			break;
 			
 			default:
 				if (self::$app_controller->check_if_logged ($email)) {
@@ -160,6 +211,7 @@ class JobsController
 					$first_name		= $_SESSION['first_name'];
 					$last_name		= $_SESSION['last_name'];
 					$modules		= $_SESSION['modules'];
+					$user_id		= $_SESSION['user_id'];
 
 					$this_page 		= 'property' . self::$property_id;
 					$current 		= 'jobs' . self::$property_id;
@@ -176,6 +228,7 @@ class JobsController
 										'page'		 => $current,
 										'prop_id'	 => self::$property_id,
 										'prop_name'	 => self::$property_name,
+										'user_id'	 => $user_id,
 										'aside_menu' => $aside_menu['html']
 										);
 						
@@ -217,6 +270,13 @@ class JobsController
 				$delete 	= self::delete_job ($ID);
 				return json_encode($delete);
 				break;
+			case 'RecordJobQuote':
+				$job_id 	= self::$app_controller->sanitise_string($request->parameters['job_id']);
+				$chat_url 	= self::$app_controller->sanitise_string($request->parameters['chat_url']);
+				
+				$delete 	= self::record_quote ($job_id, $chat_url);
+				return json_encode($delete);
+				break;
 			case 'MarkDone':
 				$ID 	 = self::$app_controller->sanitise_string($request->parameters['ID']);
 				$done 	 = self::mark_done ($ID);
@@ -256,6 +316,16 @@ class JobsController
 				$file_data 	= array_map(self::$app_controller->sanitise_string, $_FILES);
 
 				$send    	= self::save_comment ($Message, $JobID, $user_id, $company_id, $file_data);
+				return json_encode($send);
+			break;
+
+			case 'UploadQoute': 
+				$JobID 		= self::$app_controller->sanitise_string($request->parameters['JobID']);
+				$user_id 	= $_SESSION['user_id'];
+				$company_id = $_SESSION['company_id'];
+				$file_data 	= array_map(self::$app_controller->sanitise_string, $_FILES);
+
+				$send    	= self::save_quote ($JobID, $user_id, $company_id, $file_data);
 				return json_encode($send);
 			break;
 
@@ -506,10 +576,10 @@ class JobsController
 			return array('status'  => false, 'text' => 'Invalid Message');
 		}
 
-		$query = self::$app_controller->get_job_byid ($JobID);
+		$query = self::$app_controller->get_query_details_by_jobid ($JobID);
 
 		if (count($query) == 0) {
-			return array('status'  => false, 'text' => 'Invalid Job ID');
+			return array('status'  => false, 'text' => 'Can not Send an SMS on this Job');
 		}
 
 		
@@ -738,7 +808,100 @@ class JobsController
 								$supplier_job_status
 							);
 
-		$send  = self::$app_controller->send_email ($html, 'connectLiving Job Details', $email, $fullname);
+		// die($supplier_email);
+
+		$send  = self::$app_controller->send_email ($html, 'connectLiving Job Details', $supplier_email, $supplier_name);
+
+		if ($send == true) {
+			return array('status' => true, 'text'  => 'Email sent');
+		}else{
+			return array('status' => false, 'text' => 'Failed to send, ' . $send);
+		}
+
+	}
+
+
+	static public function vote_qoute ($user_id, $qoute_id, $type) {
+
+		$qoute  	= self::$app_controller->get_qoute_byid ($qoute_id);
+
+		if (count($qoute) === 0) {
+			return array('status'  => false, 'text' => 'Invalid ID');
+		}
+
+		if ($type === 'up') {
+			// vote up
+			$return  	= self::$app_controller->vote_up ($user_id, $qoute_id);
+		}elseif ($type === 'down') {
+			//vote down
+			$return  	= self::$app_controller->vote_down ($user_id, $qoute_id);
+		}
+
+
+		if ($return == true) {
+			return array('status' => true, 'text'  => 'Sucess');
+		}else{
+			return array('status' => false, 'text' => 'Failed to send, ' . $send);
+		}
+
+	}
+
+
+	static public function send_job_quote_email (
+								$company_id, 
+								$property_name, 
+								$property_address, 
+								$job_description, 
+								$file_name, 
+								$job_id, 
+								$prop_id,
+								$quote_id
+							) {
+
+		// get trustees 
+
+		$trustees  = self::$app_controller->get_property_trustees ($prop_id);
+
+		// send_emails ($Message, $Subject, $From, $emails, $attachment = array())
+		// $email 			= $e['email'];
+		// $full_name 		= $e['full_name'];
+
+		$vote_link 			= 'http://manage.connectliving.co.za/JobQuotesTrusteeVoting?';
+
+
+		$trustee_emails =  array();
+		foreach ($trustees as $t) {
+			$trustee_emails[] = array('email' => $t['residentNotifyEmail'], 'full_name' => $t['residentName']);
+
+			$trustee_email 	  = $t['residentNotifyEmail'];
+			$trustee_name 	  = $t['residentName'];
+			$t_id 	  		  = $t['id'];
+			$trustee_link 	  = $vote_link 	  		. 
+								'company_id=' 		. $company_id 	 . 
+								'&prop_id='   		. $prop_id    	 .
+								'&property_name='   . $property_name .
+								'&property_address='. $property_address .
+								'&job_description=' . $job_description  .
+								'&job_id='   		. $job_id    	 .
+								'&quote_id='   		. $quote_id    	 .
+								'&user_id='   		. $t_id    		 .
+								'&trustee_name='    . $trustee_name  .
+								'&file_name=' 		. $file_name;
+
+			$html  = self::$app_controller->get_qoutation_email (
+									$trustee_name, 
+									$trustee_link
+								);
+
+			$send  = self::$app_controller->send_email ($html, 'connectLiving Job Quotation', $trustee_email, $trustee_name);
+		}
+
+
+		
+
+		// die($supplier_email);
+
+		
 
 		if ($send == true) {
 			return array('status' => true, 'text'  => 'Email sent');
@@ -767,6 +930,8 @@ class JobsController
 			$dir 					= '../companies/' .$company_id. '/jobs/' .$JobID;
 			$create 				= self::$app_controller->created_directory ($dir);
 			$name 					= self::$app_controller->upload_file ($file_data['UploadFile'], $dir);
+
+
 		}
 
 		$save = self::$app_controller->insert_job_comment ($Message, $JobID, $user_id, $name);
@@ -776,6 +941,123 @@ class JobsController
 		}else{
 			return array('status' => false, 'text' => 'Failed to insert, ' . $save);
 		}
+	}
+
+	/*** upload document ***/
+	static public function save_quote ($JobID, $user_id, $company_id, $file_data) {
+
+		$query = self::$app_controller->get_job_by_id ($JobID);
+
+		if (count($query) == 0) {
+			return array('status'  => false, 'text' => 'Invalid Job ID');
+		}
+
+		if (empty($file_data)) {
+			return array('status'  => false, 'text' => 'Please select a file to upload');
+		}
+
+		$file_name 		= '';
+		$allowed_ext  	= array('jpg', 'jpeg', 'png', 'pdf');
+		if (!empty($file_data)) {
+		
+			$dir 					= '../companies/' .$company_id. '/job_quotes/' .$JobID;
+			$create 				= self::$app_controller->created_directory ($dir);
+			$file_name 				= self::$app_controller->upload_file_extention ($file_data['UploadFile'], $dir, $allowed_ext);
+		}
+
+		if (!$file_name) {
+			return array('status'  => false, 'text' => 'Invalid Type, must be an image or pdf');
+		}
+
+		$save = self::$app_controller->insert_job_quote ($JobID, $file_name);
+		if ($save === true) {
+			return array('status' => true, 'text' => 'Quote Uploaded ');
+		}else{
+			return array('status' => false, 'text' => 'Failed to insert, ' . $save);
+		}
+	}
+
+	static public function set_up_quote_details ($job_id, $prop_id, $company_id) {
+
+		$return_array 	= array();
+		$query 			= self::$app_controller->get_job_by_id ($job_id);
+		$comp 			= self::$app_controller->get_property_info_byid ($prop_id);
+
+		if (count($query) == 0) {
+			return array('status'  => false, 'text' => 'Invalid Job ID');
+		}
+
+		if (count($comp) == 0) {
+			return array('status'  => false, 'text' => 'Invalid Company ID');
+		}
+
+		$property_name  	= $comp[0]['propertyName'];
+		$companyID  		= $comp[0]['companyID'];
+		$property_address  	= $comp[0]['propertyAddress'];
+		$job_description  	= $query[0]['description'];
+
+		$job_quotes 		= self::$app_controller->get_job_quotes_by_id ($job_id);
+		$link 				= 'http://connectliving.co.za/companies/' .$companyID. '/job_quotes/' .$job_id . '/';
+
+		foreach ($job_quotes as $q) {
+			$ext 			= explode('.', $q['file_name']);
+			$file_extention = $ext[1];
+
+			$return_array[] = array(
+				 	'quote_id' 			=> $q['id'],
+				 	'vote_up' 			=> $q['vote_up'],
+				 	'vote_down' 		=> $q['vote_down'],
+				 	'file_name' 		=> $link . $q['file_name'],
+				 	'file_extention'	=> $file_extention,
+				 	'job_id'			=> $job_id,
+				 	'prop_id'			=> $prop_id,
+				 	'company_id'		=> $companyID,
+				 	'property_name'		=> $property_name,
+				 	'property_address'	=> $property_address,
+				 	'job_description'	=> $job_description,
+				 	'date_created' 		=> $q['created']
+				);
+		}
+		
+
+		return $return_array;
+	}
+
+	/*** re comment ***/
+	static public function record_quote ($job_id, $chat_url) {
+
+
+		$query = self::$app_controller->get_job_byid ($job_id);
+
+		if (count($query) == 0) {
+			return array('status'  => false, 'text' => 'Invalid Job ID');
+		}
+
+		if (!self::$app_controller->validate_variables ($chat_url, 3)) {
+			return array('status'  => false, 'text' => 'Invalid Chart URL');
+		}
+
+		
+
+		$save = self::$app_controller->insert_job_chart_url ($job_id, $chat_url);
+		
+		if ($save === true) {
+			return array('status' => true, 'text' => 'Inserted');
+		}else{
+			return array('status' => false, 'text' => 'Failed to insert, ' . $save);
+		}
+	}
+
+	/*** re comment ***/
+	static public function get_chat_url ($job_id) {
+
+		$query = self::$app_controller->job_quotes_by_jobid ($job_id);
+
+		if (count($query) == 0) {
+			return array('status'  => false, 'text' => 'Chat URL Not Found');
+		}
+
+		return $query[0];
 	}
 
 	/*** save query ***/
@@ -920,6 +1202,7 @@ class JobsController
 
 			$arry[] = array(
 				'job_id'     	 => $job_id,
+				'prop_id'     	 => $prop_id,
 				'supplier_id'    => $supplier_id,
 				'supplier_email' => $supplier_email,
 				'supplier_phone_number' => $supplier_phone_number,
@@ -934,7 +1217,7 @@ class JobsController
 				'status'     	 => $status,
 				'job_status'     => $job_status,
 				'query_type'     => ucwords(strtolower($queryType)),
-				'unit_number'    => $unitId,
+				// 'unit_number'    => $unitId,
 				'status'    	 => $status,
 				'id'     		 => $job_id,
 				'user_name'      => $full_name,
@@ -1025,6 +1308,7 @@ class JobsController
 
 			$arry[] = array(
 				'job_id'     	 => $job_id,
+				'prop_id'     	 => $prop_id,
 				'supplier_id'    => $supplier_id,
 				'supplier_email' => $supplier_email,
 				'supplier_phone_number' => $supplier_phone_number,
@@ -1039,7 +1323,7 @@ class JobsController
 				'status'     	 => $status,
 				'job_status'     => $job_status,
 				'query_type'     => ucwords(strtolower($queryType)),
-				'unit_number'    => $unitId,
+				// 'unit_number'    => $unitId,
 				'status'    	 => $status,
 				'id'     		 => $job_id,
 				'user_name'      => $full_name,

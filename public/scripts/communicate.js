@@ -177,7 +177,7 @@ $(document).ready(function(){
 		    				prop_name: prop_name
 	    			   	};
 
-	    $.post(host + 'Communicate/DeleteMsg', post_data, function(response){
+	    $.post('Communicate/DeleteMsg', post_data, function(response){
 	        var output = '';
 	        if(response.status == false){
 	            output = '<div class="alert alert-danger"><p>'+response.text+'</p></div>';
@@ -228,7 +228,7 @@ $(document).ready(function(){
 	                            'Property_ID': $('#prop_id').val()
 	                        };
 
-	        $.post(host + 'Communicate/SendNotification', post_data, function(response){
+	        $.post('Communicate/SendNotification', post_data, function(response){
 	            var output = '';
 	            if(response.status == false) {
 	                output = '<div class="alert alert-danger"><p>'+response.text+'</p></div>';

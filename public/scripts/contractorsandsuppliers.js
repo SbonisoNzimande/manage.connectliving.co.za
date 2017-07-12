@@ -1,7 +1,11 @@
 // CreateResidentForm
 $(document).ready(function(){
 	
-	get_service_types('[id="ServiceType"]');
+	
+
+	$('#addNewContractorModal').on('show.bs.modal', function(ev) {// on modal open
+		get_service_types('[id="ServiceType"]');
+	});
 
 
 	$("#UploadCompanyLogoForm").on( 'submit', function(ev) {
@@ -54,20 +58,30 @@ $(document).ready(function(){
 		var id 			= $(e.relatedTarget).data('res-id'); 
 		var data        = 'ID='+id;
 
+		$("#EditContractorForm [name=ServiceType]").val('');
+		$("#EditContractorForm [name=CompanyName]").val('');
+		$("#EditContractorForm [name=Address]").val('');
+		$("#EditContractorForm [name=PhoneNumber]").val('');
+		$("#EditContractorForm [name=Email]").val('');
+
 		console.log('ID='+id);
 
 		$('#ContractorID').val(id);
-
+		get_service_types('[id="ServiceType"]');
 		// Get edit items
-		$.get('ContractorsAndSuppliers/GetContractorByID', data, function(response){
-			console.log(response);
-		    $("#EditContractorForm [name=ServiceType]").val(response.service_id);
-		    $("#EditContractorForm [name=CompanyName]").val(response.company_name);
-		    $("#EditContractorForm [name=Address]").val(response.address);
-		    $("#EditContractorForm [name=PhoneNumber]").val(response.phone_number);
-		    $("#EditContractorForm [name=Email]").val(response.email);
-		    
-		});
+
+		setTimeout(function() {
+			$.get('ContractorsAndSuppliers/GetContractorByID', data, function(response){
+
+				console.log(response);
+			    $("#EditContractorForm [name=ServiceType]").val(response.service_id);
+			    $("#EditContractorForm [name=CompanyName]").val(response.company_name);
+			    $("#EditContractorForm [name=Address]").val(response.address);
+			    $("#EditContractorForm [name=PhoneNumber]").val(response.phone_number);
+			    $("#EditContractorForm [name=Email]").val(response.email);
+			    
+			});
+		}, 1000);
 	});
 
 	$('#SupplierThumbnailModal').on('show.bs.modal', function(e) {// on modal open
@@ -106,7 +120,7 @@ $(document).ready(function(){
 	 		if(response.status == false){
 	 		    output = '<div class="alert alert-danger"><p>'+response.text+'</p></div>';
 	 		}else if(response.status == true){
-	 		    output = '<div class="alert alert-success"><p>Form Saved</p></div>';
+	 		    output = '<div class="alert alert-success"><p>Saved</p></div>';
 	 		}
 
 	 		$("#duplicate_error").html(output).fadeIn('slow').delay(3000).fadeOut('fast', function(){ 
@@ -254,6 +268,8 @@ $(document).ready(function(){
 		});
 
 	});
+
+
 
 	$("#EditSupplierTypeForm").on( 'submit', function(ev) {
 		ev.preventDefault();

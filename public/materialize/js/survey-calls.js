@@ -54,19 +54,27 @@ $(document).ready(function(el){
 				// loop through options
 				var c = 1;
 
-				console.log(q_type);
+				// console.log(q_type);
 				$.each(q_options, function(k, v){
 					switch (q_type) {
 						case 'file_upload':// Image upload
 							var upload_id 	= 'fileupload'+(c + q_num);
 						 	q_id 			= q_num;
 						 	options += '<div class="file-field input-field col s12">';
+
+						 	options += '	<div class="btn">';
+						 	options += '		<span>File</span>';
+						 	options += '		<input type="file" name="question'+q_num+'" id="fileupload'+q_num+'" />';
+						 	options += '	</div>';
+						 	options += '	<div class="file-path-wrapper">';
+						 	options += '		<input class="file-path validate" type="text" placeholder="'+v+'">';
+						 	options += '	</div>';
 							// options += '<button id="fileupload" name="question'+q_num+' "class="waves-effect waves-light btn-large" style="width:100%">'+v+'</button>';
-							options += '<input class="file-path validate question'+q_num+'" type="text" name="question'+q_num+'" value="" class="question'+q_num+'">';
-							options += '<div class="btn">';
-							options += '	<span>'+v+'</span>';
-							options += '	<button id="fileupload" name="question'+q_num+' "class="waves-effect waves-light btn-large" style="width:100%">'+v+'</button>';
-							options += '</div>';
+							// options += '<input class="file-path validate question'+q_num+'" type="hidden" name="question'+q_num+'" value="" class="question'+q_num+'">';
+							// options += '<div class="btn">';
+							// options += '	<span>'+v+'</span>';
+							// options += '	<button id="fileupload'+q_num+'" name="question'+q_num+'" class="waves-effect waves-light btn-large" style="width:100%">'+v+'</button>';
+							// options += '</div>';
 							// options += '<input type="hidden" name="question'+q_num+'" value="" class="question'+q_num+'"  >';
 							options += '</div>';
 							
@@ -108,10 +116,10 @@ $(document).ready(function(el){
 							
 							options += '<div id="content">';
 							options += ' <div id="signatureparent">';
-							options += '	<div><div id="signature"></div></div>';
-							options += '	<input type="hidden" name="question'+q_num+'"  class="output"  id="question'+(c + q_num)+'" />';
+							options += '	<div><div id="signaturearea'+q_num+'" ></div></div>';
+							options += '	<input type="hidden" name="question'+q_num+'"  class="output'+q_num+'"  id="question'+(c + q_num)+'" />';
 							options += ' </div>';
-							options += ' <div id="tools"></div>';
+							options += ' <div id="tools'+q_num+'"></div>';
 							options += '</div>';
 							// options += '<label for="question'+(c + q_num)+'">'+v+'</label>';
 						break;
@@ -171,23 +179,44 @@ $(document).ready(function(el){
 		// get_stars($('.rating-loading'));
 		$("[class*='star_container']").rating();
 
-		var $sigdiv = $("#signature"),
-		 	$tools  = $('#tools');
+		
 
-	 	$sigdiv.jSignature({'UndoButton':true});
 
-		$sigdiv.bind('change', function(e){ 
-			/* 'e.target' will refer to div with "#signature" */ 
-			var data = $sigdiv.jSignature('getData', 'image');
-			$(".output").val(data);
+		$("[id*='signaturearea']").each(function(i, e) { // loop throug signitures
+			var sigid 		= $(this).attr("id");
+			var qii 		= sigid.replace('signaturearea', '');
+			var toolid 		= 'tools' + qii;
+			var outclass 	= 'output' + qii;
 
-			console.log('here:' + data);
+			var $sigdiv = $("#" + sigid),
+			 	$tools  = $("#" + toolid);
+
+			$sigdiv.jSignature({'UndoButton':true});
+
+			$sigdiv.bind('change', function(e){ 
+				/* 'e.target' will refer to div with "#signature" */ 
+				var data = $sigdiv.jSignature('getData', 'image');
+				$("." + outclass).val(data);
+
+				console.log('here:' + data);
+			});
+			// console.log(qii);
 		});
+
+		// File upload
+		// $("[id*='fileupload']").click(function() { // loop throug signitures
+		// 	var fileid 		= $(this).attr("id");
+		// 	var qii 		= fileid.replace('fileupload', '');
+
+		// 	// console.log ('file', fileid);
+		// 	SaveImage (fileid, form_data);
+			
+		// });
 
 
 		// var data = form_data + '&q_id=' + q_id;
-		SaveImage('fileupload', form_data);
-
+		
+		// SaveImage ("[id*='fileupload']", form_data);
 
 	});
 
@@ -201,9 +230,10 @@ $(document).ready(function(el){
 
 	
 	window.SaveImage = function(but_id, form_data) {
-	    var btn = $("#" + but_id);
+	    // var btn = $(but_id).attr("id");
+	    var btn = but_id;
 
-	    console.log(form_data);
+	    console.log ('Button:', btn);
 
 	    new AjaxUpload(btn, {
 	        action: 'FormSubmissions/SaveImage', //Your php script
@@ -211,7 +241,7 @@ $(document).ready(function(el){
 	        data: form_data, //data here
 	        responseType:'json',
 	        onSubmit: function(file, ext){ 
-	            // alert("Your file: " + file);
+	            alert("Your file: " + file);
 	                                                            
 	        },
 	        onComplete : function(file, response){ 
@@ -225,29 +255,77 @@ $(document).ready(function(el){
 	    });
 	};
 
-	$("#survey-form").submit(function(e){
-		e.preventDefault();
+	$("#survey-form").on( 'submit', function(ev) {
+		ev.preventDefault();
+
+		var form_data = new FormData($('#survey-form')[0]);
+
+		console.log(form_data);
+
+		$("[id*='fileupload']").each(function() { // loop throug signitures
+			var fileid 		= $(this).attr("id");
+			var qii 		= fileid.replace('fileupload', '');
+			// console.log ($('#' + fileid).prop("files"))
+			var file_data 	= $('#' + fileid).prop("files")[0];  
+
+			form_data.append ("file", file_data);
+		});
+
+		$(this).ajaxSubmit({ 
+			target:   '#targetLayer',
+			dataType: "json", 
+			beforeSubmit: function() {
+				console.log ('Before Submit');
+			},
+			uploadProgress: function (event, position, total, percentComplete){	
+				console.log (percentComplete, '%');
+			},
+			error: function() { console.log ('error') },
+			success:function (response){
+				afterSuccess(response);
+				
+			},
+			resetForm: true 
+		}); 
+
+		return false; 
+
+		function afterSuccess (response) {
+		    var output = '';
+		    if(response.status == true) {
+		    	output = '<div class="card-panel green lighten-2">Survey Has Been Submited</div>';
+		    }else{
+		    	output = '<div class="card-panel red lighten-2">'+response.text+'</div>';
+		    }
+
+		    $("#survey_err").html(output).show('slow').fadeIn().delay(3000).fadeOut();
+		}
+
+	});
+
+	// $("#survey-form").submit(function(e){
+	// 	e.preventDefault();
 		
 
-		var form_data = $("#survey-form").serialize();
-		console.log(form_data);
-		$.post('FormSubmissions/SubmitForm', form_data, function(response){
-			var output = '';
-			console.log(response);
-			// <div class="card-panel teal lighten-2">This is a card panel with a teal lighten-2 class</div>
-			if(response.status == true){
-				output = '<div class="card-panel green lighten-2">Survey Has Been Submited</div>';
-			}else{
-				output = '<div class="card-panel red lighten-2">'+response.text+'</div>';
-			}
+	// 	var form_data = $("#survey-form").serialize();
+	// 	console.log(form_data);
+	// 	$.post('FormSubmissions/SubmitForm', form_data, function(response){
+	// 		var output = '';
+	// 		console.log(response);
+	// 		// <div class="card-panel teal lighten-2">This is a card panel with a teal lighten-2 class</div>
+	// 		if(response.status == true){
+	// 			output = '<div class="card-panel green lighten-2">Survey Has Been Submited</div>';
+	// 		}else{
+	// 			output = '<div class="card-panel red lighten-2">'+response.text+'</div>';
+	// 		}
 
-			// Materialize.toast(response.text, 4000);
-			// $("html, body").animate({ scrollTop: 0 }, "slow");
-			$("#survey_err").html(output).show('slow').fadeIn().delay(3000).fadeOut();
+	// 		// Materialize.toast(response.text, 4000);
+	// 		// $("html, body").animate({ scrollTop: 0 }, "slow");
+	// 		$("#survey_err").html(output).show('slow').fadeIn().delay(3000).fadeOut();
 
 
-		});
-	});
+	// 	});
+	// });
 
 	
 

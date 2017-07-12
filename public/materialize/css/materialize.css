@@ -3,6 +3,18 @@
  * Copyright 2014-2015 Materialize
  * MIT License (https://raw.githubusercontent.com/Dogfalo/materialize/master/LICENSE)
  */
+
+
+ .form-instructions ul li{
+  list-style-type: disc!important; 
+  list-style-position: inside!important; 
+  text-align: left;
+  margin-left: 15px; 
+}
+.form-instructions ol {
+  list-style-type: disc!important; 
+  list-style-position: inside!important; 
+}
 .materialize-red.lighten-5 {
   background-color: #fdeaeb !important; }
 

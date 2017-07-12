@@ -79,6 +79,14 @@ class EmergencyContactsController
 
 				return json_encode($save);
 			break;
+
+			case 'DuplicateContact': 
+				$ID    				= self::$app_controller->sanitise_string ($request->parameters['ContactID']);
+				$ProID    			= self::$app_controller->sanitise_string ($request->parameters['PropertyName']);
+				$save    			= self::duplicate_contact ($ID, $ProID);
+
+				return json_encode($save);
+			break;
 		}
 	}
 
@@ -237,6 +245,28 @@ class EmergencyContactsController
 		
 	}
 
+	static public function duplicate_contact ($ID, $ProID) {
+
+		if (!is_numeric($ID)) {
+			return array('status'  => false, 'text' => 'Invalid ID');
+		}
+		
+
+		if (!is_numeric($ProID)) {
+			return array('status'  => false, 'text' => 'Invalid Property ID');
+		}
+
+		$save = self::$app_controller->duplicate_emergency_contact ($ID, $ProID);
+		
+		if ($save === true) {
+			return array('status' => true, 'text' => 'Duplicated');
+		}else{
+			return array('status' => false, 'text' => 'Failed to insert, ' . $save);
+		}
+
+		
+	}
+
 
 
 	// get_contact_table ($prop_id)
@@ -253,6 +283,7 @@ class EmergencyContactsController
 
 
 			$button 	.= '<button class="btn btn-danger btn-xs " data-title="Delete" data-toggle="modal" data-target="#DeleteContactModal" data-contact-id="'.$c['id'].'" aria-expanded="false"><span class="fa fa-times"></span></button>';
+			$button 	.= '<button class="btn btn-warning btn-xs " data-title="Duplicate" data-toggle="modal" data-target="#DuplicateContactModal" data-contact-id="'.$c['id'].'" aria-expanded="false"><span class="fa fa-copy"></span></button>';
 
 			$contact_icon  = '<div class="fa '.$c['contact_icon'].'"></div>';
 			$contact_color = $c['contact_color'];

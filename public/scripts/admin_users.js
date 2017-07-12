@@ -2,13 +2,13 @@ $(document).ready(function(){
     var host     = 'http://' + window.location.hostname + '/index.php/';
 
     table        = $('#users-table').DataTable({
-        "ajax": host + 'AdminUsers/GetAllUsers'
+        "ajax": 'AdminUsers/GetAllUsers'
     });
 
     // Get user_types
 
     $("#UserType").html('');
-	$.get(host + 'AdminUsers/GetUserTypes', '', function(response){
+	$.get('AdminUsers/GetUserTypes', '', function(response){
 		// Build select
     	var select 			= '<option></option>';
     	
@@ -98,7 +98,7 @@ $(document).ready(function(){
 
 	window.getUserEdit = function(id) {
 	    var data    = 'user_id='+id;
-	    $.get(host + 'AdminUsers/GetUserByID', data, function(response){
+	    $.get('AdminUsers/GetUserByID', data, function(response){
 
 	        $("#edtID").val(response.user_id);
 	        $("#FirstNameedt").val(response.first_name);
@@ -194,7 +194,7 @@ $(document).ready(function(){
 	    						'UserType':UserType.trim()
 	    	                };
 
-	    	$.post(host + 'AdminUsers/SaveUser', post_data, function(response){
+	    	$.post('AdminUsers/SaveUser', post_data, function(response){
 	    		var output = '';
 
 	    		if(response.status == true){
@@ -298,7 +298,7 @@ $(document).ready(function(){
 	    						'UserType':UserType.trim()
 	    	                };
 
-	    	$.post(host + 'AdminUsers/EditUser', post_data, function(response){
+	    	$.post('AdminUsers/EditUser', post_data, function(response){
 	    		var output = '';
 
 	    		if(response.status == true){
@@ -325,7 +325,7 @@ $(document).ready(function(){
 	    //data to be sent to server
 	    post_data     = {'ID':ID.trim()};
 
-	    $.post(host + 'AdminUsers/DeleteUser', post_data, function(response){
+	    $.post('AdminUsers/DeleteUser', post_data, function(response){
 
 	        var output = '';
 	        if(response.status == false){

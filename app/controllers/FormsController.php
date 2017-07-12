@@ -259,6 +259,15 @@ class FormsController
 				return json_encode($save);
 				break;
 
+				case 'DeleteResponces':
+				$ResponceID 		= self::$app_controller->sanitise_string($request->parameters['ResponceID']);
+				// die(var_dump($ResponceID));
+
+				$save 				= self::delete_responses ($ResponceID);
+
+				return json_encode($save);
+				break;
+
 			case 'LinkResident':
 				$UnitNumber 			= self::$app_controller->sanitise_string($request->parameters['UnitNumber']);
 				$ResidentList 			= self::$app_controller->sanitise_string($request->parameters['ResidentList']);
@@ -328,6 +337,7 @@ class FormsController
 			$questions 		= json_decode ($c['questions'], true);
 
 			$resp_q_num 	= $c['q_num'];
+			$responce 		= $c['responce'];
 			$resp_responce 	= $c['responce'];
 			$resp_created 	= $c['created'];
 			$prop_id 		= $c['prop_id'];
@@ -342,17 +352,17 @@ class FormsController
 				$q_num 		= $q['q_num'];
 				$q_type 	= $q['q_type'];
 				$q_text 	= $q['q_text'];
-				$responce 	= $q['responce'];
+				// $responce 	= $q['responce'];
 
 				$directory 	= '../companies/' . $company_id .'/properties/' . $prop_id . '/form_submission_files/';
 
 				if ($q_type == 'file_upload' OR $q_type == 'signature') {
-					$file 			= $directory  . $resp_responce;
-					// $resp_responce  = '<a href="Forms/DownloadFile?file_name=' .$resp_responce. '&prop_id=' .$prop_id. '" >' . $resp_responce . '</a>';
+					$file 			= $directory  . $responce;
+					$resp_responce  = '<a href="Forms/DownloadFile?file_name=' .$resp_responce. '&prop_id=' .$prop_id. '" >' . $resp_responce . '</a>';
 
 					// die(var_dump($file));
 
-					$resp_responce  = '<img src="'.$file.'" />';
+					// $resp_responce  = '<img src="'.$file.'" />';
 				}
 
 				// Star
@@ -421,9 +431,9 @@ class FormsController
 		$return 	 	= array();
 		$return_data 	= array();
 		
-		$html 			= self::get_responses_object_html($SubmitID, $company_id);
-		$title 		= "ConnectLiving - Form Responses";
-		$author 	= "ConnectLiving";
+		$html 			= self::get_responses_object_html ($SubmitID, $company_id);
+		$title 			= "ConnectLiving - Form Responses";
+		$author 		= "ConnectLiving";
 		self::$app_controller->get_report_pdf ($html, $author, $title);
 		exit;
 	}
@@ -487,10 +497,10 @@ class FormsController
 
 		$count = 1;
 		foreach ($QuestionOptions as $QuestionOption) {
-			if (!self::$app_controller->validate_variables ($QuestionOption, 3)) {
-				return array('status'  => false, 'text' => 'Invalid Question Option in form ' . $count);
-				exit();
-			}
+			// if (!self::$app_controller->validate_variables ($QuestionOption, 3)) {
+			// 	return array('status'  => false, 'text' => 'Invalid Question Option in form ' . $count);
+			// 	exit();
+			// }
 
 			$QuestionObject['QuestionOption'][]  = $QuestionOption;
 			$count++;
@@ -576,10 +586,10 @@ class FormsController
 
 		$count = 1;
 		foreach ($QuestionOptions as $QuestionOption) {
-			if (!self::$app_controller->validate_variables ($QuestionOption, 3)) {
-				return array('status'  => false, 'text' => 'Invalid Question Option in form ' . $count);
-				exit();
-			}
+			// if (!self::$app_controller->validate_variables ($QuestionOption, 3)) {
+			// 	return array('status'  => false, 'text' => 'Invalid Question Option in form ' . $count);
+			// 	exit();
+			// }
 
 			$QuestionObject['QuestionOption'][]  = $QuestionOption;
 			$count++;
@@ -630,6 +640,25 @@ class FormsController
 		}
 
 		$save = self::$app_controller->delete_this_form ($FormID);
+		
+		if ($save === true) {
+			return array('status' => true, 'text' => 'Deleted');
+		}else{
+			return array('status' => false, 'text' => 'Failed to insert, ' . $save);
+		}
+	}
+
+	/*** delete responses ***/
+	static public function delete_responses ($ResponceID) {
+
+		$findform = self::$app_controller->get_responce_by_subid ($ResponceID);
+
+
+		if (count($findform) == 0) {
+			return array('status'  => false, 'text' => 'Invalid Submission ID');
+		}
+
+		$save = self::$app_controller->delete_response_bysubmitid ($ResponceID);
 		
 		if ($save === true) {
 			return array('status' => true, 'text' => 'Deleted');
@@ -845,7 +874,8 @@ class FormsController
 
 			$resp_q_num 	= $c['q_num'];
 			$resp_responce 	= $c['responce'];
-			$resp_created 	= $c['created'];
+			$responce 		= $c['responce'];
+			$resp_created 	= $c['date_submited'];
 			$prop_id 		= $c['prop_id'];
 
 			
@@ -855,11 +885,11 @@ class FormsController
 				$q_num 		= $q['q_num'];
 				$q_type 	= $q['q_type'];
 				$q_text 	= $q['q_text'];
-				$responce 	= $q['responce'];
+				
 
 				if ($q_type == 'file_upload' OR $q_type == 'signature') {
 					$file 			= $directory  . $resp_responce;
-					$resp_responce  = '<a href="Forms/DownloadFile?file_name=' .$resp_responce. '&prop_id=' .$prop_id. '" >' . $resp_responce . '</a>';
+					$resp_responce  = '<a href="Forms/DownloadFile?file_name=' .$responce. '&prop_id=' .$prop_id. '" >' . $responce . '</a>';
 				}
 
 				if ($q_num === $resp_q_num) {

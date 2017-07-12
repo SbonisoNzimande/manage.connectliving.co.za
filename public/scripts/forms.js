@@ -39,9 +39,6 @@ $(document).ready(function(){
 			q_form += '			<textarea class="form-control" id="QuestionText" name="QuestionText[]" placeholder="Question Text" cols="50" rows="5"></textarea>';
 			q_form += '		</td>';
 			q_form += '		<td>';
-			q_form += '			<input type="text" class="form-control" id="QuestionOptions" name="QuestionOptions[]" placeholder="Question Options" data-role="tagsinput">';
-			q_form += '		</td>';
-			q_form += '		<td>';
 			q_form += '			<select class="form-control" name="QuestionType[]" id="QuestionType" placeholder="Question Type">';
 			q_form += '				<option value="" disabled="true">Question Type</option>';
 			q_form += '				<option value="file_upload">File Upload</option>';
@@ -55,6 +52,11 @@ $(document).ready(function(){
 			q_form += '				<option value="star_rating">Star Rating</option>';
 			q_form += '			</select>';
 			q_form += '		</td>';
+			
+			q_form += '		<td>';
+			q_form += '			<input type="text" class="form-control" id="QuestionOptions" name="QuestionOptions[]" placeholder="Question Options" data-role="tagsinput">';
+			q_form += '		</td>';
+			
 			q_form += '		<td>';
 			q_form += '			<select class="form-control" name="QuestionMandatory[]" id="QuestionMandatory" placeholder="Question Mandatory">';
 			q_form += '				<option value="false" selected="true">No</option>';
@@ -65,7 +67,7 @@ $(document).ready(function(){
 			q_form += '			<button type="button" class="btn btn-default waves-effect" id="removemore">Remove</button>';
 			q_form += '		</td>';
 			q_form += '	 </tr>';
-			$("[id=QuestionOptions]").tagsinput();
+			// $("[id=QuestionOptions]").tagsinput();
 			return q_form;
 
 	}
@@ -78,11 +80,9 @@ $(document).ready(function(){
 			q_form += '			<input type="text" class="form-control" id="QuestionNumber" name="QuestionNumber[]" placeholder="Question Number" value="'+q_num+'" style="width:50px">';
 			q_form += '		</td>';
 			q_form += '		<td>';
-			q_form += '			<input type="text" class="form-control" id="QuestionText" name="QuestionText[]" placeholder="Question Text" value="'+q_text+'">';
+			q_form += '			<textarea class="form-control" id="QuestionText" name="QuestionText[]" placeholder="Question Text" cols="50" rows="5">'+q_text+'</textarea>';
 			q_form += '		</td>';
-			q_form += '		<td>';
-			q_form += '			<input type="text" class="form-control" id="QuestionOptions" name="QuestionOptions[]" placeholder="Question Options" data-role="tagsinput"  value="'+q_options+'">';
-			q_form += '		</td>';
+
 			q_form += '		<td>';
 			q_form += '			<select class="form-control" name="QuestionType[]" id="QuestionType'+count+'" placeholder="Question Type">';
 			q_form += '				<option value="file_upload">File Upload</option>';
@@ -96,6 +96,11 @@ $(document).ready(function(){
 			q_form += '				<option value="star_rating">Star Rating</option>';
 			q_form += '			</select>';
 			q_form += '		</td>';
+
+			q_form += '		<td>';
+			q_form += '			<input type="text" class="form-control" id="QuestionOptions" name="QuestionOptions[]" placeholder="Question Options" data-role="tagsinput"  value="'+q_options+'">';
+			q_form += '		</td>';
+			
 			q_form += '		<td>';
 			q_form += '			<select class="form-control" name="QuestionMandatory[]" id="QuestionMandatory'+count+'"  placeholder="Question Mandatory">';
 			q_form += '				<option value="false">No</option>';
@@ -103,6 +108,8 @@ $(document).ready(function(){
 			q_form += '			</select>';
 			q_form += '		</td>';
 			q_form += '		<td>';
+			q_form += '			<button type="button" class="btn btn-default addmore waves-effect" id="addmore">Add</button>';
+			q_form += '			<button type="button" class="btn btn-default dubplicateq waves-effect" id="dubplicateq">Clone</button>';
 			q_form += '			<button type="button" class="btn btn-default waves-effect" id="removemore">Remove</button>';
 			q_form += '		</td>';
 			q_form += '	 </tr>';
@@ -141,19 +148,55 @@ $(document).ready(function(){
 
 	// event.preventDefault();
 
-	$("[id=addmore]").on( 'click', function(ev) {
-		ev.preventDefault();
-		var tr_data = get_question_form();
+	// $("[id=addmore]").on( 'click', function(ev) {
+	// 	ev.preventDefault();
+	// 	var tr_data = get_question_form();
 
-		console.log('append: ' +tr_data);
+	// 	console.log('append: ' +tr_data);
 
-		$("#questions_table tbody").append(tr_data);
+	// 	$("#questions_table tbody").append(tr_data);
+	// });
+
+	$('#questions_table').delegate( '.addmore', 'click', function () {
+	    var thisRow = $( this ).closest( 'tr' )[0];
+
+	    console.log(thisRow);
+	    $( thisRow ).clone().insertAfter( thisRow ).find( 'input:text, select, textarea' ).val('');
+	    // $("[id^='QuestionOptions']").tagsinput();
 	});
 
-	$("#questions_table_edt").on('click','#addmoreedit',function(ev){
-		var tr_data = get_question_form();
-		$("#questions_table_edt tbody").append(tr_data);
+	$('#questions_table_edt').delegate( '.addmore', 'click', function () {
+	    var thisRow = $( this ).closest( 'tr' )[0];
+
+	    console.log(thisRow);
+	    $( thisRow ).clone().insertAfter( thisRow ).find( 'input:text, select, textarea' ).val('');
+	    // $("[id^='QuestionOptions']").tagsinput();
 	});
+
+	$('#questions_table').delegate( '.dubplicateq', 'click', function () {
+	    var thisRow = $( this ).closest( 'tr' )[0];
+
+	    // console.log($( this ).closest( '#QuestionOptions' ).tagsinput());
+	    $( thisRow ).clone().insertAfter( thisRow );// textboxes
+
+	    // $("[id^='QuestionOptions']").tagsinput();
+	    
+	});
+
+	$('#questions_table_edt').delegate( '.dubplicateq', 'click', function () {
+	    var thisRow = $( this ).closest( 'tr' )[0];
+
+	    console.log($( this ).closest( '#QuestionOptions' ).tagsinput());
+	    $( thisRow ).clone().insertAfter( thisRow );// textboxes
+
+	   // $("[id^='QuestionOptions']").tagsinput();
+	    
+	});
+
+	// $("#questions_table_edt").on('click','#addmoreedit',function(ev){
+	// 	var tr_data = get_question_form();
+	// 	$("#questions_table_edt tbody").append(tr_data);
+	// });
 
 	// $("[id=addmoreedit]").on( 'click', function(ev) {
 	// 	ev.preventDefault();
@@ -180,16 +223,20 @@ $(document).ready(function(){
 
 	});
 
+	$('#DeleteResponceModal').on('show.bs.modal', function(e) {// on modal open
+		var id 			= $(e.relatedTarget).data('submit-id'); 
+		console.log('Deleting Response:', id);
+		var data        = 'FormID='+id;
+		$("#DeleteResponceID").val(id);
+	});
+
 	$('#DuplicateFormModal').on('show.bs.modal', function(e) {// on modal open
 		var id 			= $(e.relatedTarget).data('form-id'); 
 		var data        = 'FormID='+id;
-		$("#DuplicateFormID").val(id);
+		$("#DeleteResponceID").val(id);
 
 		// PropertyName
-
 		get_properties('#PropertyName');
-
-
 	});
 
 	$('#SendFormModal').on('show.bs.modal', function(e) {// on modal open
@@ -207,8 +254,8 @@ $(document).ready(function(){
 		var data        = 'FormID='+id;
 
 		
-		var ffrom = get_question_first_form();
-		$("#questions_table_edt tbody").html(ffrom);
+		// var ffrom = get_question_first_form();
+		// $("#questions_table_edt tbody").html(ffrom);
 		$("#EditFormID").val(id);
 
 		console.log(data);
@@ -220,13 +267,22 @@ $(document).ready(function(){
 			$.each(response, function(key, value){
 		    
 				$("#EditFormForm [name=FormName]").val(value.name);
-				$("#EditFormForm [name=FormInstructions]").val(value.form_instruction);
+				// $("#EditFormForm [id=FormInstructions]").froalaEditor({inlineMode : false});
+
+				if (value.form_instruction) {
+					$("#EditFormForm [id=FormInstructions]").froalaEditor("html.set", value.form_instruction);
+				}else{
+					$("#EditFormForm [id=FormInstructions]").froalaEditor("html.set", '');
+				}
+				    
+				// $("#EditFormForm [name=FormInstructions]").val(value.form_instruction);// 
 
 				// Loop through options
 				$.each(value.questions, function(k, v){
 					var tr_data = get_question_edit_form (v.q_num, v.q_text, v.q_option, v.q_type, count);
 
 					var q_mandatory = '';
+					var q_mandatory2 = '';
 
 					if (v.q_mandatory) {
 						q_mandatory  = v.q_mandatory;
@@ -236,7 +292,7 @@ $(document).ready(function(){
 
 
 					$("#questions_table_edt tbody").append(tr_data);
-					$("[id=QuestionOptions]").tagsinput();
+					// $("[id=QuestionOptions]").tagsinput();
 					$("#QuestionType"+count).val(v.q_type);
 					$("#QuestionMandatory"+count).val(q_mandatory2);
 
@@ -275,6 +331,30 @@ $(document).ready(function(){
 	 	return false;
 	});
 
+	$("#DeleteResponses").on( 'click', function(ev) {
+		ev.preventDefault();
+		var id 			= $("#DeleteResponceID").val();
+		var data        = 'ResponceID='+id;
+
+		$.post('Forms/DeleteResponces', data, function(response){
+
+	 		if(response.status == false){
+	 		    output = '<div class="alert alert-danger"><p>'+response.text+'</p></div>';
+	 		}else if(response.status == true){
+	 		    output = '<div class="alert alert-success"><p>Responses Deleted</p></div>';
+	 		}
+
+	 		$("#delete_responses_err").html(output).fadeIn('slow').delay(3000).fadeOut('fast', function(){ 
+	 	 		$('#form-table2').bootstrapTable('refresh', {
+	 				silent: true
+	 			});
+	 		});
+
+
+	     }, 'json');// End post
+	 	return false;
+	});
+
 
 
 	$("#DuplicateFormFrom").on( 'submit', function(ev) {
@@ -289,7 +369,7 @@ $(document).ready(function(){
 	 		if(response.status == false){
 	 		    output = '<div class="alert alert-danger"><p>'+response.text+'</p></div>';
 	 		}else if(response.status == true){
-	 		    output = '<div class="alert alert-success"><p>Form Saved</p></div>';
+	 		    output = '<div class="alert alert-success"><p>Saved</p></div>';
 	 		}
 
 	 		$("#duplicate_error").html(output).fadeIn('slow').delay(3000).fadeOut('fast', function(){ 
@@ -536,6 +616,7 @@ function get_responses_for_group(index, row) {
 			but 		+= '<a class="btn btn-success btn-xs " rel="tooltip" data-original-title="Link to Resident" data-toggle="modal" data-target="#LinkToResidentModal" data-submit-id="' + v.submit_id + '" aria-expanded="false"><span class="glyphicon glyphicon-resize-small"></span></a>';
 			but 		+= '<a href="Forms/PrintResponces?SubmitID=' + v.submit_id + '" target="_blank" rel="tooltip" data-original-title="Print Response" class="btn btn-warning btn-xs" ><span class="glyphicon glyphicon-print"></span></a>';
 			but 		+= '<a class="btn btn-primary btn-xs " rel="tooltip" data-original-title="Send Form For Approval" data-toggle="modal" data-target="#SendFormModal" data-submit-id="' + v.submit_id + '" aria-expanded="false"><span class="glyphicon glyphicon-envelope"></span></a>';
+			but 		+= '<a class="btn btn-danger btn-xs " rel="tooltip" data-original-title="Delete Responce" data-toggle="modal" data-target="#DeleteResponceModal" data-submit-id="' + v.submit_id + '" aria-expanded="false"><span class="glyphicon glyphicon-trash"></span></a>';
 
 			html 		+=	'<tr>';
 			html 		+=	'	<td>' +v.submit_id+ '</td>';
@@ -561,7 +642,7 @@ function detailFormatter(index, row) {
 
     var html 	 = '';
    	html +=	'<table data-toggle="table"';
-   	html +=	'data-url="http://manage.connectliving.co.za/Forms/GetResponcesByID"';
+   	html +=	'data-url="Forms/GetResponcesByID"';
    	html +=	'data-query-params="form_id='+form_id+'"';
    	html +=	'data-search="true"';
    	html +=	'data-show-refresh="true"';
@@ -615,7 +696,7 @@ function get_responces(form_id){
 	var html = '';
 	
 	 html +='<table data-toggle="table"';
-	 html +='data-url="http://manage.connectliving.co.za/Forms/GetResponcesByID"';
+	 html +='data-url="Forms/GetResponcesByID"';
 	 html +='data-query-params="form_id='+form_id+'"';
 	 html +='data-search="true"';
 	 html +='data-show-refresh="true"';

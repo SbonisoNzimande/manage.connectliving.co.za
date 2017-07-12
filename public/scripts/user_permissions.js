@@ -5,11 +5,11 @@ $(document).ready(function(){
         "tableTools": {
                     "sSwfPath": "../public/libs/jquery/datatables/extensions/TableTools/swf/copy_csv_xls_pdf.swf"
                 },
-	    "ajax": host + 'UserPermissions/GetAllPermissions'
+	    "ajax": 'UserPermissions/GetAllPermissions'
 	});
 
 
-    $.get(host + 'UserPermissions/GetPropertyList', '', function(response){
+    $.get('UserPermissions/GetPropertyList', '', function(response){
         var select_box      = '';
         var select_boxedt   = ''; 
         $.each(response, function(key, value){
@@ -38,7 +38,7 @@ $(document).ready(function(){
 	$("#SavePermission").click(function(e){
 		var form_data 		= $("#SaveForm").serialize();
 
-    	$.post(host + 'UserPermissions/SavePerm', form_data, function(response){
+    	$.post('UserPermissions/SavePerm', form_data, function(response){
     		var output = '';
 
     		if(response.status == true){
@@ -60,7 +60,7 @@ $(document).ready(function(){
 
     window.getPermEdit  = function(id) {
         var data        = 'ID='+id;
-        $.get(host + 'UserPermissions/GetPermissionByID', data, function(response){
+        $.get('UserPermissions/GetPermissionByID', data, function(response){
             var modules = JSON.parse(response.modules);
 
             console.log(typeof(modules));
@@ -78,7 +78,7 @@ $(document).ready(function(){
     $("#EditPermission").click(function(e){
         var form_data       = $("#EditForm").serialize();
 
-        $.post(host + 'UserPermissions/EditPerm', form_data, function(response){
+        $.post('UserPermissions/EditPerm', form_data, function(response){
             var output = '';
 
             if(response.status == true){
@@ -107,7 +107,7 @@ $(document).ready(function(){
         //data to be sent to server
         post_data     = {'ID':ID.trim()};
 
-        $.post(host + 'UserPermissions/DeletePerm', post_data, function(response){
+        $.post('UserPermissions/DeletePerm', post_data, function(response){
 
             var output = '';
             if(response.status == false){

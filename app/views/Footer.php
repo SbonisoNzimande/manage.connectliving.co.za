@@ -21,7 +21,7 @@
   <script src="../public/scripts/jquery.webkitresize.nonifrm.js"></script>
   <script src="../public/scripts/jquery.wysiwyg-resize.nonifrm.js"></script>
 
-  <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
   <script src="../public/scripts/jquery.form.min.js"></script>
 
   <script src="../public/libs/jquery/bootstrap/dist/js/bootstrap.js"></script>
@@ -54,6 +54,8 @@
   <script type="text/javascript" src="../public/bower_components/moment/min/moment.min.js"></script>
   <script type="text/javascript" src="../public/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
 
+  <!-- Include Date Range Picker -->
+  <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
   <script src="../public/scripts/external/jquery.hotkeys.js"></script>
   <script src="../public/scripts/external/google-code-prettify/prettify.js"></script>
 
@@ -109,8 +111,8 @@
   <script src="../public/libs/jquery/printThis/printThis.js"></script>
 
   <!-- Full Callender -->
-  <script src='http://fullcalendar.io/js/fullcalendar-2.1.1/lib/moment.min.js'></script>
-  <script src='http://fullcalendar.io/js/fullcalendar-2.1.1/fullcalendar.min.js'></script>
+  <script src='https://fullcalendar.io/js/fullcalendar-2.1.1/lib/moment.min.js'></script>
+  <script src='https://fullcalendar.io/js/fullcalendar-2.1.1/fullcalendar.min.js'></script>
 
   <!-- Input mask -->
   <script src="../public/scripts/jquery.inputmask.bundle.js"></script>
@@ -126,10 +128,22 @@
   <script src="../public/signature-pad/assets/json2.min.js"></script>
 
   <script src="../public/scripts/global.js"></script>
+  <!-- PDF Viewer -->
+  <script src="../public/bower_components/angular-pdfjs-viewer/dist/angular-pdfjs-viewer.js"></script>
 
   <!-- Angular -->
   <script src="../public/angular/app/app.js"></script>
   <script src="../public/angular/app/controllers/communicateController.js"></script>
+  <script src="../public/angular/app/controllers/jobsController.js"></script>
+
+  <!-- Send Bird -->
+  <script src="../public/SendBird/SendBird.min.js"></script>
+  <script src="../public/SendBird/build/liveChat.SendBird.js"></script>
+  <script>
+  // var appId    = '911FEBB5-2A00-484D-BE22-9B9C4F7868DD';
+  // var channelUrl   = 'sendbird_open_channel_16580_c2b41bec121cf024e56add940f6093b916ee3d1c'; // channel: text_chat_test
+  // liveChat.start (appId, channelUrl);
+  </script>
 
 
   <script src="../public/scripts/login.js"></script>
@@ -179,42 +193,54 @@
   <script src="../public/scripts/manage.js"></script>
   <?php }?>
   <?php if ($data['page']=='forms') { ?>
-  	<script src="../public/scripts/forms.js"></script>
+	<script src="../public/scripts/forms.js"></script>
   <?php }?>
   
   <?php if ($data['page']=='branding') { ?>
-  	<script src="../public/scripts/branding.js"></script>
+	<script src="../public/scripts/branding.js"></script>
   <?php }?>
   
   <?php if ($data['page']=='documentation') { ?>
-  	<script src="../public/scripts/documentation.js"></script>
+	<script src="../public/scripts/documentation.js"></script>
   <?php }?>
   
   <?php if ($data['page']=='contractorsandsuppliers') { ?>
-  	<script src="../public/scripts/contractorsandsuppliers.js"></script>
+	<script src="../public/scripts/contractorsandsuppliers.js"></script>
   <?php }?>
   
   <?php if ($data['page']=='assets') { ?>
-  	<script src="../public/scripts/assets.js"></script>
+	<script src="../public/scripts/assets.js"></script>
   <?php }?>
   <?php if ($data['page']=='trustees') { ?>
-    <script src="../public/scripts/trustees.js"></script>
+	<script src="../public/scripts/trustees.js"></script>
   <?php }?>
 
   <?php if ($data['page']=='jobs') { ?>
-    <script src="../public/scripts/jobs.js"></script>
+	<script src="../public/scripts/jobs.js"></script>
   <?php }?>
 
   <?php if ($data['page']=='all_jobs') { ?>
-    <script src="../public/scripts/all_jobs.js"></script>
+	<script src="../public/scripts/all_jobs.js"></script>
   <?php }?>
 
   <?php if ($data['page']=='emergency_contacts') { ?>
-    <script src="../public/scripts/emergency_contacts.js"></script>
+	<script src="../public/scripts/emergency_contacts.js"></script>
+  <?php }?>
+
+  <?php if ($data['page']=='forgot_password') { ?>
+	<script src="../public/scripts/forgot_password.js"></script>
   <?php }?>
 
   <?php if ($data['page']=='calendar') { ?>
-  	<script src="../public/scripts/calendar.js"></script>
+	<script src="../public/scripts/calendar.js"></script>
+  <?php }?>
+
+  <?php if ($data['page']=='app_registrations') { ?>
+	<script src="../public/scripts/app_registrations.js"></script>
+  <?php }?>
+
+  <?php if ($data['page']=='property_venues') { ?>
+	<script src="../public/scripts/property_venues.js"></script>
   <?php }?>
 
 

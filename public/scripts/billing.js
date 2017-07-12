@@ -9,7 +9,7 @@ $(document).ready(function(){
 						            "sSwfPath": "../public/libs/jquery/datatables/extensions/TableTools/swf/copy_csv_xls_pdf.swf"
 						        },
 						
-	    				"ajax": host + 'Billing/GetAllBilling?' + data,
+	    				"ajax": 'Billing/GetAllBilling?' + data,
 	    				"order": [[ 4, "desc" ]],
 	    				"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 	    				                    if ( aData[5] == "Done" ){
@@ -18,7 +18,7 @@ $(document).ready(function(){
 	    				               }
 					});
 
-	$.get(host + 'Billing/GetAllUsers', '', function(response){
+	$.get('Billing/GetAllUsers', '', function(response){
 		
 		var level_select = '<option></option>';
 		        	
@@ -30,7 +30,7 @@ $(document).ready(function(){
 		$("#UsersListedt").html(level_select);
 	});
 
-	$.get(host + 'Billing/GetAllAdminUsers', '', function(response){
+	$.get('Billing/GetAllAdminUsers', '', function(response){
 		
 		var level_select = '<option></option>';
 		        	
@@ -42,7 +42,7 @@ $(document).ready(function(){
 		// $("#AssignToedt").html(level_select);
 	});
 
-	$.get(host + 'UserPermissions/GetPropertyList', '', function(response){
+	$.get('UserPermissions/GetPropertyList', '', function(response){
 		
 		var level_select = '<option></option>';
 		        	
@@ -79,7 +79,7 @@ $(document).ready(function(){
 		                    };
 
 
-		    $.post(host + 'Billing/MarkDone', post_data, function(response){
+		    $.post('Billing/MarkDone', post_data, function(response){
 
 		        var output = '';
 
@@ -119,7 +119,7 @@ $(document).ready(function(){
 	window.GetEdit  = function(id) {
 		var data 	= 'id='+id; 
 
-		$.get(host + 'Billing/GetBillingInfo', data, function(response){
+		$.get('Billing/GetBillingInfo', data, function(response){
 
 			console.log(response);
 			$("#EditID").val(response.id);
@@ -135,14 +135,14 @@ $(document).ready(function(){
 
 	window.assign_user = function(assinee_id, id) {
 		var data = {'id' : id, 'assinee_id' : assinee_id}
-		$.get(host + 'Billing/AssignUser', data, function(response){
+		$.get('Billing/AssignUser', data, function(response){
 			alert('User assigned');
 		});
 	};
 
 	window.getImage = function(id) {
 		var data = 'id='+id; 
-		$.post(host + 'Billing/GetImage', data, function(response){
+		$.post('Billing/GetImage', data, function(response){
 			
 			$("#image_area").html('<img src="'+response.images+'" style="width:100%;" id="LoadedImage" />');
 				var left  = 0;
@@ -169,7 +169,7 @@ $(document).ready(function(){
 		console.log(form_data);
 
 		$.ajax({
-			url: host + 'Billing/SaveQuery',  
+			url: 'Billing/SaveQuery',  
 			type: 'POST',   
 			data: form_data,
 			processData: false,
@@ -204,7 +204,7 @@ $(document).ready(function(){
 		var form_data = new FormData($('#EditQueryForm')[0]);
 
 		$.ajax({
-			url: host + 'Billing/EditQuery',  
+			url: 'Billing/EditQuery',  
 			type: 'POST',   
 			data: form_data,
 			processData: false,

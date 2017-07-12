@@ -126,12 +126,25 @@ class BrandingController
 				$save 				= self::upload_estate_logo ($company_id, $prop_id, $UploadLogoFile);
 				return json_encode($save);
 				break;
+			case 'SaveMarketingLink':
+				$prop_id 			= self::$app_controller->sanitise_string($request->parameters['prop_id']);
+				$MarketingURL 		= self::$app_controller->sanitise_string($request->parameters['MarketingURL']);
+				$company_id 		= $_SESSION['company_id'];
+
+				$save 				= self::set_up_property_link ($company_id, $prop_id, $MarketingURL);
+				return json_encode($save);
+				break;
 		}
 	}
 
 
 	static public function set_get_image ($prop_id, $company_id){
 		$dir 		= '../companies/' . $company_id .'/properties/' . $prop_id;
+
+		$property 			= self::$app_controller->get_property_byid ($prop_id);
+		$marketing_link 	= $property[0]['marketing_link'];
+
+		// marketing_link
 
 		$cpant 		= $dir.'/logo.jpg';
 		$cdata 		= file_get_contents($cpant);
@@ -150,7 +163,7 @@ class BrandingController
 		}
 	
 
-		return array('company_image' => $cbase64, 'estate_image' => $ebase64);
+		return array('company_image' => $cbase64, 'estate_image' => $ebase64, 'marketing_link' => $marketing_link);
 	}
 
 
@@ -209,6 +222,24 @@ class BrandingController
 
 		if ($upload) {
 			return array('status'  => true, 'text' => 'File uploaded');
+		}else{
+			return array('status'  => false, 'text' => 'File not uploaded: ' .$upload);
+		}
+
+		
+	}
+
+	static public function set_up_property_link ($company_id, $prop_id, $MarketingURL) {
+
+		if (filter_var($MarketingURL, FILTER_VALIDATE_URL) === FALSE) {
+		    return array('status'  => false, 'text' => 'Invalid URL');
+		}
+
+		
+		$save     = self::$app_controller->update_markting_url ($prop_id, $MarketingURL);
+
+		if ($save === true) {
+			return array('status'  => true, 'text' => 'Property Link Updated');
 		}else{
 			return array('status'  => false, 'text' => 'File not uploaded: ' .$upload);
 		}

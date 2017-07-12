@@ -139,11 +139,12 @@
 											<input name="Image" id="Image" type="file" style="visibility:hidden" />
 											<li><a href id="upload_image" onclick="$('#Image').click();"><i class="fa fa-camera"></i></a></li>
 											<li>
-												<select class="form-control selectpicker input-sm" id="QueryType" name="QueryType" data-live-search="true" data-live-search-style="begins" title="Query Type">
-													<option>General</option>
+												<select class="form-control input-sm" id="QueryType" name="QueryType" title="Query Type">
+													<option>Query Type</option>
+													<!-- <option>General</option>
 													<option>Cleaning</option>
 													<option>Electrical</option>
-													<option>Plumbing</option>
+													<option>Plumbing</option> -->
 													
 
 													<!-- <option>General</option>

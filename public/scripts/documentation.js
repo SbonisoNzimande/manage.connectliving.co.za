@@ -31,7 +31,7 @@ $(document).ready(function(){
 	$("#UploadDocumentForm").on( 'submit', function(ev) {
 		ev.preventDefault();
 
-		var form_data = new FormData($('#UploadDocumentForm')[0]);
+		var form_data = new FormData($(this)[0]);
 
 		if($("#UploadLogoFile").length != 0) {
 			var file_data = $("#UploadLogoFile").prop("files")[0];  
@@ -304,7 +304,7 @@ $(document).ready(function(){
 	 		if(response.status == false){
 	 		    output = '<div class="alert alert-danger"><p>'+response.text+'</p></div>';
 	 		}else if(response.status == true){
-	 		    output = '<div class="alert alert-success"><p>Form Saved</p></div>';
+	 		    output = '<div class="alert alert-success"><p>Saved</p></div>';
 	 		}
 
 	 		$("#duplicate_error").html(output).fadeIn('slow').delay(3000).fadeOut('fast', function(){ 

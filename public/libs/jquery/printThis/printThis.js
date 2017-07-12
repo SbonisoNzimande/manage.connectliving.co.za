@@ -1,5 +1,5 @@
 /*
- * printThis v1.5
+ * printThis v1.10.0
  * @desc Printing plug-in for jQuery
  * @author Jason Day
  *
@@ -16,16 +16,21 @@
  * Usage:
  *
  *  $("#mySelector").printThis({
- *      debug: false,               * show the iframe for debugging
- *      importCSS: true,            * import page CSS
- *      importStyle: false,         * import style tags
- *      printContainer: true,       * grab outer container as well as the contents of the selector
- *      loadCSS: "path/to/my.css",  * path to additional css file - us an array [] for multiple
- *      pageTitle: "",              * add title to print page
- *      removeInline: false,        * remove all inline styles from print elements
- *      printDelay: 333,            * variable print delay
- *      header: null,               * prefix to html
- *      formValues: true            * preserve input/form values
+ *      debug: false,               // show the iframe for debugging
+ *      importCSS: true,            // import page CSS
+ *      importStyle: false,         // import style tags
+ *      printContainer: true,       // grab outer container as well as the contents of the selector
+ *      loadCSS: "path/to/my.css",  // path to additional css file - us an array [] for multiple
+ *      pageTitle: "",              // add title to print page
+ *      removeInline: false,        // remove all inline styles from print elements
+ *      printDelay: 333,            // variable print delay
+ *      header: null,               // prefix to html
+ *      footer: null,               // postfix to html
+ *      base: false,                // preserve the BASE tag, or accept a string for the URL
+ *      formValues: true,           // preserve input/form values
+ *      canvas: false,              // copy canvas elements (experimental)
+ *      doctypeString: '...',       // enter a different doctype for older markup
+ *      removeScripts: false        // remove script tags from print content
  *  });
  *
  * Notes:
@@ -33,6 +38,33 @@
  */
 ;
 (function($) {
+
+    function appendContent($el, content) {
+        if (!content) return;
+
+        // Simple test for a jQuery element
+        $el.append(content.jquery ? content.clone() : content);
+    }
+
+    function appendBody($body, $element, opt) {
+        // Clone for safety and convenience
+        var $content = $element.clone();
+
+        if (opt.removeScripts) {
+            $content.find('script').remove();
+        }
+
+        if (opt.printContainer) {
+            // grab $.selector as container
+            $body.append($("<div/>").html($content).html());
+        } else {
+            // otherwise just print interior elements of container
+            $content.each(function() {
+                $body.append($(this).html());
+            });
+        }
+    }
+
     var opt;
     $.fn.printThis = function(options) {
         opt = $.extend({}, $.fn.printThis.defaults, options);
@@ -43,7 +75,7 @@
         if (window.location.hostname !== document.domain && navigator.userAgent.match(/msie/i)) {
             // Ugly IE hacks due to IE not inheriting document.domain from parent
             // checks if document.domain is set by comparing the host name against document.domain
-            var iframeSrc = "javascript:document.write(\"<head><script>document.domain=\\\"" + document.domain + "\\\";</script></head><body></body>\")";
+            var iframeSrc = "javascript:document.write(\"<head><script>document.domain=\\\"" + document.domain + "\\\";</s" + "cript></head><body></body>\")";
             var printI = document.createElement('iframe');
             printI.name = "printIframe";
             printI.id = strFrameName;
@@ -57,7 +89,6 @@
             $frame.appendTo("body");
         }
 
-
         var $iframe = $("#" + strFrameName);
 
         // show frame if in debug mode
@@ -69,12 +100,11 @@
             top: "-600px"
         });
 
-
         // $iframe.ready() and $iframe.load were inconsistent between browsers    
         setTimeout(function() {
 
             // Add doctype to fix the style difference between printing and render
-            function setDocType($iframe,doctype){
+            function setDocType($iframe, doctype){
                 var win, doc;
                 win = $iframe.get(0);
                 win = win.contentWindow || win.contentDocument || win;
@@ -83,38 +113,51 @@
                 doc.write(doctype);
                 doc.close();
             }
-            if(opt.doctypeString){
-                setDocType($iframe,opt.doctypeString);
+
+            if (opt.doctypeString){
+                setDocType($iframe, opt.doctypeString);
             }
 
             var $doc = $iframe.contents(),
                 $head = $doc.find("head"),
-                $body = $doc.find("body");
+                $body = $doc.find("body"),
+                $base = $('base'),
+                baseURL;
 
             // add base tag to ensure elements use the parent domain
-            $head.append('<base href="' + document.location.protocol + '//' + document.location.host + '">');
+            if (opt.base === true && $base.length > 0) {
+                // take the base tag from the original page
+                baseURL = $base.attr('href');
+            } else if (typeof opt.base === 'string') {
+                // An exact base string is provided
+                baseURL = opt.base;
+            } else {
+                // Use the page URL as the base
+                baseURL = document.location.protocol + '//' + document.location.host;
+            }
+
+            $head.append('<base href="' + baseURL + '">');
 
             // import page stylesheets
             if (opt.importCSS) $("link[rel=stylesheet]").each(function() {
                 var href = $(this).attr("href");
                 if (href) {
                     var media = $(this).attr("media") || "all";
-                    $head.append("<link type='text/css' rel='stylesheet' href='" + href + "' media='" + media + "'>")
+                    $head.append("<link type='text/css' rel='stylesheet' href='" + href + "' media='" + media + "'>");
                 }
             });
             
             // import style tags
             if (opt.importStyle) $("style").each(function() {
                 $(this).clone().appendTo($head);
-                //$head.append($(this));
             });
 
-            //add title of the page
+            // add title of the page
             if (opt.pageTitle) $head.append("<title>" + opt.pageTitle + "</title>");
 
             // import additional stylesheet(s)
             if (opt.loadCSS) {
-               if( $.isArray(opt.loadCSS)) {
+               if ($.isArray(opt.loadCSS)) {
                     jQuery.each(opt.loadCSS, function(index, value) {
                        $head.append("<link type='text/css' rel='stylesheet' href='" + this + "'>");
                     });
@@ -124,15 +167,30 @@
             }
 
             // print header
-            if (opt.header) $body.append(opt.header);
+            appendContent($body, opt.header);
 
-            // grab $.selector as container
-            if (opt.printContainer) $body.append($element.outer());
+            if (opt.canvas) {
+                // add canvas data-ids for easy access after cloning.
+                var canvasId = 0;
+                $element.find('canvas').each(function(){
+                    $(this).attr('data-printthis', canvasId++);
+                });
+            }
 
-            // otherwise just print interior elements of container
-            else $element.each(function() {
-                $body.append($(this).html());
-            });
+            appendBody($body, $element, opt);
+
+            if (opt.canvas) {
+                // Re-draw new canvases by referencing the originals
+                $body.find('canvas').each(function(){
+                    var cid = $(this).data('printthis'),
+                        $src = $('[data-printthis="' + cid + '"]');
+
+                    this.getContext('2d').drawImage($src[0], 0, 0);
+
+                    // Remove the markup from the original
+                    $src.removeData('printthis');
+                });
+            }
 
             // capture form/field values
             if (opt.formValues) {
@@ -146,21 +204,21 @@
                             $iframeInput = $doc.find('input[name="' + $name + '"]'),
                             $value = $this.val();
 
-                        //order matters here
+                        // order matters here
                         if (!$checker) {
                             $iframeInput.val($value);
                         } else if ($this.is(':checked')) {
                             if ($this.is(':checkbox')) {
                                 $iframeInput.attr('checked', 'checked');
                             } else if ($this.is(':radio')) {
-                                $doc.find('input[name="' + $name + '"][value=' + $value + ']').attr('checked', 'checked');
+                                $doc.find('input[name="' + $name + '"][value="' + $value + '"]').attr('checked', 'checked');
                             }
                         }
 
                     });
                 }
 
-                //loop through selects
+                // loop through selects
                 var $select = $element.find('select');
                 if ($select.length) {
                     $select.each(function() {
@@ -171,7 +229,7 @@
                     });
                 }
 
-                //loop through textareas
+                // loop through textareas
                 var $textarea = $element.find('textarea');
                 if ($textarea.length) {
                     $textarea.each(function() {
@@ -193,12 +251,15 @@
                 }
             }
 
+            // print "footer"
+            appendContent($body, opt.footer);
+
             setTimeout(function() {
                 if ($iframe.hasClass("MSIE")) {
                     // check if the iframe was created with the ugly hack
                     // and perform another ugly hack out of neccessity
                     window.frames["printIframe"].focus();
-                    $head.append("<script>  window.print(); </script>");
+                    $head.append("<script>  window.print(); </s" + "cript>");
                 } else {
                     // proper method
                     if (document.queryCommandSupported("print")) {
@@ -209,7 +270,7 @@
                     }
                 }
 
-                //remove iframe after print
+                // remove iframe after print
                 if (!opt.debug) {
                     setTimeout(function() {
                         $iframe.remove();
@@ -233,12 +294,11 @@
         removeInline: false,    // remove all inline styles
         printDelay: 333,        // variable print delay
         header: null,           // prefix to html
-        formValues: true,        // preserve input/form values
-        doctypeString: '<!DOCTYPE html>' // html doctype
+        footer: null,           // postfix to html
+        formValues: true,       // preserve input/form values
+        canvas: false,          // copy canvas content (experimental)
+        base: false,            // preserve the BASE tag, or accept a string for the URL
+        doctypeString: '<!DOCTYPE html>', // html doctype
+        removeScripts: false    // remove script tags before appending
     };
-
-    // $.selector container
-    jQuery.fn.outer = function() {
-        return $($("<div></div>").html(this.clone())).html()
-    }
 })(jQuery);

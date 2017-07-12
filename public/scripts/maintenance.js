@@ -9,7 +9,7 @@ $(document).ready(function(){
 						            "sSwfPath": "../public/libs/jquery/datatables/extensions/TableTools/swf/copy_csv_xls_pdf.swf"
 						        },
 						
-	    				"ajax": host + 'Maintenance/GetAllMaintenance?' + data,
+	    				"ajax": 'Maintenance/GetAllMaintenance?' + data,
 	    				"order": [[ 4, "desc" ]],
 	    				"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 	    				                    if ( aData[5] == "Done" ){
@@ -19,7 +19,7 @@ $(document).ready(function(){
 	    				                  
 					});
 
-	$.get(host + 'Maintenance/GetAllUsers', '', function(response){
+	$.get('Maintenance/GetAllUsers', '', function(response){
 		
 		var level_select = '<option></option>';
 		        	
@@ -31,7 +31,7 @@ $(document).ready(function(){
 		$("#UsersListedt").html(level_select);
 	});
 
-	$.get(host + 'Maintenance/GetAllAdminUsers', '', function(response){
+	$.get('Maintenance/GetAllAdminUsers', '', function(response){
 		
 		var level_select = '<option></option>';
 		        	
@@ -43,7 +43,7 @@ $(document).ready(function(){
 		// $("#AssignToedt").html(level_select);
 	});
 
-	$.get(host + 'UserPermissions/GetPropertyList', '', function(response){
+	$.get('UserPermissions/GetPropertyList', '', function(response){
 		
 		var level_select = '<option></option>';
 		        	
@@ -80,7 +80,7 @@ $(document).ready(function(){
 		                    };
 
 
-		    $.post(host + 'Maintenance/MarkDone', post_data, function(response){
+		    $.post('Maintenance/MarkDone', post_data, function(response){
 
 		        var output = '';
 
@@ -121,7 +121,7 @@ $(document).ready(function(){
 	window.GetEdit  = function(id) {
 		var data 	= 'id='+id; 
 
-		$.get(host + 'Maintenance/GetMaintenanceInfo', data, function(response){
+		$.get('Maintenance/GetMaintenanceInfo', data, function(response){
 
 			console.log(response);
 			$("#EditID").val(response.id);
@@ -137,7 +137,7 @@ $(document).ready(function(){
 
 	window.assign_user = function(assinee_id, id) {
 		var data = {'id' : id, 'assinee_id' : assinee_id}
-		$.get(host + 'Maintenance/AssignUser', data, function(response){
+		$.get('Maintenance/AssignUser', data, function(response){
 			alert('User assigned');
 		});
 	};
@@ -146,7 +146,7 @@ $(document).ready(function(){
 		var data = 'id='+id; 
 
 		show_loader($("#image_area"));
-		$.post(host + 'Maintenance/GetImage', data, function(response){
+		$.post('Maintenance/GetImage', data, function(response){
 			
 			$("#image_area").html('<img src="'+response.images+'" style="width:100%;" id="LoadedImage" />');
 			var left  = 0;
@@ -173,7 +173,7 @@ $(document).ready(function(){
 		console.log(form_data);
 
 		$.ajax({
-			url: host + 'Maintenance/SaveQuery',  
+			url: 'Maintenance/SaveQuery',  
 			type: 'POST',   
 			data: form_data,
 			processData: false,
@@ -214,7 +214,7 @@ $(document).ready(function(){
 		var form_data = new FormData($('#EditQueryForm')[0]);
 
 		$.ajax({
-			url: host + 'Maintenance/EditQuery',  
+			url: 'Maintenance/EditQuery',  
 			type: 'POST',   
 			data: form_data,
 			processData: false,

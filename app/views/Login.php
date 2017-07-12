@@ -24,7 +24,12 @@
 					<input type="checkbox"><i class="indigo"></i> Keep me signed in
 				</label>
 			</div>
-			<button md-ink-ripple type="submit" class="md-btn md-raised yellow btn-block p-h-md">Sign in</button>
+			<div class="m-b-md"> 
+				<button md-ink-ripple type="submit" class="md-btn md-raised yellow btn-block p-h-md">Sign in</button>
+			</div>
+			<div class="m-b-md text-center">   
+				<a href="ForgotPassword" class="text-center">Forgot Password</a>
+			</div>
 		</form>
 	</div>
 

@@ -1,0 +1,21 @@
+Posted Variables:
+
+Security Signature:
+
+- posted     = 5e9292567731be6d6de9d79576b1dd6d
+- calculated = c564b6ab9bf7716d603888166cd59a1f
+- result     = FAILURE
+
+
+Using cURL
+
+
+
+Validate response from server:
+
+
+
+Result = 
+
+An error occurred!
+Error = The data received is invalid

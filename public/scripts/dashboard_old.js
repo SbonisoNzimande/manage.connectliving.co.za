@@ -6,7 +6,7 @@ $(document).ready(function(){
 						            "sSwfPath": "../public/libs/jquery/datatables/extensions/TableTools/swf/copy_csv_xls_pdf.swf"
 						        },
 						
-	    				"ajax": host + 'Dashboard/GetBillingList',
+	    				"ajax": 'Dashboard/GetBillingList',
 	    				"order": [[ 2, "desc" ]],
 	    				"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 				                     if ( aData[2] == "done" ){
@@ -21,7 +21,7 @@ $(document).ready(function(){
 						            "sSwfPath": "../public/libs/jquery/datatables/extensions/TableTools/swf/copy_csv_xls_pdf.swf"
 						        },
 						
-	    				"ajax": host + 'Dashboard/GetMaintanaceList',
+	    				"ajax": 'Dashboard/GetMaintanaceList',
 	    				"order": [[ 2, "desc" ]],
 	    				"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 	    				                    if ( aData[2] == "done" ){
@@ -36,7 +36,7 @@ $(document).ready(function(){
 						            "sSwfPath": "../public/libs/jquery/datatables/extensions/TableTools/swf/copy_csv_xls_pdf.swf"
 						        },
 						
-	    				"ajax": host + 'Dashboard/GetMyTaskList',
+	    				"ajax": 'Dashboard/GetMyTaskList',
 	    				"order": [[ 2, "desc" ]],
 	    				"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 	    				                    if ( aData[2] == "done" ){

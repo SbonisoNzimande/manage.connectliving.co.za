@@ -76,6 +76,84 @@
 		</div>
 	</div>
 
+	<div class="modal fade" id="JobQuotesModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" ng-controller="JobsCtrl" >
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">Job Quotes</h4>
+				</div>
+				<div class="modal-body">
+
+					<!-- Left Column -->
+					<div class="col-md-6">
+						<input type="hidden" id="user_id" value="<?=$data['user_id'];?>">
+						<input type="hidden" id="full_name"  value="<?=$data['full_name'];?>">
+						<form class="form-horizontal p-h-xs ng-pristine ng-valid ng-scope" name="UploadQouteForm" id="UploadQouteForm" method="POST" action="Jobs/UploadQoute">
+							<div id="upload_quote_text"></div>
+							<input type="hidden" name="JobID" id="JobID" ng-model="JobID" />
+							<input type="hidden"  ng-model="PropID" />
+
+							<div class="form-group">
+								<label class="col-sm-3 control-label"><i class="fa fa-camera"></i> <strong>Attach a Quote, Invoice or Photo</strong></label>
+								<div class="col-sm-9">
+									<input type="file" name="UploadFile" id="UploadFile" />
+									<div id="progress-div"><div id="progress-bar"></div></div>
+									<div id="targetLayer"></div>
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button class="btn btn-addon btn-info" ><i class="fa fa-upload"></i>Upload Quote</button>
+							</div>
+						</form>
+
+						<div class="panel panel-card" ng-repeat="q in quote_list">
+							<div class="item">
+								<div class="col-sm-12">
+									<div id="progress-div"><div id="progress-bar"></div></div>
+									<div id="targetLayer"></div>
+								</div>
+								<img ng-src="{{q.file_name | trusted}}" class="w-full r-t" ng-show="q.file_extention == 'png' || q.file_extention == 'jpg'">
+
+								<!-- <div class="some-pdf-container" ng-show="q.file_extention == 'pdf'">
+									<pdfjs-viewer ng-src="{{q.file_name | trusted}}"></pdfjs-viewer>
+								</div> -->
+								<iframe ng-show="q.file_extention === 'pdf'" ng-src="{{google_url + q.file_name | trusted}}" frameborder="no" style="width:100%;height:500px"></iframe>
+							</div>
+							<div class="p">
+								<p>
+									<!-- company_id, prop_id, property_name, job_id, quote_id, file_name -->
+									<div class="modal-footer">
+										<button class="btn btn-addon btn-success" id="EmailToTrustees" ng-click="email_trustee(q.company_id, q.prop_id, q.property_name, q.property_address, q.job_id, q.job_description, q.quote_id, q.file_name)"><i class="fa fa-envelope-square" ></i>Email Trustees</button>
+									</div>
+								</p>
+							</div>
+						</div>
+
+
+					</div>
+					<!-- /Left Column -->
+					<!-- Right Column -->
+					<div class="col-md-6">
+						<div id="scroll-wrap100">
+							<ul class="timeline ng-scope" ng-class="{'timeline-center': center}" id="timeline_area">
+								<li><div class="content-chat" id="sb_chat"></div></li>
+							</ul>
+						</div>
+					</div>
+					<!-- /Right Column -->
+
+					<div class="clearfix"></div>
+
+
+
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+	</div>
+
 
 	<div class="modal fade" id="SMSCommentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
@@ -147,6 +225,23 @@
 							</div>
 						</form>
 						<!-- /SMS -->
+
+						<!-- Notificat -->
+						<form class="form-horizontal p-h-xs ng-pristine ng-valid ng-scope" name="NotificationForm" id="NotificationForm" method="POST">
+							<div id="send_notification_query"></div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label"><i class="fa fa-eercast"></i> <strong>Send Notification</strong></label>
+								<div class="col-sm-9">
+									<textarea class="form-control" name="NotificationMessage" rows="5" id="NotificationMessage" placeholder="Type your message here"></textarea>
+
+									<input type="hidden" name="JobID" id="JobID" />
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button class="btn btn-addon btn-info" id="SendNotification" rel="tooltip" data-original-title="Sends a Notification to person who logged the query"><i class="fa fa-send"></i>Send Notification To Resident</button>
+							</div>
+						</form>
+						<!-- /Notificat -->
 						
 					</div>
 					<!-- /Left Column -->
@@ -323,14 +418,6 @@
 							<div class="col-sm-9">
 								<select class="form-control" id="JobStatus" name="JobStatus">
 									<option></option>
-									<option >Quote Request</option>
-									<option >Pre-approved</option>
-									<option >Routine Maintenance</option>
-									<option >Completed & Invoice Received</option>
-									<option >Awaiting Invoice</option>
-									<option >Quote Approval</option>
-									<option >Materials Required</option>
-									
 								</select>
 							</div>
 						</div>
@@ -342,7 +429,7 @@
 							</div>
 						</div>
 
-						<div class="form-group">
+						<!-- <div class="form-group">
 							<label for="JobAssignee" class="col-sm-3 control-label">Job Assignee</label>
 							<div class="col-sm-9">
 								<select class="form-control" id="JobAssignee" name="JobAssignee">
@@ -350,27 +437,39 @@
 								</select>
 							</div>
 						</div>
+					-->
+					<div class="form-group">
+						<label for="JobPriority" class="col-sm-3 control-label">Priority</label>
+						<div class="col-sm-9">
+							<input id="JobPriority" name="JobPriority" class="form-control" class="rating-loading" data-size="sm">
+						</div>
+					</div>
 
-						<div class="form-group">
-							<label for="JobPriority" class="col-sm-3 control-label">Priority</label>
-							<div class="col-sm-9">
-								<input id="JobPriority" name="JobPriority" class="form-control" class="rating-loading" data-size="sm">
+					<div class="form-group">
+						<label for="AuthorisedBy" class="col-sm-3 control-label">Authorised By</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control" id="AuthorisedBy" name="AuthorisedBy">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-sm-3 control-label">Date To Be Completed Date</label>
+						<div class="col-sm-9">
+							<div class='input-group date' id='datepicker1'>
+								<input type='text' class="form-control" name="DateToBeCompleted" id="DateToBeCompleted" />
+								<span class="input-group-addon">
+									<span class="glyphicon glyphicon-calendar"></span>
+								</span>
 							</div>
 						</div>
+					</div>
 
-						<div class="form-group">
-							<label for="AuthorisedBy" class="col-sm-3 control-label">Authorised By</label>
-							<div class="col-sm-9">
-								<input type="text" class="form-control" id="AuthorisedBy" name="AuthorisedBy">
-							</div>
-						</div>
-
-						<div class="form-group">
+						<!-- <div class="form-group">
 							<label for="DateToBeCompleted" class="col-sm-3 control-label">Date To Be Completed Date</label>
 							<div class="col-sm-9">
 								<input type="text" name="DateToBeCompleted" id="DateToBeCompleted" class="form-control" />
 							</div>
-						</div>
+						</div> -->
 						
 						<div class="modal-footer">
 							<button class="btn btn-addon btn-info" type="submit"><i class="fa fa-save"></i>Save</button>
@@ -420,13 +519,7 @@
 							<div class="col-sm-9">
 								<select class="form-control" id="JobStatus" name="JobStatus">
 									<option></option>
-									<option >Quote Request</option>
-									<option >Pre-approved</option>
-									<option >Routine Maintenance</option>
-									<option >Completed & Invoice Received</option>
-									<option >Awaiting Invoice</option>
-									<option >Quote Approval</option>
-									<option >Materials Required</option>
+									
 									
 								</select>
 							</div>
@@ -439,14 +532,14 @@
 							</div>
 						</div>
 
-						<div class="form-group">
+						<!-- <div class="form-group">
 							<label for="JobAssignee" class="col-sm-3 control-label">Job Assignee</label>
 							<div class="col-sm-9">
 								<select class="form-control" id="JobAssignee" name="JobAssignee">
 									<option></option>
 								</select>
 							</div>
-						</div>
+						</div> -->
 
 						<div class="form-group">
 							<label for="JobPriority" class="col-sm-3 control-label">Priority</label>
@@ -463,11 +556,23 @@
 						</div>
 
 						<div class="form-group">
+							<label class="col-sm-3 control-label">Date To Be Completed Date</label>
+							<div class="col-sm-9">
+								<div class='input-group date' id='datepicker2'>
+									<input type='text' class="form-control" name="DateToBeCompleted" id="DateToBeCompleted" />
+									<span class="input-group-addon">
+										<span class="glyphicon glyphicon-calendar"></span>
+									</span>
+								</div>
+							</div>
+						</div>
+
+						<!-- <div class="form-group">
 							<label for="DateToBeCompleted" class="col-sm-3 control-label">Date To Be Completed Date</label>
 							<div class="col-sm-9">
 								<input type="text" name="DateToBeCompleted" id="DateToBeCompleted" class="form-control" />
 							</div>
-						</div>
+						</div> -->
 						
 						<div class="modal-footer">
 							<button class="btn btn-addon btn-info" type="submit"><i class="fa fa-save"></i>Save</button>
@@ -606,15 +711,15 @@
 									<a href="" data-toggle="tab" data-target="#billing" aria-expanded="true">Jobs</a>
 								</li>
 							</ul>
-						
+
 							
 							<div class="panel-body">
-							<div id="toolbar">
-								<div class="form-inline" role="form">
-									<button id="add_new" type="button" class="btn btn-primary" data-target="#CreateJobModal" data-toggle="modal" >Add Job</button>
+								<div id="toolbar">
+									<div class="form-inline" role="form">
+										<button id="add_new" type="button" class="btn btn-primary" data-target="#CreateJobModal" data-toggle="modal" >Add Job</button>
+									</div>
 								</div>
-							</div>
-							<table 
+								<table 
 								data-toggle="table"
 								data-url="Jobs/GetAllJobs"
 								data-query-params	= "prop_id=<?=$data['prop_id'];?>"
@@ -623,15 +728,18 @@
 								data-show-toggle="true"
 								data-show-columns="true"
 								data-toolbar="#toolbar"
+								data-show-pagination-switch="true"
+								data-pagination="true"
+								data-page-list="[10, 25, 50, 100, ALL]"
 								id="table-jobs"
 								class="display table table-striped"
 								data-show-export="true"
 								data-export-options='
-									       		{
-									       			"fileName": "<?=$data['property_name'];?> Job",
-									       			"worksheetName": "<?=$data['property_name'];?> Job",
-									       		}
-										       		'
+								{
+								"fileName": "<?=$data['property_name'];?> Job",
+								"worksheetName": "<?=$data['property_name'];?> Job",
+							}
+							'
 							>
 							<thead>
 								<tr>
@@ -648,14 +756,14 @@
 							</thead>
 						</table>
 					</div>
-						</div>						
-					</div>
-				</div>
+				</div>						
 			</div>
 		</div>
-
 	</div>
-	<!-- /Content -->
+</div>
+
+</div>
+<!-- /Content -->
 
 </div>
 <!-- /content

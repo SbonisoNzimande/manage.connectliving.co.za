@@ -100,12 +100,44 @@
 		</div>
 	</div>
 
+	<div class="modal fade" id="UpdateMarketingLink" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">Save Marketing Link</h4>
+				</div>
+				<div class="modal-body">
+
+					<form class="form-horizontal p-h-xs ng-pristine ng-valid ng-scope" name="UploadEstateLogoForm" id="UpdateMarketingLinkForm" method="POST" action="Branding/UploadEstateLogo">
+						<div id="error_marketin_link"></div>
+						<input type="hidden" name="prop_id" id="PropertyID" value="<?=$data['prop_id'];?>" />
+
+						<div class="form-group">
+							<label class="col-sm-3 control-label">URL</label>
+							<div class="col-sm-9">
+								<input type="text" name="MarketingURL" id="MarketingURL" />
+								
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-addon btn-info" id="SaveMarketLink"><i class="fa fa-upload"></i>Save</button>
+						</div>
+					</form>
+					<div class="clearfix"></div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+	</div>
+
 	<div class="modal fade" id="UploadEstateLogo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h4 class="modal-title" id="myModalLabel">Upload Estate Image</h4>
+					<h4 class="modal-title" id="myModalLabel">Upload Marketing Image</h4>
 				</div>
 				<div class="modal-body">
 
@@ -177,14 +209,20 @@
 									<img src="public/images/connect_living_logo.png" class="w-full r-t" alt="Estate Image" id="imgestate">
 									
 									<div class="card-block">
-									<h3>Estate Image</h3>
+									<h3>Marketing Image</h3>
 										<p>
 											File Name: homeImage.jpg
+										</p>
+										<p>
+											Marketing Link: <span id="marketing_link"></span>
 										</p>
 									</div>
 
 									<div class="card-footer">
 										<a href="#" class="btn btn-success btn-sm card-link" data-title="Edit" data-toggle="modal" data-target="#UploadEstateLogo" data-query-id="206" aria-expanded="false"><span class="mdi-file-file-upload"></span></a>
+										<a href="#" class="btn btn-info btn-sm card-link" data-title="Edit" data-toggle="modal" data-target="#UploadEstateLogo" data-query-id="206" aria-expanded="false"><span class="mdi-file-file-download"></span></a>
+
+										<a href="#" class="btn btn-warning btn-sm card-link" data-title="Update" data-toggle="modal" data-target="#UpdateMarketingLink" data-query-id="206" aria-expanded="false"><span class="mdi-content-link"></span></a>
 									</div>
 								</div>
 							</div>

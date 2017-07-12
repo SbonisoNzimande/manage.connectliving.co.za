@@ -70,7 +70,7 @@ class AllQueriesController
 			case 'GetAllCards':
 				$prop_array 	= self::$app_controller->get_propery_array ($_SESSION['modules']);
 				$company_id 	= $_SESSION['company_id'];
-				$graph 			= self::set_up_cards ($prop_array, $company_id );
+				$graph 			= self::set_up_cards ($prop_array, $company_id);
 
 			return json_encode ($graph);
 			break;
@@ -89,7 +89,8 @@ class AllQueriesController
 				$company_id 	= $_SESSION['company_id'];
 				$Status 		= self::$app_controller->sanitise_string ($request->parameters['Status']);
 				$QueryType 		= self::$app_controller->sanitise_string ($request->parameters['QueryType']);
-				$graph 			= self::set_up_filter_cards ($prop_array, $company_id, $Status, $QueryType);
+				$DateRage 		= self::$app_controller->sanitise_string ($request->parameters['DateRage']);
+				$graph 			= self::set_up_filter_cards ($prop_array, $company_id, $Status, $QueryType, $DateRage);
 
 			return json_encode ($graph);
 			break;
@@ -113,15 +114,13 @@ class AllQueriesController
 			default:
 				if (self::$app_controller->check_if_logged($email)) {
 					
-					$email 			= $_SESSION['email'];
-					$first_name		= $_SESSION['first_name'];
-					$last_name		= $_SESSION['last_name'];
-					$modules		= $_SESSION['modules'];
+					$email 				= $_SESSION['email'];
+					$first_name			= $_SESSION['first_name'];
+					$last_name			= $_SESSION['last_name'];
+					$modules			= $_SESSION['modules'];
 
-
-
-					$this_page 		= 'all_queries';
-					$current 		= 'all_queries';
+					$this_page 			= 'all_queries';
+					$current 			= 'all_queries';
 
 					$aside_menu 		= self::$app_controller->get_aside_menu ($modules, $current);
 					self::$prop_array 	= self::$app_controller->get_propery_array ($modules);
@@ -141,16 +140,16 @@ class AllQueriesController
 
 						// die(var_dump($pass));
 						
-						self::$app_controller->get_header ($pass);
-						self::$app_controller->get_view ('Asidemenu', $pass);
-						self::$app_controller->get_view ('AllQueries', $pass);
-						self::$app_controller->get_footer ($pass );
+						self::$app_controller->get_header 	($pass);
+						self::$app_controller->get_view		('Asidemenu', $pass);
+						self::$app_controller->get_view		('AllQueries', $pass);
+						self::$app_controller->get_footer 	($pass );
 						exit();
 					}else{
-						self::$app_controller->redirect_to ('/Login');
+						self::$app_controller->redirect_to ('Login');
 					}
 				}else{
-					self::$app_controller->redirect_to('Login');
+					self::$app_controller->redirect_to ('Login');
 				}
 				
 			break;
@@ -179,6 +178,12 @@ class AllQueriesController
 			case 'MaterialsRequired':
 				$ID 	 = self::$app_controller->sanitise_string($request->parameters['ID']);
 				$done 	 = self::mark_materials ($ID);
+			return json_encode($done);
+
+
+			case 'MarkInsuranceClaim':
+				$ID 	 = self::$app_controller->sanitise_string($request->parameters['ID']);
+				$done 	 = self::mark_insurance_claim ($ID);
 			return json_encode($done);
 
 			case 'SendSMS': 
@@ -231,6 +236,7 @@ class AllQueriesController
 
 			case 'CreateJob':
 				$JobQueryID 		= self::$app_controller->sanitise_string($request->parameters['JobQueryID']);
+				$UserID 		= self::$app_controller->sanitise_string($request->parameters['UserID']);
 				$JobProperty 		= self::$app_controller->sanitise_string($request->parameters['JobProperty']);
 				$JobSupplier 		= self::$app_controller->sanitise_string($request->parameters['JobSupplier']);
 				$JobUnitNo 			= self::$app_controller->sanitise_string($request->parameters['JobUnitNo']);
@@ -244,6 +250,7 @@ class AllQueriesController
 
 				$save 				= self::submit_job (
 											$JobQueryID,
+											$UserID,
 											$JobProperty,
 											$JobSupplier,
 											$JobUnitNo,
@@ -315,7 +322,7 @@ class AllQueriesController
 	/*** edit query ***/
 	static public function delete_query ($ID) {
 
-		$queryinfo 		= self::$app_controller->get_queries_byid ($ID);
+		$queryinfo 		= self::$app_controller->get_just_queries_byid ($ID);
 
 		if (!is_numeric($ID) OR count($queryinfo) == 0) {
 			return array('status'  => false, 'text' => 'Invalid Query ID');
@@ -430,7 +437,7 @@ class AllQueriesController
 			return array('status'  => false, 'text' => 'Invalid Message');
 		}
 
-		$query = self::$app_controller->get_queries_byid ($QueryID);
+		$query = self::$app_controller->get_query_byid ($QueryID);
 
 		if (count($query) == 0) {
 			return array('status'  => false, 'text' => 'Invalid Query ID');
@@ -456,6 +463,7 @@ class AllQueriesController
 	/*** save comment ***/
 	static public function submit_job (
 									$JobQueryID,
+									$UserID,
 									$JobProperty,
 									$JobSupplier,
 									$JobUnitNo,
@@ -471,6 +479,7 @@ class AllQueriesController
 
 		$save = self::$app_controller->convert_query_to_job (
 									$JobQueryID,
+									$UserID,
 									$JobProperty,
 									$JobSupplier,
 									$JobUnitNo,
@@ -520,6 +529,24 @@ class AllQueriesController
 		$ID 			= self::$app_controller->sanitise_string($ID);
 
 		$save 			= self::$app_controller->mark_query_materials ($ID);
+
+		if ($save === true) {
+			return array('status' => true, 'text' => 'Inserted');
+		}else{
+			return array('status' => false, 'text' => 'Failed to insert, ' . $save);
+		}
+	}
+
+
+	static public function mark_insurance_claim ($ID) {
+
+		if (!is_numeric($ID)) {
+			return array('status'  => false, 'text' => 'Invalid ID');
+		}
+
+		$ID 			= self::$app_controller->sanitise_string($ID);
+
+		$save 			= self::$app_controller->mark_query_insurance_claim ($ID);
 
 		if ($save === true) {
 			return array('status' => true, 'text' => 'Inserted');
@@ -652,9 +679,9 @@ class AllQueriesController
 	static public function set_up_all_queries ($prop_array, $company_id, $query_type) {
 		$return_arr 	=  array();
 
-		// die(var_dump($company_id));
+		// die(var_dump($company_id));//get_all_queries_company ($company_id, $prop_array)
 
-		$properties 	= self::$app_controller->get_all_queries_company ($company_id, $query_type);
+		$properties 	= self::$app_controller->get_all_queries_company ($company_id, $prop_array, $query_type);
 		$admin_user	  	= self::$app_controller->get_all_admin_managers ($company_id);
 
 		foreach ($properties as $p) {
@@ -704,6 +731,7 @@ class AllQueriesController
 				'unitNo' => $p['unitNo'],
 				'queryInput' => $p['queryInput'],
 				'queryDate' => $p['queryDate'],
+				'queryDoneTime' => $p['queryDoneTime'],
 				'status' => $status,
 				'comment' => $comment,
 				'buttons' => $buttons
@@ -799,7 +827,7 @@ class AllQueriesController
 
 	static public function set_up_cards($prop_array, $company_id) {
 		$arry 			= array();
-
+// prop_array
 		$queries 		= self::$app_controller->get_all_queries ($prop_array);
 		$properties 	= self::$app_controller->get_property_list_permission ($prop_array);
 		$admin_user	  	= self::$app_controller->get_all_admin_managers ($company_id);
@@ -862,7 +890,7 @@ class AllQueriesController
 				'query' 	     => $query,
 				'image' 	     => $img,
 				'admin_users' 	 => $admin_user,
-				'full_name' 	 => $full_name,
+				'full_name' 	 => (isset($full_name)) ? $full_name :'Administrator',
 				'date' 	     	 => $date,
 				'open' 			 => $open,
 				'close' 		 => $close
@@ -916,7 +944,7 @@ class AllQueriesController
 			$image 		 = $q['queryImage'];
 			$status 	 = $q['queryStatus'];
 			$comment 	 = $q['queryComments'];
-			$date 		 = self::$app_controller->format_date($q['queryDate']);
+			$date 		 = self::$app_controller->format_date ($q['queryDate']);
 			$full_name   = $q['queryUsername'];
 
 			$prop_det 	 = self::$app_controller->filter_by_value($properties, 'propertyID', $propId);
@@ -958,7 +986,7 @@ class AllQueriesController
 				'property_name'  => $PropertyName,
 				'query' 	     => $query,
 				'image' 	     => $img,
-				'full_name' 	 => $full_name,
+				'full_name' 	 => (isset($full_name)) ? $full_name :'Administrator',
 				'admin_users' 	 => $admin_user,
 				'date' 	     	 => $date,
 				'open' 			 => $open,
@@ -971,14 +999,23 @@ class AllQueriesController
 		return $arry;
 	}
 
-	static public function set_up_filter_cards ($prop_array, $company_id, $status, $query_type) {
+	static public function set_up_filter_cards ($prop_array, $company_id, $status, $query_type, $daterage) {
 		$arry 			= array();
 
-		$queries 		= self::$app_controller->get_filtered_queries ($prop_array, $status, $query_type);
+		$datarr 		= explode('-', $daterage);
+		$date_from  	= trim($datarr[0]);
+		$date_to  		= trim($datarr[1]);
+
+		$queries 		= self::$app_controller->get_filtered_queries ($company_id, $prop_array, $status, $query_type, $date_from, $date_to);
 		$properties 	= self::$app_controller->get_property_list_permission ($prop_array);
 		$admin_user	  	= self::$app_controller->get_all_admin_managers ($company_id);
+	
 
-		$counter 		= 0;
+		$counter 		 = 0;
+		$pending_queries = self::$app_controller->filter_by_value ($queries, 'queryStatus', 'pending');
+		$done_queries 	 = self::$app_controller->filter_by_value ($queries, 'queryStatus', 'done');
+
+		// die(var_dump($pending_queries));
 		foreach ($queries as $q) {
 
 			$id 		 = $q['queryID'];
@@ -994,7 +1031,7 @@ class AllQueriesController
 			$date 		 = self::$app_controller->format_date($q['queryDate']);
 			$full_name   = $q['queryUsername'];
 
-			$prop_det 	 = self::$app_controller->filter_by_value($properties, 'propertyID', $propId);
+			$prop_det 	 = self::$app_controller->filter_by_value ($properties, 'propertyID', $propId);
 			foreach ($prop_det as $p) {
 				$PropertyName = preg_replace('/\s+/', ' ', $p['propertyName']);
 			}
@@ -1033,7 +1070,7 @@ class AllQueriesController
 				'property_name'  => $PropertyName,
 				'query' 	     => $query,
 				'image' 	     => $img,
-				'full_name' 	 => $full_name,
+				'full_name' 	 => (isset($full_name)) ? $full_name :'Administrator',
 				'admin_users' 	 => $admin_user,
 				'date' 	     	 => $date,
 				'open' 			 => $open,
@@ -1045,7 +1082,16 @@ class AllQueriesController
 			
 		}
 
-		return $arry;
+		
+
+		// $arry[]['pending_queries'] = $pending_queries;
+
+		// array_push($arry, array('pending_queries' => $pending_queries));
+
+		// $return_obj 	 = array_merge($arry, array('pending_queries' => $pending_queries, 'done_queries' => $done_queries));
+		// array_push($arry, array('pending_queries' => $pending_queries, 'done_queries' => $done_queries));
+
+		return array('filter_data' => $arry, 'pending_queries' => $pending_queries, 'done_queries' => $done_queries);
 	}
 
 

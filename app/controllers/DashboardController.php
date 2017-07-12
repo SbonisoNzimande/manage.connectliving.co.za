@@ -205,6 +205,7 @@ class DashboardController
 				'query_type'     => $queryType,
 				'id'     		 => $id,
 				'user_name'      => $full_name,
+				'unit_number'      => $unitId,
 				'property_name'  => $PropertyName,
 				'query' 	     => $query,
 				'image' 	     => $img,

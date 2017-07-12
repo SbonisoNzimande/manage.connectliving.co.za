@@ -5,7 +5,7 @@ $(document).ready(function(){
         "tableTools": {
                     "sSwfPath": "../public/libs/jquery/datatables/extensions/TableTools/swf/copy_csv_xls_pdf.swf"
                 },
-	    "ajax": host + 'EmergencyLog/GetLogsTable'
+	    "ajax": 'EmergencyLog/GetLogsTable'
 	});
 
 });

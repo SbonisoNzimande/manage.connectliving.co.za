@@ -1,0 +1,87 @@
+[Thu 1st of Jan 02:00 AM] Testing content
+[Thu 1st of Jan 02:00 AM] Testing content
+[Thu 1st of Jan 02:00 AM] Testing content
+[Thu 1st of Jan 02:00 AM] Testing content
+[2016-09-22 11:33:30] Testing content
+[2016-09-22 11:33:30] Testing content
+[2016-09-22 11:33:31] Testing content
+[2016-09-22 11:33:32] Testing content
+[2017-04-18 14:38:44] Validating Device ID: Array
+[2017-04-18 14:48:42] Device Valid ID: 695 - Sboniao Marcus Nzimande    
+[2017-04-18 15:24:02] Device INvalid Token: 742f9954385d1534
+[2017-04-18 15:24:23] Device INvalid Token: 742f9954385d1534
+[2017-04-18 18:30:21] Device Valid ID: 1283 - Dopesh Bhula
+[2017-04-18 20:36:31] Device Valid ID: 1283 - Dopesh Bhula
+[2017-04-18 23:28:31] Device INvalid Token: bd19b6650dac3f82
+[2017-04-19 08:47:32] Device Valid ID: 1267 - Avril Manduna
+[2017-04-19 09:05:08] Device Valid ID: 1267 - Avril Manduna
+[2017-04-19 09:08:11] Device Valid ID: 817 - Inge van Niekerk
+[2017-04-19 09:28:34] Device Valid ID: 1223 - Candice Landie
+[2017-04-19 09:43:41] Device Valid ID: 1280 - Ruben Naidoo
+[2017-04-19 10:17:28] Device INvalid Token: 85350905-5528-492A-A422-9CD873D09D10
+[2017-04-19 11:09:36] Device Valid ID: 697 - Glynnis Moore
+[2017-04-19 11:10:35] Device Valid ID: 760 - Marco Bruzzo
+[2017-04-19 11:35:05] Device Valid ID: 706 - Martyn van Zyl 
+[2017-04-19 11:56:19] Device Valid ID: 684 - Rob Lodge
+[2017-04-19 12:04:42] Device INvalid Token: B4BFBC4C-0E64-433C-B297-3F11ED0C73D8
+[2017-04-19 12:06:07] Device INvalid Token: B4BFBC4C-0E64-433C-B297-3F11ED0C73D8
+[2017-04-19 12:07:17] Device Valid ID: 1306 - Rob Campbell-Atkins
+[2017-04-19 13:23:29] Device Valid ID: 489 - Chris Mouton
+[2017-04-19 13:53:11] Device Valid ID: 1299 - Tania Fredericks
+[2017-04-19 15:58:44] Device Valid ID: 1128 - Nelisa Zulu
+[2017-04-19 17:05:13] Device Valid ID: 706 - Martyn van Zyl 
+[2017-04-19 20:22:11] Device INvalid Token: 3bf1e2868c266a1b
+[2017-04-19 20:53:42] Device Valid ID: 1138 - JD Kriel
+[2017-04-19 20:56:19] Device Valid ID: 780 - Nkateko Rikhotso
+[2017-04-20 05:24:00] Device Valid ID: 672 - Katisi Jansen Madike
+[2017-04-20 08:03:46] Device Valid ID: 1299 - Tania Fredericks
+[2017-04-20 11:23:55] Device Valid ID: 1193 - Imran Sayed                                 
+[2017-04-20 13:32:01] Device Valid ID: 913 - Sithombo Maqungo  
+[2017-04-20 15:04:38] Device Invalid Token: 91a225e77c978905
+[2017-04-20 18:12:24] Device Invalid Token: 91a225e77c978905
+[2017-04-20 18:35:09] Device Valid ID: 368 - Jacquues Verster
+[2017-04-20 18:35:44] Device Valid ID: 1283 - Dopesh Bhula
+[2017-04-21 08:54:22] Device Valid ID: 390 - Jade Homveld
+[2017-04-21 10:46:39] Device Invalid Token: undefined
+[2017-04-21 10:46:55] Device Invalid Token: undefined
+[2017-04-21 11:31:39] Device Valid ID: 1277 - Natasha Brussow
+[2017-04-21 11:41:12] Device Valid ID: 585 - Yaw Fosu Amoah
+[2017-04-21 12:15:56] Device Invalid Token: 80760da40242309a
+[2017-04-21 13:46:51] Device Valid ID: 386 - Bruce Collins
+[2017-04-21 14:04:57] Device Invalid Token: 85350905-5528-492A-A422-9CD873D09D10
+[2017-04-21 23:05:05] Device Valid ID: 386 - Bruce Collins
+[2017-04-22 06:55:40] Device Valid ID: 496 - Vevek Iyer 
+[2017-04-22 10:50:53] Device Invalid Token: e0ae9c93f1cf212b
+[2017-04-22 10:51:29] Device Invalid Token: e0ae9c93f1cf212b
+[2017-04-22 10:52:45] Device Valid ID: 1307 - Arinao Murivhami
+[2017-04-22 12:05:58] Device Valid ID: 523 - Janice Rule
+[2017-04-22 12:47:17] Device Valid ID: 1298 - Dean Hewitt
+[2017-04-22 15:04:07] Device Invalid Token: 5980be0faf6f3038
+[2017-04-22 15:35:20] Device Valid ID: 676 - Phindi Maz
+[2017-04-22 17:49:55] Device Valid ID: 1150 - Sailesh Bhika
+[2017-04-23 07:55:58] Device Invalid Token: 603d97406af864e7
+[2017-04-23 07:56:41] Device Invalid Token: 603d97406af864e7
+[2017-04-23 07:57:07] Device Valid ID: 1308 - Tshimangadzo Rambau
+[2017-04-23 10:29:14] Device Valid ID: 739 - Kuben Naidoo
+[2017-04-23 11:20:07] Device Invalid Token: 8F974D3F-0257-426C-B124-485D632C2913
+[2017-04-23 12:20:01] Device Valid ID: 1283 - Dopesh Bhula
+[2017-04-23 12:24:45] Device Invalid Token: 5567bca5353ed3ab
+[2017-04-23 12:45:28] Device Valid ID: 1196 - Jane Rosen                              
+[2017-04-23 13:08:25] Device Valid ID: 1142 - Leonore Ramathoka
+[2017-04-24 07:05:42] Device Valid ID: 1235 - Katie Kearns 
+[2017-04-24 07:28:18] Device Valid ID: 1081 - Starrene and Donald Stuart
+[2017-04-24 09:51:54] Device Valid ID: 1137 - Nazeer Kadir
+[2017-04-24 11:45:23] Device Valid ID: 1081 - Starrene and Donald Stuart
+[2017-04-24 11:46:54] Device Valid ID: 1252 - Anabela Barreiro
+[2017-04-24 12:29:09] Device Invalid Token: 734173223efd119f
+[2017-04-24 12:30:35] Device Invalid Token: 734173223efd119f
+[2017-04-24 12:31:03] Device Valid ID: 1309 - Faseeha Test
+[2017-04-24 13:14:44] Device Valid ID: 1196 - Jane Rosen                              
+[2017-04-24 14:45:04] Device Invalid Token: 3bf1e2868c266a1b
+[2017-04-24 17:11:58] Device Valid ID: 456 - Brett Jackson
+[2017-04-24 17:33:06] Device Valid ID: 1273 - Bonnita-Ann Berths Bookless
+[2017-04-25 08:52:07] Device Valid ID: 1309 - Faseeha Test
+[2017-04-25 08:52:32] Device Valid ID: 874 - Mzwandile Thwala      
+[2017-04-25 09:17:38] Device Valid ID: 1309 - Faseeha Test
+[2017-04-25 09:20:24] Device Valid ID: 1309 - Faseeha Test
+[2017-04-25 10:26:10] Device Valid ID: 391 - Graeme Spring

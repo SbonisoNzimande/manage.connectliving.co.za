@@ -3,9 +3,25 @@ $(document).ready(function(){
 	var prop_name 	= $('#prop_name').val();
 	var data 	 	='prop_id=' + prop_id + '&prop_name=' + prop_name;
 
+	var page_name 	= location.pathname.split('/').slice(-1)[0];
+
+	var appId 		= '911FEBB5-2A00-484D-BE22-9B9C4F7868DD';
+	// var channelUrl 	= 'sendbird_open_channel_16580_c2b41bec121cf024e56add940f6093b916ee3d1c'; // channel: text_chat_test
+
 	window.show_loader  = function(div) {
 	    var loader      = '<div class="loading"> <div class="loading-bar"></div> <div class="loading-bar"></div> <div class="loading-bar"></div> <div class="loading-bar"></div> </div>';
 	     div.html(loader);
+	};
+
+
+	get_date_picker($('#datepicker1'));
+	get_date_picker($('#datepicker2'));
+
+	
+	function get_date_picker (d) {
+		d.datetimepicker({
+			format:'YYYY-MM-DD'
+		});
 	};
 
 
@@ -25,7 +41,7 @@ $(document).ready(function(){
 	//     				                    }
 	//     				               }
 	// 				});
-
+	get_suppliers ('#EditJobModal [id="JobSupplier"]', prop_id);
 
 	$('#PrintJobModal').on('show.bs.modal', function(e) {// on modal open
 		var job_id 	= $(e.relatedTarget).data('job-id'); 
@@ -57,7 +73,7 @@ $(document).ready(function(){
 	window.assign_billing_user = function(assinee_id, id) {
 
 		var data = {'id' : id, 'assinee_id' : assinee_id}
-		$.get(host + 'Billing/AssignUser', data, function(response){
+		$.get('Billing/AssignUser', data, function(response){
 			$("#" +id).closest('tr').addClass('amber-200').fadeIn('slow');
 		});
 	};
@@ -65,7 +81,7 @@ $(document).ready(function(){
 	window.assign_maintanance_user = function(assinee_id, id) {
 
 		var data = {'id' : id, 'assinee_id' : assinee_id}
-		$.get(host + 'Queries/AssignUser', data, function(response){
+		$.get('Queries/AssignUser', data, function(response){
 
 			$("#" +id).closest('tr').addClass('amber-200').fadeIn('slow');
 		});
@@ -213,7 +229,7 @@ $(document).ready(function(){
 	window.GetBillingEdit  = function(id) {
 		var data 	= 'id='+id; 
 
-		$.get(host + 'Billing/GetBillingInfo', data, function(response){
+		$.get('Billing/GetBillingInfo', data, function(response){
 
 			console.log(response);
 			$("#EditID").val(response.id);
@@ -229,7 +245,7 @@ $(document).ready(function(){
 	window.GetEdit  = function(id) {
 		var data 	= 'id='+id; 
 
-		$.get(host + 'Queries/GetQueriesInfo', data, function(response){
+		$.get('Queries/GetQueriesInfo', data, function(response){
 
 			console.log(response);
 			$("#EditID").val(response.queryID);
@@ -255,7 +271,7 @@ $(document).ready(function(){
 		console.log(form_data);
 
 		$.ajax({
-			url: host + 'Billing/SaveQuery',  
+			url: 'Billing/SaveQuery',  
 			type: 'POST',   
 			data: form_data,
 			processData: false,
@@ -291,7 +307,7 @@ $(document).ready(function(){
 		var form_data = new FormData($('#EditQueryForm')[0]);
 
 		$.ajax({
-			url: host + 'Billing/EditQuery',  
+			url: 'Billing/EditQuery',  
 			type: 'POST',   
 			data: form_data,
 			processData: false,
@@ -325,7 +341,7 @@ $(document).ready(function(){
 
 	window.getImage = function(id) {
 		var data = 'id='+id; 
-		$.post(host + 'Billing/GetImage', data, function(response){
+		$.post('Billing/GetImage', data, function(response){
 			
 			$("#image_area").html('<img src="'+response.images+'" style="width:100%;" id="LoadedImage" />');
 				var left  = 0;
@@ -391,7 +407,7 @@ $(document).ready(function(){
 	}
 	
 
-	$.get(host + 'Billing/GetAllAdminUsers', '', function(response){
+	$.get('Billing/GetAllAdminUsers', '', function(response){
 		
 		var level_select = '<option></option>';
 		        	
@@ -399,12 +415,13 @@ $(document).ready(function(){
 			level_select += '<option value="' +value.user_id+ '">' +value.full_name+ '</option>';
 		});
 
-		$("#AssignTo").html(level_select);
+		$('#CreateJobForm [name= "JobAssignee"]').html(level_select);
+		$('#UpdateJobForm [name= "JobAssignee"]').html(level_select);
 		// $("#AssignToedt").html(level_select);
 	});
 
 
-	$.get(host + 'Billing/GetAllUsers', '', function(response){
+	$.get('Billing/GetAllUsers', '', function(response){
 		
 		var level_select = '<option></option>';
 		        	
@@ -414,6 +431,33 @@ $(document).ready(function(){
 
 		$("#UsersList").html(level_select);
 		$("#UsersListedt").html(level_select);
+	});
+
+
+	$("#NotificationForm").on( 'submit', function(ev) {
+		ev.preventDefault();
+
+		var form_data = $("#NotificationForm").serialize();
+		var id 		  = $("#JobID").val();
+		
+		
+
+	 	$.post('AllJobs/SendNotification', form_data, function(response){
+
+	 		if(response.status == false){
+	 		    output = '<div class="alert alert-danger"><p>'+response.text+'</p></div>';
+	 		}else if(response.status == true){
+	 		    output = '<div class="alert alert-success"><p>'+response.text+'</p></div>';
+	 		}
+
+	 		$("#send_notification_query").html(output).fadeIn('slow').delay(3000).fadeOut('fast', function(){ 
+	 	 		get_timeline(id);
+	 		});
+
+
+	     }, 'json');// End post
+	 	return false;
+
 	});
 
 
@@ -516,7 +560,8 @@ $(document).ready(function(){
 		       	card += '			<a href="#" class="btn btn-success btn-xs" data-title="Edit" data-toggle="modal" data-target="#MarkDoneModal" rel="tooltip" data-original-title="Mark Query As Done" data-job-id="'+value.job_id+'" aria-expanded="false"><span class="glyphicon glyphicon-ok"></span></a>';	
 		       	};
 		       	
-		       	card += '			<a href="#" class="btn btn-warning btn-xs" data-title="Email" data-toggle="modal" rel="tooltip" data-original-title="Email Supplier" data-target="#EmailSupplierModal" data-job-id="'+value.job_id+'" data-supplier-id="'+value.supplier_id+'" data-supplier-name="'+value.supplier+'" data-supplier-phone-number="'+value.supplier_phone_number+'" data-supplier-email="'+value.supplier_email+'" data-supplier-unit-number="'+value.unit_number+'" data-property-name="'+value.property_name+'" data-priority="'+value.priority+'" data-description="'+value.description+'" data-authorised-by="'+value.authorised_by+'" data-date-tobe-completed="'+value.date_tobe_completed+'" data-job-status="'+value.job_status+'" aria-expanded="false"><span class="fa fa-envelope"></span></a>';
+		       	card += '			<a href="#" class="btn btn-warning btn-xs" data-title="Email" data-toggle="modal" rel="tooltip" data-original-title="Email Supplier" data-target="#EmailSupplierModal" data-job-id="'+value.job_id+'" data-prop-id="'+value.prop_id+'" data-supplier-id="'+value.supplier_id+'" data-supplier-name="'+value.supplier+'" data-supplier-phone-number="'+value.supplier_phone_number+'" data-supplier-email="'+value.supplier_email+'" data-supplier-unit-number="'+value.unit_number+'" data-property-name="'+value.property_name+'" data-priority="'+value.priority+'" data-description="'+value.description+'" data-authorised-by="'+value.authorised_by+'" data-date-tobe-completed="'+value.date_tobe_completed+'" data-job-status="'+value.job_status+'" aria-expanded="false"><span class="fa fa-envelope"></span></a>';
+		       	card += '			<a href="#" class="btn btn-info btn-xs" data-title="Quote" data-toggle="modal" rel="tooltip" data-original-title="View Quotes" data-target="#JobQuotesModal" data-job-id="'+value.job_id+'" data-prop-id="'+value.prop_id+'" data-supplier-id="'+value.supplier_id+'" data-supplier-name="'+value.supplier+'" data-supplier-phone-number="'+value.supplier_phone_number+'" data-supplier-email="'+value.supplier_email+'" data-supplier-unit-number="'+value.unit_number+'" data-property-name="'+value.property_name+'" data-priority="'+value.priority+'" data-description="'+value.description+'" data-authorised-by="'+value.authorised_by+'" data-date-tobe-completed="'+value.date_tobe_completed+'" data-job-status="'+value.job_status+'" aria-expanded="false"><span class="fa fa-paperclip"></span></a>';
 
 		        card += '			<a href="#" class="btn btn-default btn-xs" data-title="Edit" data-toggle="modal" rel="tooltip" data-original-title="Comment & Communicate" data-target="#SMSCommentModal" data-job-id="'+value.job_id+'"  aria-expanded="false"><span class="fa fa-comment-o"></span></a>';
 				card += '			<a href="#" class="btn btn-primary btn-xs" data-title="Print" data-toggle="modal" rel="tooltip" data-original-title="Print Job" data-target="#PrintJobModal" data-job-id="'+value.job_id+'"  aria-expanded="false"><span class="fa fa-print"></span></a>';
@@ -567,7 +612,298 @@ $(document).ready(function(){
 
 	});
 
+	// Voting page
+	if (page_name === 'JobQuotesTrusteeVoting') {
+		$('#sb_chat').html('');
+
+
+		var job_id 		= $('#job_id').val();
+
+		var user_id   	= $('#user_id').val();
+		var full_name 	= $('#full_name').val();
+
+		// $('#UploadQouteForm [name=JobID]').val(job_id);
+
+		
+		// user_id
+		// full_name
+
+		var appId 			= '911FEBB5-2A00-484D-BE22-9B9C4F7868DD';
+		var coverUrl 		= '';
+		var userId 			= full_name;
+		var channel_name 	= 'sendbird_open_channel_' + prop_id + '_' + job_id;
+
+		var udata 			= { 
+								'job_id': job_id, 
+								'prop_id': prop_id
+							   }
+
+		// initialize
+		var sb = new SendBird({
+		    appId: appId
+		});
+
+		sb.disconnect(function(){
+		    // You are disconnected from SendBird.
+		});
+
+		sb.connect(user_id, function(chat_user, error) {
+			if (error) {
+			    console.error(error);
+			    return;
+			}
+
+			// Check if channel exists
+
+
+			$.get('Jobs/GetChatURL', udata, function(response){
+				
+				if (response.status == false) {// url doesnot exists create new channel 
+					sb.OpenChannel.createChannel(channel_name, '', '', function(createdChannel, error) {
+					    if (error) {
+					        console.error(error);
+					        return;
+					    }
+
+					    sb.updateCurrentUserInfo(full_name, '', function(response, error) {
+					      // console.log(response, error);
+					    });
+
+					    // onCreated
+					    console.log (createdChannel.url);
+					    var channelUrl 	= createdChannel.url; // channel: text_chat_test
+
+					    var cdata 			= { 
+					    						'job_id': job_id, 
+					    						'chat_url': channelUrl
+					    					   }
+
+
+				    	$.post('Jobs/RecordJobQuote', cdata, function(response){
+
+				     		if(response.status == true){
+				     			console.log('Successful', response.text);
+				     			start_lie_chat (appId, channelUrl);
+				     			$( ".user-id" ).children("input").attr('value', user_id);
+				     			$( ".nickname" ).children("input").attr('value', full_name);
+
+				     			$('#sb_chat > div > div.login-board > div.btn').removeClass("disabled");
+				     			$('#sb_chat > div > div.login-board > div.btn').trigger('click');
+
+				     		}else if(response.status == true){
+				     		    // output = '<div class="alert alert-success"><p>Form Deleted</p></div>';
+				     		    console.log('Insert Error', response.text);
+				     		}
+
+			
+
+				         }, 'json');// End post
+					    
+					});
+				}else{
+					console.log('response: ', response);
+					var channelUrl = response.chat_url;
+
+					start_lie_chat (appId, channelUrl);
+					$( ".user-id" ).children("input").attr('value', user_id);
+					$( ".nickname" ).children("input").attr('value', full_name);
+					// $( ".chat-board").children(".btn").prop("disabled", false);
+
+					$('#sb_chat > div > div.login-board > div.btn').removeClass("disabled");
+					$('#sb_chat > div > div.login-board > div.btn').trigger('click');
+
+					
+					// sb.OpenChannel.getChannel(channelUrl, function(channel, error) {
+					//     if(error) {
+					//         console.error('get channel', error);
+					//         return;
+					//     }
+
+					//     // Successfully fetched the channel.
+					//     console.log('get channel', channel);
+					// });
+				}
+
+
+				
+				
+				
+			});
+
+			// start_lie_chat (appId, channelUrl);
+			// $( ".user-id" ).children("input").attr('value', user_id);
+			// $( ".nickname" ).children("input").attr('value', full_name);
+
+			console.log(chat_user);
+		});
+
+		//
+		
+		
+
+		
+
+		
+
+		console.log('job id', user_id);
+
+		
+		// liveChat.start (appId, channelUrl);
+	}
+
+	$('#JobQuotesModal').on('show.bs.modal', function(e) {// on modal open
+		// imageresource
+
+		$('#sb_chat').html('');
+
+
+
+
+
+		var job_id 		= $(e.relatedTarget).data('job-id');
+
+		var user_id   	= $('#user_id').val();
+		var full_name 	= $('#full_name').val();
+
+		$('#UploadQouteForm [name=JobID]').val(job_id);
+
+		
+		// user_id
+		// full_name
+
+		var appId 			= '911FEBB5-2A00-484D-BE22-9B9C4F7868DD';
+		var coverUrl 		= '';
+		var userId 			= full_name;
+		var channel_name 	= 'sendbird_open_channel_' + prop_id + '_' + job_id;
+
+		var udata 			= { 
+								'job_id': job_id, 
+								'prop_id': prop_id
+							   }
+
+		// initialize
+		var sb = new SendBird({
+		    appId: appId
+		});
+
+		sb.disconnect(function(){
+		    // You are disconnected from SendBird.
+		});
+
+		sb.connect(user_id, function(chat_user, error) {
+			if (error) {
+			    console.error(error);
+			    return;
+			}
+
+			// Check if channel exists
+
+
+			$.get('Jobs/GetChatURL', udata, function(response){
+				
+				if (response.status == false) {// url doesnot exists create new channel 
+					sb.OpenChannel.createChannel(channel_name, '', '', function(createdChannel, error) {
+					    if (error) {
+					        console.error(error);
+					        return;
+					    }
+
+					    sb.updateCurrentUserInfo(full_name, '', function(response, error) {
+					      // console.log(response, error);
+					    });
+
+					    // onCreated
+					    console.log (createdChannel.url);
+					    var channelUrl 	= createdChannel.url; // channel: text_chat_test
+
+					    var cdata 			= { 
+					    						'job_id': job_id, 
+					    						'chat_url': channelUrl
+					    					   }
+
+
+				    	$.post('Jobs/RecordJobQuote', cdata, function(response){
+
+				     		if(response.status == true){
+				     			console.log('Successful', response.text);
+				     			start_lie_chat (appId, channelUrl);
+				     			$( ".user-id" ).children("input").attr('value', user_id);
+				     			$( ".nickname" ).children("input").attr('value', full_name);
+
+				     			$('#sb_chat > div > div.login-board > div.btn').removeClass("disabled");
+				     			$('#sb_chat > div > div.login-board > div.btn').trigger('click');
+
+				     		}else if(response.status == true){
+				     		    // output = '<div class="alert alert-success"><p>Form Deleted</p></div>';
+				     		    console.log('Insert Error', response.text);
+				     		}
+
+			
+
+				         }, 'json');// End post
+					    
+					});
+				}else{
+					console.log('response: ', response);
+					var channelUrl = response.chat_url;
+
+					start_lie_chat (appId, channelUrl);
+					$( ".user-id" ).children("input").attr('value', user_id);
+					$( ".nickname" ).children("input").attr('value', full_name);
+					// $( ".chat-board").children(".btn").prop("disabled", false);
+
+					$('#sb_chat > div > div.login-board > div.btn').removeClass("disabled");
+					$('#sb_chat > div > div.login-board > div.btn').trigger('click');
+
+					
+					// sb.OpenChannel.getChannel(channelUrl, function(channel, error) {
+					//     if(error) {
+					//         console.error('get channel', error);
+					//         return;
+					//     }
+
+					//     // Successfully fetched the channel.
+					//     console.log('get channel', channel);
+					// });
+				}
+
+
+				
+				
+				
+			});
+
+			// start_lie_chat (appId, channelUrl);
+			// $( ".user-id" ).children("input").attr('value', user_id);
+			// $( ".nickname" ).children("input").attr('value', full_name);
+
+			console.log(chat_user);
+		});
+
+		//
+		
+		
+
+		
+
+		
+
+		console.log('job id', user_id);
+
+		
+		// liveChat.start (appId, channelUrl);
+
+
+
+	});
+
+	function start_lie_chat(a_id, c_url){
+		liveChat.start (a_id, c_url);
+	}
+
 	get_job_status_enums ('#FilterForm [name=JobStatus]', 'nothing');
+	get_job_status_enums ('#CreateJobForm [name=JobStatus]', 'nothing');
+	get_job_status_enums ('#UpdateJobForm [name=JobStatus]', 'nothing');
 
 	$('#MarkModal').on('show.bs.modal', function(e) {// on modal open
 		// imageresource
@@ -878,6 +1214,67 @@ $(document).ready(function(){
 	 	return false;
 
 	});
+
+	console.log('LOCATION:', location.pathname.split('/').slice(-1)[0]);
+
+
+
+	$("#UploadQouteForm").on( 'submit', function(ev) {
+		ev.preventDefault();
+
+		// var form_data = $("#CommentSMSForm").serialize();
+
+		var form_data = new FormData($('#UploadQouteForm')[0]);
+
+		if($("#UploadQouteForm [id=UploadFile]").length != 0) {
+			var file_data = $("#UploadQouteForm [id=UploadFile]").prop("files")[0];  
+			form_data.append("file", file_data);
+		}
+
+		var id 		  = $("#UploadQouteForm [name=jobID]").val();
+
+		console.log(file_data);
+
+		$(this).ajaxSubmit({ 
+			target:   '#targetLayer', 
+			beforeSubmit: function() {
+				$("#progress-bar").width('0%');
+			},
+			uploadProgress: function (event, position, total, percentComplete){	
+				$("#progress-bar").width(percentComplete + '%');
+				$("#progress-bar").html('<div id="progress-status">' + percentComplete +' %</div>')
+			},
+			success:function (response){
+				console.log(response);
+                var output = '';
+                if(response.status == true){
+                	output = '<div class="alert alert-success">'+response.text+'</p></div>';
+
+                }else{
+                	$(".progress").hide();
+                	$("html, body").animate({ scrollTop: 0 }, "slow");
+                	output = '<div class="alert alert-danger"><p>'+response.text+'</p></div>';
+                }
+
+                var scope = angular.element('#JobQuotesModal').scope();
+
+                $("#upload_quote_text").html(output).fadeIn('slow').delay(3000).fadeOut('fast', function(){
+		          	scope.get_job_quotes(scope.job_id, scope.prop_id);
+		          	$("#progress-bar").width('0%');
+		         });
+			},
+			resetForm: true 
+		}); 
+		return false; 
+
+
+	});
+
+	// function email_trustee (company_id, prop_id, job_id, quote_id, file_name) {
+
+	// 	console.log (company_id, prop_id, job_id, quote_id, file_name);
+
+	// }
 
 
 	$("#CommentForm").on( 'submit', function(ev) {

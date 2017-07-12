@@ -54,7 +54,36 @@
 		<!-- / -->
 	</div>
 	<!-- /Content Navbar -->
-
+	<div class="modal fade" id="DuplicateContactModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">Duplicate Contact</h4>
+				</div>
+				<form class="form-horizontal p-h-xs ng-pristine ng-valid ng-scope" name="DuplicateContactForm" id="DuplicateContactForm" method="POST">
+					<div class="modal-body">
+						<div id="duplicate_error"></div>
+						<input type="hidden" id="ContactID" name="ContactID" />
+						<div class="form-group">
+							<label class="col-sm-3 control-label">Property Name</label>
+							<div class="col-sm-9">
+								<select class="form-control" name="PropertyName" id="PropertyName">	
+								</select>
+							</div>
+						</div>
+						
+						<div class="clearfix"></div>
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-addon btn-info" type="submit"><i class="fa fa-save"></i>Save</button>
+					</div>
+				</form>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+	</div>
 
 	<div class="modal fade" id="CreateContactModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		<div class="modal-dialog">

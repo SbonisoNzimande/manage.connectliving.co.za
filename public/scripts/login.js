@@ -10,6 +10,8 @@ $(document).ready(function(){
          div.html(loader);
     };
 
+    $("[rel='tooltip']").tooltip();
+
 	// Login Button
 	$("#LoginForm").submit(function(e){
 		e.preventDefault();

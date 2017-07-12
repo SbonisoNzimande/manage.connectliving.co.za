@@ -58,7 +58,7 @@
 	<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="PrintJobModal" class="modal fade">
 		<div class="modal-dialog">
 			<div class="modal-content">
-				<form name="EmailForm" id="EmailForm">
+				<form name="PrintForm" id="PrintForm">
 					<div class="modal-header">
 						<button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
 						<h4 class="modal-title">Print Job</h4>
@@ -74,6 +74,40 @@
 				</form>
 			</div>
 		</div>
+	</div>
+
+
+	<div class="modal fade" id="MarkModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form name="MarkJobForm" id="MarkJobForm">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="myModalLabel">Mark Job</h4>
+						<input type="hidden" name="jobID" id="jobID" />
+					</div>
+					<div class="modal-body">
+						<div id="mark_job_err"></div>
+						<div class="form-group">
+							<label for="JobAssignee" class="col-sm-3 control-label">Mark Job As</label>
+							<div class="col-sm-9">
+								<select class="form-control" id="MarkJobAs" name="MarkJobAs">
+									<option></option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<br />
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="submit" class="btn btn-primary" id="MarkJobButton">Mark</button>
+					</div>
+				</form>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
 	</div>
 
 
@@ -147,6 +181,23 @@
 							</div>
 						</form>
 						<!-- /SMS -->
+
+						<!-- Notificat -->
+						<form class="form-horizontal p-h-xs ng-pristine ng-valid ng-scope" name="NotificationForm" id="NotificationForm" method="POST">
+							<div id="send_notification_query"></div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label"><i class="fa fa-eercast"></i> <strong>Send Notification</strong></label>
+								<div class="col-sm-9">
+									<textarea class="form-control" name="NotificationMessage" rows="5" id="NotificationMessage" placeholder="Type your message here"></textarea>
+
+									<input type="hidden" name="JobID" id="JobID" />
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button class="btn btn-addon btn-info" id="SendNotification" rel="tooltip" data-original-title="Sends a Notification to person who logged the query"><i class="fa fa-send"></i>Send Notification To Resident</button>
+							</div>
+						</form>
+						<!-- /Notificat -->
 						
 					</div>
 					<!-- /Left Column -->
@@ -323,13 +374,7 @@
 							<div class="col-sm-9">
 								<select class="form-control" id="JobStatus" name="JobStatus">
 									<option></option>
-									<option >Quote Request</option>
-									<option >Pre-approved</option>
-									<option >Routine Maintenance</option>
-									<option >Completed & Invoice Received</option>
-									<option >Awaiting Invoice</option>
-									<option >Quote Approval</option>
-									<option >Materials Required</option>
+									
 									
 								</select>
 							</div>
@@ -342,7 +387,7 @@
 							</div>
 						</div>
 
-						<div class="form-group">
+						<!-- <div class="form-group">
 							<label for="JobAssignee" class="col-sm-3 control-label">Job Assignee</label>
 							<div class="col-sm-9">
 								<select class="form-control" id="JobAssignee" name="JobAssignee">
@@ -350,7 +395,7 @@
 								</select>
 							</div>
 						</div>
-
+ -->
 						<div class="form-group">
 							<label for="JobPriority" class="col-sm-3 control-label">Priority</label>
 							<div class="col-sm-9">
@@ -366,11 +411,23 @@
 						</div>
 
 						<div class="form-group">
+							<label class="col-sm-3 control-label">Date To Be Completed Date</label>
+							<div class="col-sm-9">
+								<div class='input-group date' id='datepicker1'>
+									<input type='text' class="form-control" name="DateToBeCompleted" id="DateToBeCompleted" />
+									<span class="input-group-addon">
+										<span class="glyphicon glyphicon-calendar"></span>
+									</span>
+								</div>
+							</div>
+						</div>
+
+						<!-- <div class="form-group">
 							<label for="DateToBeCompleted" class="col-sm-3 control-label">Date To Be Completed Date</label>
 							<div class="col-sm-9">
 								<input type="text" name="DateToBeCompleted" id="DateToBeCompleted" class="form-control" />
 							</div>
-						</div>
+						</div> -->
 						
 						<div class="modal-footer">
 							<button class="btn btn-addon btn-info" type="submit"><i class="fa fa-save"></i>Save</button>
@@ -420,14 +477,7 @@
 							<div class="col-sm-9">
 								<select class="form-control" id="JobStatus" name="JobStatus">
 									<option></option>
-									<option >Quote Request</option>
-									<option >Pre-approved</option>
-									<option >Routine Maintenance</option>
-									<option >Completed & Invoice Received</option>
-									<option >Awaiting Invoice</option>
-									<option >Quote Approval</option>
-									<option >Materials Required</option>
-									
+																		
 								</select>
 							</div>
 						</div>
@@ -439,14 +489,14 @@
 							</div>
 						</div>
 
-						<div class="form-group">
+						<!-- <div class="form-group">
 							<label for="JobAssignee" class="col-sm-3 control-label">Job Assignee</label>
 							<div class="col-sm-9">
 								<select class="form-control" id="JobAssignee" name="JobAssignee">
 									<option></option>
 								</select>
 							</div>
-						</div>
+						</div> -->
 
 						<div class="form-group">
 							<label for="JobPriority" class="col-sm-3 control-label">Priority</label>
@@ -463,11 +513,23 @@
 						</div>
 
 						<div class="form-group">
+							<label class="col-sm-3 control-label">Date To Be Completed Date</label>
+							<div class="col-sm-9">
+								<div class='input-group date' id='datepicker2'>
+									<input type='text' class="form-control" name="DateToBeCompleted" id="DateToBeCompleted" />
+									<span class="input-group-addon">
+										<span class="glyphicon glyphicon-calendar"></span>
+									</span>
+								</div>
+							</div>
+						</div>
+
+						<!-- <div class="form-group">
 							<label for="DateToBeCompleted" class="col-sm-3 control-label">Date To Be Completed Date</label>
 							<div class="col-sm-9">
 								<input type="text" name="DateToBeCompleted" id="DateToBeCompleted" class="form-control" />
 							</div>
-						</div>
+						</div> -->
 						
 						<div class="modal-footer">
 							<button class="btn btn-addon btn-info" type="submit"><i class="fa fa-save"></i>Save</button>
@@ -595,18 +657,29 @@
 							data-show-toggle="true"
 							data-show-columns="true"
 							data-toolbar="#toolbar"
+							data-show-pagination-switch="true"
+							data-pagination="true"
+							data-page-list="[10, 25, 50, 100, ALL]"
 							id="table-jobs"
 							class="display table table-striped"
+							data-show-export="true"
+							data-export-options='
+									       		{
+									       			"fileName": "<?=$data['property_name'];?> Job",
+									       			"worksheetName": "<?=$data['property_name'];?> Job",
+									       		}'
 							>
 							<thead>
 								<tr>
-									<th data-field="query">Query Name</th>
-									<th data-field="supplier">Supplier</th>
-									<th data-field="unit_number">Unit Number</th>
-									<th data-field="status">Status</th>
-									<th data-field="description">Description</th>
-									<th data-field="priority">Priority</th>
-									<th data-field="date_tobe_completed">Date To Be Completed</th>
+									<th data-field="job_id" data-sortable="true">Job ID</th>
+									<th data-field="query" data-sortable="true">Query Name</th>
+									<th data-field="supplier" data-sortable="true">Supplier</th>
+									<th data-field="unit_number" data-sortable="true">Unit Number</th>
+									<th data-field="status" data-sortable="true">Status</th>
+									<th data-field="description" data-sortable="true">Description</th>
+									<th data-field="priority" data-sortable="true">Priority</th>
+									<th data-field="date_tobe_completed" data-sortable="true">Date To Be Completed</th>
+									<th data-field="job_done_date" data-sortable="true">Date Done</th>
 									<th data-field="buttons">Action</th>
 								</tr>
 							</thead>

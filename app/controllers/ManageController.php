@@ -455,13 +455,13 @@ class ManageController
 			return array('status'  => false, 'text' => 'Invalid Resident Name');
 		}
 
-		if (!self::$app_controller->validate_variables ($ResidentPhone, 3)) {
-			return array('status'  => false, 'text' => 'Invalid Resident Phone');
-		}
+		// if (!self::$app_controller->validate_variables ($ResidentPhone, 3)) {
+		// 	return array('status'  => false, 'text' => 'Invalid Resident Phone');
+		// }
 
-		if (!self::$app_controller->validate_variables ($ResidentCellphone, 3)) {
-			return array('status'  => false, 'text' => 'Invalid Cellphone Phone');
-		}
+		// if (!self::$app_controller->validate_variables ($ResidentCellphone, 3)) {
+		// 	return array('status'  => false, 'text' => 'Invalid Cellphone Phone');
+		// }
 
 		if (!self::$app_controller->validate_variables ($ResidentNotifyEmail, 18)) {
 			return array('status'  => false, 'text' => 'Invalid Email(s)');
@@ -522,13 +522,13 @@ class ManageController
 			return array('status'  => false, 'text' => 'Invalid Resident Name');
 		}
 
-		if (!self::$app_controller->validate_variables ($ResidentPhone, 3)) {
-			return array('status'  => false, 'text' => 'Invalid Resident Phone');
-		}
+		// if (!self::$app_controller->validate_variables ($ResidentPhone, 3)) {
+		// 	return array('status'  => false, 'text' => 'Invalid Resident Phone');
+		// }
 
-		if (!self::$app_controller->validate_variables ($ResidentCellphone, 3)) {
-			return array('status'  => false, 'text' => 'Invalid Cellphone Phone');
-		}
+		// if (!self::$app_controller->validate_variables ($ResidentCellphone, 3)) {
+		// 	return array('status'  => false, 'text' => 'Invalid Cellphone Phone');
+		// }
 
 		if (!self::$app_controller->validate_variables ($ResidentNotifyEmail, 18)) {
 			return array('status'  => false, 'text' => 'Invalid Email(s)');
@@ -585,7 +585,7 @@ class ManageController
 				'buttons' 				=> '<button class="btn btn-info btn-sm " data-title="Edit" data-toggle="modal" data-target="#EditResidentModal" data-res-id="'. $c['id'].'" aria-expanded="false"><span class="glyphicon glyphicon-pencil"></span></button>
 											<button class="btn btn-danger btn-sm " data-title="Delete" data-toggle="modal" data-target="#ArchiveResidentModal" data-res-id="'.$c['id'].'" aria-expanded="false"><span class="glyphicon glyphicon-download-alt"></span></button>
 
-											<button class="btn btn-default btn-sm" data-title="Communicate" data-toggle="modal" data-target="#CommunicateModal" data-res-id="'.$c['id'].'" data-res-name="'.$c['residentName'].'" aria-expanded="false"><span class="fa fa-comment-o"></span></button>'
+											<button class="btn btn-default btn-sm" data-title="Communicate" rel="tooltip" data-original-title="Comment & Communicate" data-toggle="modal" data-target="#CommunicateModal" data-res-id="'.$c['id'].'" data-res-name="'.$c['residentName'].'" aria-expanded="false"><span class="fa fa-comment-o"></span></button>'
 				);
 		}
 		

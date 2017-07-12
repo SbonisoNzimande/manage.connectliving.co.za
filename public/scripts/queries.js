@@ -9,7 +9,7 @@ $(document).ready(function(){
 	// 					            "sSwfPath": "../public/libs/jquery/datatables/extensions/TableTools/swf/copy_csv_xls_pdf.swf"
 	// 					        },
 						
-	//     				"ajax": host + 'Queries/GetAllQueries?' + data,
+	//     				"ajax": 'Queries/GetAllQueries?' + data,
 	//     				"order": [[ 4, "desc" ]],
 	//     				"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 	//     				                    if ( aData[5] == "Done" ){
@@ -18,7 +18,7 @@ $(document).ready(function(){
 	//     				               }
 	// 				});
 
-	$.get(host + 'Queries/GetAllUsers', '', function(response){
+	$.get('Queries/GetAllUsers', '', function(response){
 		
 		var level_select = '<option></option>';
 		        	
@@ -30,7 +30,7 @@ $(document).ready(function(){
 		$("#UsersListedt").html(level_select);
 	});
 
-	$.get(host + 'Queries/GetAllAdminUsers', '', function(response){
+	$.get('Queries/GetAllAdminUsers', '', function(response){
 		
 		var level_select = '<option></option>';
 		        	
@@ -42,7 +42,7 @@ $(document).ready(function(){
 		// $("#AssignToedt").html(level_select);
 	});
 
-	$.get(host + 'UserPermissions/GetPropertyList', '', function(response){
+	$.get('UserPermissions/GetPropertyList', '', function(response){
 		
 		var level_select = '<option></option>';
 		        	
@@ -79,7 +79,7 @@ $(document).ready(function(){
 		                    };
 
 
-		    $.post(host + 'Queries/MarkDone', post_data, function(response){
+		    $.post('Queries/MarkDone', post_data, function(response){
 
 		        var output = '';
 
@@ -121,7 +121,7 @@ $(document).ready(function(){
 	window.GetEdit  = function(id) {
 		var data 	= 'id='+id; 
 
-		$.get(host + 'Queries/GetQueriesInfo', data, function(response){
+		$.get('Queries/GetQueriesInfo', data, function(response){
 
 			console.log(response);
 			$("#EditID").val(response.queryID);
@@ -138,7 +138,7 @@ $(document).ready(function(){
 	window.assign_user = function(assinee_id, id) {
 
 		var data = {'id' : id, 'assinee_id' : assinee_id}
-		$.get(host + 'Queries/AssignUser', data, function(response){
+		$.get('Queries/AssignUser', data, function(response){
 
 			$("#" +id).closest('tr').addClass('amber-200').fadeIn('slow');
 		});
@@ -148,7 +148,7 @@ $(document).ready(function(){
 
 	window.getImage = function(id) {
 		var data = 'id='+id; 
-		$.post(host + 'Queries/GetImage', data, function(response){
+		$.post('Queries/GetImage', data, function(response){
 			
 			$("#image_area").html('<img src="'+response.images+'" style="width:100%;" id="LoadedImage" />');
 				var left  = 0;
@@ -175,7 +175,7 @@ $(document).ready(function(){
 		console.log(form_data);
 
 		$.ajax({
-			url: host + 'Queries/SaveQuery',  
+			url: 'Queries/SaveQuery',  
 			type: 'POST',   
 			data: form_data,
 			processData: false,
@@ -212,7 +212,7 @@ $(document).ready(function(){
 		var form_data = new FormData($('#EditQueryForm')[0]);
 
 		$.ajax({
-			url: host + 'Queries/EditQuery',  
+			url: 'Queries/EditQuery',  
 			type: 'POST',   
 			data: form_data,
 			processData: false,

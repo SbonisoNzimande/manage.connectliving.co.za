@@ -8,6 +8,15 @@ $(document).ready(function(){
 	     div.html(loader);
 	};
 
+	// DateRage
+	 $('input[name="DateRage"]').daterangepicker(
+	 		{
+	 			locale: {
+	 			      format: 'YYYY/MM/DD'
+	 			    },
+	 		}
+	 	);
+
 	var pagenum = show_initial_cards(1);
 	// var pagenum = $('#page-num').val();
 	$('#page-selection').bootpag ({
@@ -22,26 +31,12 @@ $(document).ready(function(){
 
     
 	 
-	
-	// var queries_table 	= $('#queries-table').DataTable({
-	// 					"dom": 'T<"clear">lfrtip',
-	// 					"tableTools": {
-	// 					            "sSwfPath": "../public/libs/jquery/datatables/extensions/TableTools/swf/copy_csv_xls_pdf.swf"
-	// 					        },
-						
-	//     				"ajax": host + 'AllQueries/GetAllQueries?' + data,
-	    				
-	//     				"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-	//     				                    if ( aData[5] == "Done" ){
-	//     				                        $('td', nRow).addClass('light-green-100');
-	//     				                    }
-	//     				               }
-	// 				});
+
 
 	window.assign_billing_user = function(assinee_id, id) {
 
 		var data = {'id' : id, 'assinee_id' : assinee_id}
-		$.get(host + 'Billing/AssignUser', data, function(response){
+		$.get('Billing/AssignUser', data, function(response){
 			$("#" +id).closest('tr').addClass('amber-200').fadeIn('slow');
 		});
 	};
@@ -49,7 +44,7 @@ $(document).ready(function(){
 	window.assign_maintanance_user = function(assinee_id, id) {
 
 		var data = {'id' : id, 'assinee_id' : assinee_id}
-		$.get(host + 'Queries/AssignUser', data, function(response){
+		$.get('Queries/AssignUser', data, function(response){
 
 			$("#" +id).closest('tr').addClass('amber-200').fadeIn('slow');
 		});
@@ -69,6 +64,16 @@ $(document).ready(function(){
 		console.log('ID='+id);
 
 		$('#queryID').val(id);
+	});
+
+	$('#MarkInsuranceModal').on('show.bs.modal', function(e) {// on modal open
+		// addCompanyForm
+		var id = $(e.relatedTarget).data('query-id'); 
+		// var data        = 'ID='+id;
+
+		console.log('ID='+id);
+
+		$('#queryinsID').val(id);
 	});
 
 	$('#MarkMaterialsRequiredModal').on('show.bs.modal', function(e) {// on modal open
@@ -183,6 +188,50 @@ $(document).ready(function(){
 
 	});
 
+	$("#MarkInsuranceClaim").click(function(){
+		var ID    		= $.trim($("#queryinsID").val());
+		var proceed     = true;
+
+		console.log(ID);
+
+		
+		if(proceed) {// Check to proceed
+
+		    //data to be sent to server
+		    post_data     = { 
+		    					'ID':ID.trim()
+		                    };
+
+		    $.post('AllQueries/MarkInsuranceClaim', post_data, function(response){
+
+		        var output = '';
+
+		        if(response.status == false){
+		            output = '<div class="alert alert-danger"><p>'+response.text+'</p></div>';
+		        }else if(response.status == true){
+		            output = '<div class="alert alert-success"><p>Saved</p></div>';
+		        }
+
+		         $("#mark_insurance_err").html(output).fadeIn('slow').delay(3000).fadeOut('fast', function(){
+
+					$('#table-pending').bootstrapTable('refresh', {
+			 			silent: true
+			 		});
+					show_initial_cards(1);
+					// $('#MarkDone').modal('hide');
+		         });
+
+		    }, 'json');// End post
+
+		
+		}else{
+
+		   $("#MarkDone").effect('shake', 900 );
+		}
+
+
+	});
+
 	$("#MarkMaterialsRequired").click(function(){
 		var ID    		= $.trim($("#querymID").val());
 		var proceed     = true;
@@ -230,7 +279,7 @@ $(document).ready(function(){
 	window.GetBillingEdit  = function(id) {
 		var data 	= 'id='+id; 
 
-		$.get(host + 'Billing/GetBillingInfo', data, function(response){
+		$.get('Billing/GetBillingInfo', data, function(response){
 
 			console.log(response);
 			$("#EditID").val(response.id);
@@ -246,7 +295,7 @@ $(document).ready(function(){
 	window.GetEdit  = function(id) {
 		var data 	= 'id='+id; 
 
-		$.get(host + 'Queries/GetQueriesInfo', data, function(response){
+		$.get('Queries/GetQueriesInfo', data, function(response){
 
 			console.log(response);
 			$("#EditID").val(response.queryID);
@@ -272,7 +321,7 @@ $(document).ready(function(){
 		console.log(form_data);
 
 		$.ajax({
-			url: host + 'Billing/SaveQuery',  
+			url: 'Billing/SaveQuery',  
 			type: 'POST',   
 			data: form_data,
 			processData: false,
@@ -308,7 +357,7 @@ $(document).ready(function(){
 		var form_data = new FormData($('#EditQueryForm')[0]);
 
 		$.ajax({
-			url: host + 'Billing/EditQuery',  
+			url: 'Billing/EditQuery',  
 			type: 'POST',   
 			data: form_data,
 			processData: false,
@@ -342,7 +391,7 @@ $(document).ready(function(){
 
 	window.getImage = function(id) {
 		var data = 'id='+id; 
-		$.post(host + 'Billing/GetImage', data, function(response){
+		$.post('Billing/GetImage', data, function(response){
 			
 			$("#image_area").html('<img src="'+response.images+'" style="width:100%;" id="LoadedImage" />');
 				var left  = 0;
@@ -371,6 +420,16 @@ $(document).ready(function(){
 		});
 	}
 
+
+	get_date_picker($('#datepicker1'));
+
+	
+	function get_date_picker (d) {
+		d.datetimepicker({
+			format:'YYYY-MM-DD'
+		});
+	};
+
 	function get_suppliers(iddiv){
 		$.get('AllQueries/GetAllSuppliers', '', function(response){
 			
@@ -378,6 +437,20 @@ $(document).ready(function(){
 			        	
 			$.each(response, function(key, value){
 				level_select += '<option value="' +value.id+ '">' +value.company_name+ '</option>';
+			});
+
+			$(iddiv).html(level_select);
+		});
+	}
+	// QueryType
+	get_query_types("#QueryType");
+	function get_query_types (iddiv){
+		$.get('AppApi/GetQueryTypes', 'category=all', function(response){
+			
+			var level_select = '<option>All Queries</option>';
+			        	
+			$.each(response, function(key, value){
+				level_select += '<option value="' +value.name+ '">' +value.name+ '</option>';
 			});
 
 			$(iddiv).html(level_select);
@@ -396,6 +469,7 @@ $(document).ready(function(){
 		$.get('AllQueries/GetQueryByID', data_url, function(response){
 			
 			$('#JobProperty').val(response.propertyID);
+			$('#UserID').val(response.user_id);
 			$('#JobUnitNo').val(response.unitNo);
 			$('#JobImageName').val(response.queryImage);
 			$('#JobDescription').val(response.queryInput);
@@ -403,7 +477,7 @@ $(document).ready(function(){
 	}
 	
 
-	$.get(host + 'Billing/GetAllAdminUsers', '', function(response){
+	$.get('Billing/GetAllAdminUsers', '', function(response){
 		
 		var level_select = '<option></option>';
 		        	
@@ -416,7 +490,7 @@ $(document).ready(function(){
 	});
 
 
-	$.get(host + 'Billing/GetAllUsers', '', function(response){
+	$.get('Billing/GetAllUsers', '', function(response){
 		
 		var level_select = '<option></option>';
 		        	
@@ -460,17 +534,18 @@ $(document).ready(function(){
 
 			       	card += '	<div class="card ';
 			       	if (value.status == 'done') {
-			       	card += '			light-green-100">';	
+			       		card += '			light-green-100">';	
 			       	}else if (value.status == 'materials required') {
-			       	card += '			card-warning">';	
-			       	}
-			       	else {
-			       	card += '">';	
+			       		card += '			card-warning">';	
+			       	}else if (value.status == 'insurance claim'){
+			       		card += '			card-purple">';	
+			       	}else {
+			       		card += '">';	
 			       	}
 			       	card += '		<div class="card-block">';
 			       	card += '			<h4 class="card-title">' +value.query_type+ ' - ' +value.unit_number+ '</h4>';
 			       	card += '			<h5 class="card-title">' +value.property_name+'</h5>';
-			       	card += '			<h5 class="card-title">submited by: ' +value.full_name+'</h5>';
+			       	card += '			<h5 class="card-title"><i class="fa fa-user" aria-hidden="true"></i> ' +value.full_name+'</h5>';
 			       	card += '			<p class="card-text"><small class="text-muted">' +value.date+ '</small></p>';
 			       	card += '		</div>';// Card block
 
@@ -505,6 +580,8 @@ $(document).ready(function(){
 			       	if (value.status == 'pending') {
 			       		card += '			<a href="#" class="btn btn-warning btn-xs" data-title="Edit" data-toggle="modal" data-target="#MarkMaterialsRequiredModal" rel="tooltip" data-original-title="Materials Required" data-query-id="'+value.query_id+'" aria-expanded="false"><span class="glyphicon glyphicon-compressed"></span></a>';	
 			       		card += '			<a href="#" class="btn btn-success btn-xs" data-title="Edit" data-toggle="modal" data-target="#MarkDoneModal" rel="tooltip" data-original-title="Mark Query As Done" data-query-id="'+value.query_id+'" aria-expanded="false"><span class="glyphicon glyphicon-ok"></span></a>';	
+			       		card += '			<a href="#" class="btn btn-info btn-xs" data-title="Edit" data-toggle="modal" data-target="#MarkInsuranceModal" rel="tooltip" data-original-title="Mark As Insurance Claim" data-query-id="'+value.query_id+'" aria-expanded="false"><span class="glyphicon glyphicon-euro"></span></a>';	
+
 			       	};
 			       	
 			       	card += '			<a href="#" class="btn btn-default btn-xs" data-title="Edit" data-toggle="modal" rel="tooltip" data-original-title="Comment & Communicate" data-target="#SMSCommentModal" data-query-id="'+value.query_id+'"  aria-expanded="false"><span class="fa fa-comment-o"></span></a>';
@@ -578,17 +655,18 @@ $(document).ready(function(){
 
 	       	card += '	<div class="card ';
 	       	if (value.status == 'done') {
-	       	card += '			light-green-100">';	
+	       		card += '			light-green-100">';	
 	       	}else if (value.status == 'materials required') {
-	       	card += '			card-warning">';	
-	       	}
-	       	else {
-	       	card += '">';	
+	       		card += '			card-warning">';	
+	       	}else if (value.status == 'insurance claim'){
+	       		card += '			card-purple">';	
+	       	}else {
+	       		card += '">';	
 	       	}
 	       	card += '		<div class="card-block">';
 	       	card += '			<h4 class="card-title">' +value.query_type+ ' - ' +value.unit_number+ '</h4>';
 	       	card += '			<h5 class="card-title">' +value.property_name+'</h5>';
-	       	card += '			<h5 class="card-title">submited by: ' +value.full_name+'</h5>';
+	       	card += '			<h5 class="card-title"><i class="fa fa-user" aria-hidden="true"></i> ' +value.full_name+'</h5>';
 	       	card += '			<p class="card-text"><small class="text-muted">' +value.date+ '</small></p>';
 	       	card += '		</div>';// Card block
 
@@ -623,6 +701,7 @@ $(document).ready(function(){
 	       	if (value.status == 'pending') {
 	       	card += '			<a href="#" class="btn btn-warning btn-xs" data-title="Edit" data-toggle="modal" data-target="#MarkMaterialsRequiredModal" rel="tooltip" data-original-title="Materials Required" data-query-id="'+value.query_id+'" aria-expanded="false"><span class="glyphicon glyphicon-compressed"></span></a>';	
 	       	card += '			<a href="#" class="btn btn-success btn-xs" data-title="Edit" data-toggle="modal" data-target="#MarkDoneModal" rel="tooltip" data-original-title="Mark Query As Done" data-query-id="'+value.query_id+'" aria-expanded="false"><span class="glyphicon glyphicon-ok"></span></a>';	
+	       	card += '			<a href="#" class="btn btn-info btn-xs" data-title="Edit" data-toggle="modal" data-target="#MarkInsuranceModal" rel="tooltip" data-original-title="Mark As Insurance Claim" data-query-id="'+value.query_id+'" aria-expanded="false"><span class="glyphicon glyphicon-euro"></span></a>';	
 	       	};
 	       	
 	       	card += '			<a href="#" class="btn btn-default btn-xs" data-title="Edit" data-toggle="modal" rel="tooltip" data-original-title="Comment & Communicate" data-target="#SMSCommentModal" data-query-id="'+value.query_id+'"  aria-expanded="false"><span class="fa fa-comment-o"></span></a>';
@@ -664,119 +743,7 @@ $(document).ready(function(){
 
 
 
-		// $.ajax({
-		// 	type: "GET",
-		// 	dataType: 'json',
-		// 	url: 'AllQueries/GetPageCards?current_page='+page,
-		// 	error: function () {
-		// 		alert("An error occurred getting cards.");
-		// 	},
-		// 	success: function (dataobj) {
-
-		// 		var card = '';
-		// 		$("#card_area").html('');
-		// 		var count = 1;
-
-		// 		console.log('count :' + dataobj[0].count_pages);
-		// 		$('#page-num').val(dataobj[0].count_pages);
-
-		// 		$.each(dataobj, function(key, value){
-		// 			//  x % y
-
-		// 			if (value.open == true && count == 1) {
-		// 				card += '	<div class="card-group">';
-		// 			}else if(value.open == true){
-		// 				card += '	</div><div class="card-group">';
-		// 			}
-
-		// 	       	card += '	<div class="card ';
-		// 	       	if (value.status == 'done') {
-		// 	       	card += '			light-green-100">';	
-		// 	       	}
-		// 	       	else {
-		// 	       	card += '">';	
-		// 	       	}
-		// 	       	card += '		<div class="card-block">';
-		// 	       	card += '			<h4 class="card-title">' +value.query_type+ ' - ' +value.unit_number+ '</h4>';
-		// 	       	card += '			<h5 class="card-title">' +value.property_name+'</h5>';
-		// 	       	card += '			<p class="card-text"><small class="text-muted">' +value.date+ '</small></p>';
-		// 	       	card += '		</div>';// Card block
-
-		// 	       	if (value.image) {
-
-		// 	       	card += '		<img src="'+value.image+'" id="imageresource"  class="w-full r-t card-img-top" data-toggle="modal" data-img-src="'+value.image+'" data-target="#MaxImageModal" />';
-		// 	       	}
-		// 	       	card += '		<div class="card-tools">';// Start card tools
-		// 	       	card += '			<ul class="list-inline">';
-		// 	       	card += '				<li class="dropdown">';
-		// 	       	card += '					<a md-ink-ripple data-toggle="dropdown" class="md-btn md-flat md-btn-circle" rel="tooltip" data-original-title="Assign This Query To A Team Member">';
-		// 	       	card += '						<i class="mdi-navigation-more-vert text-md"></i>';
-		// 	       	card += '					</a>';
-		// 	       	card += '					<ul class="dropdown-menu dropdown-menu-scale pull-right pull-up top text-color">';
-		// 	       	card += '						<li ><a>Reassign</a></li>';
-		// 	       	card += '						<li class="divider"></li>';
-
-		// 	       	var admin_users = value.admin_users;
-		// 	       	$.each(admin_users, function(k, v){
-		// 	       		card += ' 						<li><a data-toggle="modal" data-target="#AssignModal" class="ass_but" data-id="' +v.adminID+ '" data-query-id="' +value.query_id+ '" data-assignee-name="' +v.full_name+ '">'+v.full_name+'</a></li>';
-		// 	       	});
-
-		// 	       	card += '					</ul>';
-		// 	       	card += '				</li>';
-		// 	       	card += '			</ul>';
-		// 	       	card += '		</div>';// End card tools
-		// 	       	card += '		<div class="card-block">';
-		// 	       	card += '			<p class="card-text">'+value.query+'</p>';
-		// 	       	card += '		</div>';// Card block
-
-		// 	       	card += '		<div class="card-block">';// Card block
-		// 	       	if (value.status == 'pending') {
-		// 	       	card += '			<a href="#" class="btn btn-success btn-xs" data-title="Edit" data-toggle="modal" data-target="#MarkDoneModal" rel="tooltip" data-original-title="Mark Query As Done" data-query-id="'+value.query_id+'" aria-expanded="false"><span class="glyphicon glyphicon-ok"></span></a>';	
-		// 	       	};
-			       	
-		// 	       	card += '			<a href="#" class="btn btn-default btn-xs" data-title="Edit" data-toggle="modal" rel="tooltip" data-original-title="Comment & Communicate" data-target="#SMSCommentModal" data-query-id="'+value.query_id+'"  aria-expanded="false"><span class="fa fa-comment-o"></span></a>';
-
-		// 	       	card += '			<a href="#" class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" rel="tooltip" data-original-title="Convert Query to Job" data-target="#CreateJobModal" data-query-id="'+value.query_id+'"  aria-expanded="false"><span class="fa fa-briefcase"></span></a>';
-			       	
-		// 	       	card += '			<a href="#" class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" rel="tooltip" data-original-title="Remove This Query" data-target="#DeleteQueryModal" data-query-id="'+value.query_id+'" aria-expanded="false"><span class="glyphicon glyphicon-trash"></span></a>';
-		// 	       	card += '		</div>';// Card footer
-		// 	       	card += '		</div>';// Card block
-
-					 
-
-					
-		// 	       	// if (value.open == true && count != 1) {
-		// 	       	// 	card 	+= '	</div>';// close row
-		// 	       	// }
-				
-
-		// 			// card 	+= '	<div class="row"><div class="col-md-12"></div></div>';// close row
-					
-
-		// 			count ++;
-
-					
-		// 		});
-
-		// 		$("#card_area").html(card);
-		// 		$("[rel='tooltip']").tooltip();
-
-		// 		$(".mark_done").click(function(e) {
-		// 		    $("#QID").val($(this).attr("id"));
-		// 		});
-
-		// 		$(".ass_but").click(function(e) {
-		// 		    $("#AID").val($(this).attr("id"));
-		// 		});
-
-		// 		console.log(dataobj[0].count_pages)
-
-				
-
-
-				
-		// 	}
-		// });
+		
 
 		return dataobj[0].count_pages;
 	
@@ -798,7 +765,7 @@ $(document).ready(function(){
 
 			console.log(dataobj.length);
 
-			$.each(dataobj, function(key, value){
+			$.each(dataobj.filter_data, function(key, value){
 				//  x % y
 
 				if (value.open == true && count == 1) {
@@ -809,17 +776,18 @@ $(document).ready(function(){
 
 		       	card += '	<div class="card ';
 		       	if (value.status == 'done') {
-		       	card += '			light-green-100">';	
+		       		card += '			light-green-100">';	
 		       	}else if (value.status == 'materials required') {
-		       	card += '			card-warning">';	
-		       	}
-		       	else {
-		       	card += '">';	
+		       		card += '			card-warning">';	
+		       	}else if (value.status == 'insurance claim'){
+		       		card += '			card-purple">';	
+		       	}else {
+		       		card += '">';	
 		       	}
 		       	card += '		<div class="card-block">';
 		       	card += '			<h4 class="card-title">' +value.query_type+ ' - ' +value.unit_number+ '</h4>';
 		       	card += '			<h5 class="card-title">' +value.property_name+'</h5>';
-		       	card += '			<h5 class="card-title">submited by: ' +value.full_name+'</h5>';
+		       	card += '			<h5 class="card-title"><i class="fa fa-user" aria-hidden="true"></i> ' +value.full_name+'</h5>';
 		       	card += '			<p class="card-text"><small class="text-muted">' +value.date+ '</small></p>';
 		       	card += '		</div>';// Card block
 
@@ -883,6 +851,22 @@ $(document).ready(function(){
 			});
 		});
 	});
+
+	window.filter_table = function(tbl_pending, tbl_done) {
+
+		$('#table-pending').bootstrapTable('destroy');
+
+		$('#table-pending').bootstrapTable({
+		    data: tbl_pending
+		});
+
+
+		$('#table-done').bootstrapTable('destroy');
+		$('#table-done').bootstrapTable({
+		    data: tbl_done
+		});
+
+	}
 
 
 	$('#MaxImageModal').on('show.bs.modal', function(e) {// on modal open

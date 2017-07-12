@@ -19,7 +19,7 @@ $(document).ready(function(){
 						            "sSwfPath": "../public/libs/jquery/datatables/extensions/TableTools/swf/copy_csv_xls_pdf.swf"
 						        },
 						
-	    				"ajax": host + 'AllQueries/GetAllQueries?' + data,
+	    				"ajax": 'AllQueries/GetAllQueries?' + data,
 	    				
 	    				"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 	    				                    if ( aData[5] == "Done" ){
@@ -31,7 +31,7 @@ $(document).ready(function(){
 	window.assign_billing_user = function(assinee_id, id) {
 
 		var data = {'id' : id, 'assinee_id' : assinee_id}
-		$.get(host + 'Billing/AssignUser', data, function(response){
+		$.get('Billing/AssignUser', data, function(response){
 			// var cls = $("#" +id).closest('tr').attr('class');
 
 			// $("#" +id).closest('tr').css({ "background-color": "#a5d6a7" }).fadeIn('slow').delay(3000).css({ "background-color": "#fff" });
@@ -43,7 +43,7 @@ $(document).ready(function(){
 	window.assign_maintanance_user = function(assinee_id, id) {
 
 		var data = {'id' : id, 'assinee_id' : assinee_id}
-		$.get(host + 'Queries/AssignUser', data, function(response){
+		$.get('Queries/AssignUser', data, function(response){
 
 			$("#" +id).closest('tr').addClass('amber-200').fadeIn('slow');
 		});
@@ -109,7 +109,7 @@ $(document).ready(function(){
 	window.GetBillingEdit  = function(id) {
 		var data 	= 'id='+id; 
 
-		$.get(host + 'Billing/GetBillingInfo', data, function(response){
+		$.get('Billing/GetBillingInfo', data, function(response){
 
 			console.log(response);
 			$("#EditID").val(response.id);
@@ -125,7 +125,7 @@ $(document).ready(function(){
 	window.GetEdit  = function(id) {
 		var data 	= 'id='+id; 
 
-		$.get(host + 'Queries/GetQueriesInfo', data, function(response){
+		$.get('Queries/GetQueriesInfo', data, function(response){
 
 			console.log(response);
 			$("#EditID").val(response.queryID);
@@ -151,7 +151,7 @@ $(document).ready(function(){
 		console.log(form_data);
 
 		$.ajax({
-			url: host + 'Billing/SaveQuery',  
+			url: 'Billing/SaveQuery',  
 			type: 'POST',   
 			data: form_data,
 			processData: false,
@@ -187,7 +187,7 @@ $(document).ready(function(){
 		var form_data = new FormData($('#EditQueryForm')[0]);
 
 		$.ajax({
-			url: host + 'Billing/EditQuery',  
+			url: 'Billing/EditQuery',  
 			type: 'POST',   
 			data: form_data,
 			processData: false,
@@ -221,7 +221,7 @@ $(document).ready(function(){
 
 	window.getImage = function(id) {
 		var data = 'id='+id; 
-		$.post(host + 'Billing/GetImage', data, function(response){
+		$.post('Billing/GetImage', data, function(response){
 			
 			$("#image_area").html('<img src="'+response.images+'" style="width:100%;" id="LoadedImage" />');
 				var left  = 0;
@@ -235,7 +235,7 @@ $(document).ready(function(){
 		});
 	};
 
-	$.get(host + 'UserPermissions/GetPropertyList', '', function(response){
+	$.get('UserPermissions/GetPropertyList', '', function(response){
 		
 		var level_select = '<option></option>';
 		        	
@@ -247,7 +247,7 @@ $(document).ready(function(){
 		$("#PropertyListedt").html(level_select);
 	});
 
-	$.get(host + 'Billing/GetAllAdminUsers', '', function(response){
+	$.get('Billing/GetAllAdminUsers', '', function(response){
 		
 		var level_select = '<option></option>';
 		        	
@@ -260,7 +260,7 @@ $(document).ready(function(){
 	});
 
 
-	$.get(host + 'Billing/GetAllUsers', '', function(response){
+	$.get('Billing/GetAllUsers', '', function(response){
 		
 		var level_select = '<option></option>';
 		        	

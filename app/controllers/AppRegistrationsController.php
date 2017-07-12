@@ -57,9 +57,68 @@ class AppRegistrationsController
 			break;
 			case 'GetAllAppUsers':
 				$prop_id 			= self::$app_controller->sanitise_string($request->parameters['prop_id']);
-				$doc 				= self::$app_controller->get_property_app_users ($prop_id);
+				$users 				= self::$app_controller->get_property_app_users ($prop_id);
 
-				return json_encode($doc);
+				array_walk ( $users, function (&$key) { 
+
+					$button = '<button 
+									class  				= "btn btn-warning btn-sm" 
+									data-title 			= "Convert To Resident" 
+									data-toggle 		= "modal" 
+									data-target 		= "#ConvertUserModal" 
+									rel 				= "tooltip" 
+									data-original-title = "Convert To Resident" 
+
+									data-user-id		= "'.$key['id'].'" 
+									data-company-id		= "'.$key['companyID'].'" 
+									data-property-id	= "'.$key['propertyID'].'" 
+									data-unitno			= "'.$key['unitNo'].'" 
+									data-fullname		= "'.$key['userFullname'].'" 
+									data-cellphone		= "'.$key['userCellphone'].'" 
+									data-email			= "'.$key['userEmail'].'" 
+
+									aria-expanded 		= "false"
+								>
+								<span 
+									class 				= "fa fa-random"
+								>
+								</span>
+
+								</button>';	
+
+							$button 	.= '<button 
+												class 			= "btn btn-info btn-sm" 
+												data-title 		= "Edit" 
+												data-toggle		= "modal" 
+												data-target 	= "#EditUserModal" 
+												data-user-id 	= "'.$key['id'].'" 
+												data-user-type 	= "'.$key['userType'].'" 
+												aria-expanded 	= "false"
+											>
+
+												<span class="glyphicon glyphicon-pencil"></span>
+
+										 	</button>';
+
+							if ($key['userStatus'] == 'blocked') {
+								// Unblock button	
+
+								$button .= '<button class="btn btn-success btn-sm" data-title="UnBlock User" data-toggle="modal" data-target="#UnBlockUserModal" rel="tooltip" data-original-title="UnBlock User" data-user-id="'.$key['id'].'" ria-expanded="false"><span class="fa fa-check"></span></button>';						
+							}else{
+								// Bock button
+								$button .= '<button class="btn btn-danger btn-sm" data-title="Block User" data-toggle="modal" data-target="#BlockUserModal" rel="tooltip" data-original-title="Block User" data-user-id="'.$key['id'].'" data-res-name="'.$c['residentName'].'" aria-expanded="false"><span class="fa fa-ban"></span></button>'; 
+							}
+
+							$key['action'] = $button;
+
+							
+						} 
+
+					);
+
+				// $return_arry 		= array_merge($users, $action);		
+
+				return json_encode($users);
 			break;
 
 			case 'GetAllDocumentTypes':
@@ -169,6 +228,51 @@ class AppRegistrationsController
 				$save 				= self::edit_document ($company_id, $prop_id, $ID, $DocumentType, $UploadLogoFile);
 				return json_encode($save);
 				break;
+			case 'BlockUser':
+
+				$ID 				= self::$app_controller->sanitise_string($request->parameters['ID']);
+
+				$save 				= self::validate_block_user ($ID);
+				return json_encode($save);
+				break;
+			case 'ChangeUserType':
+
+				$ID 				= self::$app_controller->sanitise_string($request->parameters['ID']);
+				$UserType 			= self::$app_controller->sanitise_string($request->parameters['UserType']);
+
+				$save 				= self::change_user_type ($ID, $UserType);
+				return json_encode($save);
+				break;
+
+			case 'ConvertUser':
+
+				$user_id 				= self::$app_controller->sanitise_string($request->parameters['user_id']);
+				$company_id 			= self::$app_controller->sanitise_string($request->parameters['company_id']);
+				$property_id 			= self::$app_controller->sanitise_string($request->parameters['property_id']);
+				$unit_no 				= self::$app_controller->sanitise_string($request->parameters['unit_no']);
+				$fullname 				= self::$app_controller->sanitise_string($request->parameters['fullname']);
+				$cellphone 				= self::$app_controller->sanitise_string($request->parameters['cellphone']);
+				$email 					= self::$app_controller->sanitise_string($request->parameters['email']);
+
+				$save 				= self::validate_convert_user (
+											$user_id,
+											$company_id,
+											$property_id,
+											$unit_no,
+											$fullname,
+											$cellphone,
+											$email
+										);
+				return json_encode($save);
+				break;
+
+			case 'UnblockBlockUser':
+
+				$ID 				= self::$app_controller->sanitise_string($request->parameters['ID']);
+
+				$save 				= self::validate_unblock_user ($ID);
+				return json_encode($save);
+				break;
 
 			case 'DeleteDoc': 
 				$ID    				= self::$app_controller->sanitise_string($request->parameters['id']);
@@ -211,18 +315,101 @@ class AppRegistrationsController
 	}
 
 
-	static public function delete_document ($ID) {
+	static public function validate_convert_user (
+											$user_id,
+											$company_id,
+											$property_id,
+											$unit_no,
+											$fullname,
+											$cellphone,
+											$email
+										) {
 
-		$get_company  = self::$app_controller->get_document_by_id ($ID);
+		$get_user  = self::$app_controller->get_app_users_byid ($user_id);
 
-		if (!is_numeric ($ID) OR count($get_company) == 0) {
+		if (count($get_user) == 0) {
 			return array('status'  => false, 'text' => 'Invalid ID');
 		}
 
-		$save 		= self::$app_controller->delete_document ($ID);
+		
+
+		$save 		  	= self::$app_controller->do_convert_user ($user_id,
+											$company_id,
+											$property_id,
+											$unit_no,
+											$fullname,
+											$cellphone,
+											$email);
 
 		if ($save === true) {
-			return array('status' => true, 'text'  => 'Deleted');
+			return array('status' => true, 'text'  => 'User Converted ');
+		}else{
+			return array('status' => false, 'text' => 'Failed to Convert, ' . $edit);
+		}
+
+	}
+
+	static public function validate_block_user ($ID) {
+
+		$get_user  = self::$app_controller->get_app_users_byid ($ID);
+
+		if (count($get_user) == 0) {
+			return array('status'  => false, 'text' => 'Invalid ID');
+		}
+
+		$device_token 	= $get_user[0]['userDeviceToken'];
+		$player_id[] 	= $get_user[0]['userPlayerID'];
+		$property_name 	= $get_user[0]['property_name'];
+
+		$message_send 	= "You have been blocked access to " . $property_name;
+
+		$save 		  	= self::$app_controller->bock_user ($ID);
+
+		if ($save === true) {
+			$send 	= self::$app_controller->send_push_notification ($message_send, $player_id);
+			return array('status' => true, 'text'  => 'User Blocked ');
+		}else{
+			return array('status' => false, 'text' => 'Failed to insert, ' . $edit);
+		}
+
+	}
+
+	static public function change_user_type ($ID, $UserType) {
+
+		$get_user  = self::$app_controller->get_app_users_byid ($ID);
+
+		if (count($get_user) == 0) {
+			return array('status'  => false, 'text' => 'Invalid User ID');
+		}
+
+		if (!self::$app_controller->validate_variables ($UserType, 3)) {
+			return array('status'  => false, 'text' => 'Invalid UserType');
+		}
+
+		
+
+		$save 		  	= self::$app_controller->update_app_user_type ($ID, $UserType);
+
+		if ($save === true) {
+			return array('status' => true, 'text'  => 'User Updated ');
+		}else{
+			return array('status' => false, 'text' => 'Failed to insert, ' . $edit);
+		}
+
+	}
+
+	static public function validate_unblock_user ($ID) {
+
+		$get_user  = self::$app_controller->get_app_users_byid ($ID);
+
+		if (count($get_user) == 0) {
+			return array('status'  => false, 'text' => 'Invalid ID');
+		}
+
+		$save 		= self::$app_controller->unbock_user ($ID);
+
+		if ($save === true) {
+			return array('status' => true, 'text'  => 'User Unblocked');
 		}else{
 			return array('status' => false, 'text' => 'Failed to insert, ' . $edit);
 		}

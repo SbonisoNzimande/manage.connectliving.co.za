@@ -582,8 +582,8 @@ class CommunicateController
 		// $payfast_url   	 	 = 'https://sandbox.payfast.co.za/eng/process';
 
 		// Live
-		$merchant_id   	 		 = '10229967';
-		$merchant_key   		 = 'js5vov2r5wr4g';
+		$merchant_id   	 		 = '11629829';
+		$merchant_key   		 = 'v1fd9niz2ww92';
 
 		$transaction_id   		 = uniqid();
 		//Test
@@ -641,7 +641,7 @@ class CommunicateController
 
 
 		}else{
-			return array('status' => false, 'text' => 'Failed to process payment, ' . $pay);
+			return array('status' => false, 'text' => 'Failed to process payment, ' . $pay['text']);
 		}
 
 		// return $pay;

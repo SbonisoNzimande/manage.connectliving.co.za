@@ -75,17 +75,15 @@
 <body class="white">
 	<div class="container">
 		<div class="row center-align col s12 m9 l10 ">
-			<form id="survey-form" name="survey-form" class="" method="POST">
+			<form id="survey-form" name="survey-form" class="" method="POST" action="FormSubmissions/SubmitForm">
 				<input type="hidden" id="form_id" name="form_id" value="<?=$data['form_id'];?>">
-				<input type="hidden" id="FormID" name="FormID" value="<?=$data['form_id'];?>">
+				<input type="hidden" id="FormID"  name="FormID" value="<?=$data['form_id'];?>">
 				<input type="hidden" id="prop_id" name="prop_id" />
 				<!-- Form name -->
 				<div class="row">
 					<h5 id="form_name"></h5>
 				</div>
 				<!-- /Form name -->
-				
-
 				
 
 				<!-- Complex Details -->
@@ -121,7 +119,7 @@
 				</div>
 				<!-- Form Instructions -->
 				<div class="row">
-					<div class="input-field col s12" id="">
+					<div class="input-field col s12 form-instructions" id="">
 						<?=$data['form_instruction'];?>
 					</div>
 				</div>
@@ -138,6 +136,7 @@
 	</div>
 	<!--  Scripts-->
 	<script src="../public/materialize/js/jquery-2.1.1.min.js"></script>
+	<script src="../public/materialize/js/jquery.form.min.js"></script>
 	<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 	<script src="../public/pickadate/lib/picker.js"></script>
 	<script src="../public/pickadate/lib/picker.date.js"></script>

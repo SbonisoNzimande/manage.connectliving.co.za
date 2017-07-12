@@ -150,84 +150,7 @@
 
 	
 
-	<div class="modal fade" id="AddNewModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h4 class="modal-title" id="myModalLabel">Create Query</h4>
-				</div>
-				<div class="modal-body">
-					<form class="form-horizontal p-h-xs ng-pristine ng-valid ng-scope" name="CreateQueryForm" id="CreateQueryForm" method="POST">
-						<div id="create_q_err"></div>
-						<div class="form-group">
-							<label class="col-sm-3 control-label">Query Type</label>
-							<div class="col-sm-9">
-								<select class="form-control" id="QueryType" name="QueryType">
-									<option></option>
-									<option>General</option>
-									<option>Cleaning</option>
-									<option>Electrical</option>
-									<option>Plumbing</option>
-								</select>
-							</div>
-						</div>
-
-						<div class="form-group">
-							<label class="col-sm-3 control-label">Property</label>
-							<div class="col-sm-9">
-								<select class="form-control" id="PropertyList" name="PropertyList">
-									<option></option>
-									
-								</select>
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-sm-3 control-label">Unit</label>
-							<div class="col-sm-9">
-								<input type="text" name="Unit" id="Unit" class="form-contork" />
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-sm-3 control-label">User</label>
-							<div class="col-sm-9">
-								<select class="form-control" id="UsersList" name="UsersList">
-									<option></option>
-									
-								</select>
-							</div>
-						</div>
-
-						<div class="form-group">
-							<label class="col-sm-3 control-label">Assign To</label>
-							<div class="col-sm-9">
-								<select class="form-control" id="AssignTo" name="AssignTo">
-									<option></option>
-									
-								</select>
-							</div>
-						</div>
-
-						<div class="form-group">
-							<label class="col-sm-3 control-label">Query</label>
-							<div class="col-sm-9">
-								<textarea class="form-control" name="Query" rows="5" id="Query"></textarea>
-							</div>
-						</div>
-
-						<div class="clearfix "></div>
-
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						<button type="submit" class="btn btn-primary" id="SaveUser">Save</button>
-					</div>
-				</form>
-			</div>
-			<!-- /.modal-content -->
-		</div>
-		<!-- /.modal-dialog -->
-	</div>
+	
 
 	<div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
@@ -317,6 +240,29 @@
 						<button type="button" class="btn btn-primary" data-dismiss="modal" id="MarkDone">Yes</button>
 					</div>
 				</form>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+
+
+	<div class="modal fade" id="MarkInsuranceModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">Mark As Insurance Claim</h4>
+					<input type="hidden" name="queryinsID" id="queryinsID" />
+				</div>
+				<div class="modal-body">
+					<div id="mark_insurance_err"></div>
+					<p>Do you want to perform this action?</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+					<button type="button" class="btn btn-primary" id="MarkInsuranceClaim">Yes</button>
+				</div>
 			</div>
 			<!-- /.modal-content -->
 		</div>
@@ -443,12 +389,13 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h4 class="modal-title" id="myModalLabel">Create Job</h4>
+					<h4 class="modal-title" id="myModalLabel">Create Jobs</h4>
 				</div>
 				<div class="modal-body">
 
 					<form class="form-horizontal p-h-xs ng-pristine ng-valid ng-scope" name="CreateJobForm" id="CreateJobForm" method="POST">
 						<div id="error_save_job"></div>
+						<input type="hidden" name="UserID" id="UserID" />
 						<input type="hidden" name="JobQueryID" id="JobQueryID" />
 						<input type="hidden" name="JobImageName" id="JobImageName" />
 						<div class="form-group">
@@ -500,14 +447,14 @@
 							</div>
 						</div>
 
-						<div class="form-group">
+						<!-- <div class="form-group">
 							<label for="JobAssignee" class="col-sm-3 control-label">Job Assignee</label>
 							<div class="col-sm-9">
 								<select class="form-control" id="JobAssignee" name="JobAssignee">
 									<option></option>
 								</select>
 							</div>
-						</div>
+						</div> -->
 
 						<div class="form-group">
 							<label for="JobPriority" class="col-sm-3 control-label">Priority</label>
@@ -523,12 +470,25 @@
 							</div>
 						</div>
 
+
 						<div class="form-group">
+							<label class="col-sm-3 control-label">Date To Be Completed Date</label>
+							<div class="col-sm-9">
+								<div class='input-group date' id='datepicker1'>
+									<input type='text' class="form-control" name="DateToBeCompleted" id="DateToBeCompleted" />
+									<span class="input-group-addon">
+										<span class="glyphicon glyphicon-calendar"></span>
+									</span>
+								</div>
+							</div>
+						</div>
+
+						<!-- <div class="form-group">
 							<label for="DateToBeCompleted" class="col-sm-3 control-label">Date To Be Completed Date</label>
 							<div class="col-sm-9">
 								<input type="text" name="DateToBeCompleted" id="DateToBeCompleted" class="form-control" />
 							</div>
-						</div>
+						</div> -->
 						
 						<div class="modal-footer">
 							<button class="btn btn-addon btn-info" type="submit"><i class="fa fa-save"></i>Save</button>
@@ -557,7 +517,7 @@
 								<h2>Filter Queries</h2>
 							</div>
 							<div class="card-body bg-light lt">
-								<div class='col-sm-4'>    
+								<div class='col-sm-3'>    
 									<div class='form-group'>
 										<label for="user_title" for="Status">Status</label>
 										<div class="full-width">
@@ -566,29 +526,18 @@
 												<option >Pending</option>
 												<option >Done</option>
 												<option >Materials Required</option>
+												<option >Insurance Claim</option>
 											</select>
 										</div>
 									</div>
 								</div>
-								<div class='col-sm-4'> 
+								<div class='col-sm-3'> 
 									<div class='form-group'>
 										<label for="user_title" for="QueryType">Query Type</label>
 										<div class="full-width">
+											
 											<select class="form-control input-normal" id="QueryType" name="QueryType" style="width:100%">
 												<option value="">None selected</option>
-												<option >General</option>
-												<option >Cleaning</option>
-												<option >Electrical</option>
-												<option >Noise</option>
-												<option >Parking</option>
-												<option >Plumbing</option>
-												<option >Repairs</option>
-												<option >Letters</option>
-												<option >Security</option>
-												<option >Gardens</option>
-												<option >Laundry</option>
-												<option >Health & Safety</option>
-												<option >Events</option>
 											</select>
 										</div>
 
@@ -596,8 +545,19 @@
 									</div>
 								</div>
 
+								<div class='col-sm-3'> 
+									<div class='form-group'>
+										<label for="user_title" for="DateRage">Date Rage</label>
+										<div class="full-width">
+											<input type="text" name="DateRage" id="DateRage" class="form-control input-normal" />
+										</div>
+									</div>
+								</div>
 
-								<div class='col-sm-4'>    
+
+
+
+								<div class='col-sm-3'>    
 									<div class='form-group'>
 										<label for="user_title"><span id="level_title">&nbsp;</span></label>
 										<div class="full-width">
@@ -711,6 +671,7 @@
 											<th data-field="queryInput" data-sortable="true">Query</th>
 											<th data-field="queryDate" data-sortable="true" width="10%">Date</th>
 											<th data-field="status" data-sortable="true">Status</th>
+											<th data-field="queryDoneTime" data-sortable="true">Date Done</th>
 											<th data-field="comment" data-sortable="true">Comment</th>
 											<th data-field="buttons">Action</th>
 										</tr>

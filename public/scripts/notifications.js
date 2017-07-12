@@ -16,7 +16,7 @@ $(document).ready(function(){
 	};
 
 	function get_all_notifications(){
-		$.get(host + 'Notifications/GetAllNotifications', '', function(response){
+		$.get('Notifications/GetAllNotifications', '', function(response){
 			var note_html = ''
 			$.each(response, function(key, value){
 
@@ -79,7 +79,7 @@ $(document).ready(function(){
 	    $("#Messageedt").html('');
 	    $("#StartDateedt").html('');
 	    $("#EndDateedt").html('');
-	    $.get(host + 'Notifications/GetNoteByID', data, function(response){
+	    $.get('Notifications/GetNoteByID', data, function(response){
 
 	        $("#Messageedt").val(response.message);
 	        $("#StartDateedt").val(response.showDateFrom);
@@ -93,7 +93,7 @@ $(document).ready(function(){
 
 		var data = {'message': message, 'id': id}
 
-		$.get(host + 'Notifications/SendNotification', data, function(response){
+		$.get('Notifications/SendNotification', data, function(response){
 
 			var output = '';
 			if(response.status == false) {
@@ -117,7 +117,7 @@ $(document).ready(function(){
 	    var ID        = $("#deleteID").val();
 	    post_data     = {'ID':ID.trim()};
 
-	    $.post(host + 'Notifications/DeleteNote', post_data, function(response){
+	    $.post('Notifications/DeleteNote', post_data, function(response){
 	        var output = '';
 	        if(response.status == false){
 	            output = '<div class="alert alert-danger"><p>'+response.text+'</p></div>';
@@ -181,7 +181,7 @@ $(document).ready(function(){
 	                            'PropertyList':PropertyList.trim(),
 	                            'Mood':Mood.trim()
 	                        };
-	        $.post(host + 'Notifications/SaveNotification', post_data, function(response){
+	        $.post('Notifications/SaveNotification', post_data, function(response){
 	            var output = '';
 	            if(response.status == false) {
 	                output = '<div class="alert alert-danger"><p>'+response.text+'</p></div>';
@@ -253,7 +253,7 @@ $(document).ready(function(){
 	                            'PropertyList':PropertyList.trim(),
 	                            'ID':ID.trim()
 	                        };
-	        $.post(host + 'Notifications/EditNotification', post_data, function(response){
+	        $.post('Notifications/EditNotification', post_data, function(response){
 	            var output = '';
 	            if(response.status == false) {
 	                output = '<div class="alert alert-danger"><p>'+response.text+'</p></div>';

@@ -8,7 +8,7 @@ $(document).ready(function(){
                         "tableTools": {
                                     "sSwfPath": "../public/libs/jquery/datatables/extensions/TableTools/swf/copy_csv_xls_pdf.swf"
                                 },
-                        "ajax": host + 'UserManagement/GetAllUsers'
+                        "ajax": 'UserManagement/GetAllUsers'
                     });
 
     
@@ -21,7 +21,7 @@ $(document).ready(function(){
 
     window.getUserEdit = function(id) {
         var data    = 'user_id='+id;
-        $.get(host + 'UserManagement/GetUserByID', data, function(response){
+        $.get('UserManagement/GetUserByID', data, function(response){
 
             $("#RepNameEdit").val(response.repName);
             $("#Passwordedt").val(response.password);
@@ -82,7 +82,7 @@ $(document).ready(function(){
                             };
 
 
-            $.post(host + 'UserManagement/EditUser', post_data, function(response){
+            $.post('UserManagement/EditUser', post_data, function(response){
 
                 var output = '';
 
@@ -112,7 +112,7 @@ $(document).ready(function(){
         post_data     = {'ID':ID.trim()};
 
 
-        $.post(host + 'UserManagement/DeleteUser', post_data, function(response){
+        $.post('UserManagement/DeleteUser', post_data, function(response){
 
             var output = '';
 

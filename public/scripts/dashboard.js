@@ -10,6 +10,8 @@ $(document).ready(function(){
 	get_bar_graph();
 
 
+	
+
 	function get_activities(){
 		var feedback = $.ajax({
 			type: "GET",
@@ -68,6 +70,24 @@ $(document).ready(function(){
 	};
 
 
+	get_query_types("#QueryType");
+	function get_query_types (iddiv){
+		$.get('AppApi/GetQueryTypes', 'category=all', function(response){
+			
+			var level_select = '<option></option>';
+			        	
+			$.each(response, function(key, value){
+				level_select += '<option value="' +value.name+ '">' +value.name+ '</option>';
+			});
+
+			$(iddiv).html(level_select);
+
+			sel_picker($('#QueryType'), 'Query Type');
+		});
+	}
+
+
+
 
 	
 
@@ -105,7 +125,7 @@ $(document).ready(function(){
 	  	    					'Comment':Comment.trim(),
 	  	    					'ID':ID.trim()
 	  	                    };
-	  	    $.post(host + 'Queries/MarkDone', post_data, function(response){
+	  	    $.post('Queries/MarkDone', post_data, function(response){
 
 	  	        var output = '';
 	  	        if(response.status == false){
@@ -141,7 +161,7 @@ $(document).ready(function(){
 	});
 
 
-	$.get(host + 'Dashboard/GetPropertyList', '', function(response){
+	$.get('Dashboard/GetPropertyList', '', function(response){
 		
 		var level_select = '<option></option>';
 		        	
@@ -171,7 +191,7 @@ $(document).ready(function(){
 		$.ajax({
 			type: "GET",
 			dataType: 'json',
-			url: host + 'Dashboard/GetMaintenanceCards',
+			url: 'Dashboard/GetMaintenanceCards',
 			error: function () {
 				alert("An error occurred.");
 			},
@@ -191,25 +211,26 @@ $(document).ready(function(){
 					card += '</div>';// Close heading
 					card += '<div class="card-tools">';// Start card tools
 					card += '<ul class="list-inline">';
-					card += '<li class="dropdown">';
-					card += '<a md-ink-ripple data-toggle="dropdown" class="md-btn md-flat md-btn-circle">';
-					card += '<i class="mdi-navigation-more-vert text-md"></i>';
-					card += '</a>';
-					card += '<ul class="dropdown-menu dropdown-menu-scale pull-right pull-up top text-color">';
-					card += ' <li><a data-toggle="modal" data-target="#AssignModal" class="ass_but" id="' +value.id+ '">Reassign</a></li>';
-					card += ' <li><a data-toggle="modal" data-target="#MarkDone" class="mark_done" id="' +value.id+ '">Mark Done</a></li>';
-					card += '</ul>';
-					card += '</li>';
+					card += '	<li class="dropdown">';
+					card += '		<a md-ink-ripple data-toggle="dropdown" class="md-btn md-flat md-btn-circle">';
+					card += '			<i class="mdi-navigation-more-vert text-md"></i>';
+					card += '		</a>';
+					card += '		<ul class="dropdown-menu dropdown-menu-scale pull-right pull-up top text-color">';
+					card += ' 			<li><a data-toggle="modal" data-target="#AssignModal" class="ass_but" id="' +value.id+ '">Reassign</a></li>';
+					card += ' 			<li><a data-toggle="modal" data-target="#MarkDone" class="mark_done" id="' +value.id+ '">Mark Done</a></li>';
+					card += '		</ul>';
+					card += '	</li>';
 					card += '</ul>';
 					card += '</div>';// End card tools
 					card += '<div class="item">';
-					card += '<img src="'+value.image+'" style="width:100%;height:100%"  />';
+					card += '	<img src="'+value.image+'" style="width:100%;height:100%"  />';
 					card += '</div>';
 					card += '<div class="p">';
 					
-					card += '<p><i>' +value.date+ '</i></p>';
-					card += '<p>' +value.query_type+ '</p>';
-					card += '<p>' +value.query+ '</p>';
+					card += '	<p><i>' +value.date+ '</i></p>';
+					card += '		<p>Unit Number: ' +value.unit_number+ '</p>';
+					card += '	<p>' +value.query_type+ '</p>';
+					card += '	<p>' +value.query+ '</p>';
 					card += '</div>';
 					card += '</div>';
 					card += '</div>';
@@ -241,7 +262,7 @@ $(document).ready(function(){
         var data = {'id' : $("#AID").val(), 
         			'assinee_id' : $("#AssignTo").val()
         			}
-        $.get(host + 'Queries/AssignUser', data, function(response){
+        $.get('Queries/AssignUser', data, function(response){
 
         	if(response.status == true){
         		output = '<div class="alert alert-success"><p>Submited</p></div>';

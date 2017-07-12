@@ -1,0 +1,32 @@
+{
+  "name": "sendbird",
+  "version": "2.4.28",
+  "authors": [
+    "SendBird <support@sendbird.com>"
+  ],
+  "homepage": "https://github.com/smilefam/SendBird-SDK-JavaScript",
+  "description": "SendBird JavaScript SDK",
+  "main": "SendBird.min.js",
+  "moduleType": [],
+  "keywords": [
+    "sendbird",
+    "sendbird.com",
+    "messaging",
+    "chat",
+    "js"
+  ],
+  "license": "Apache 2.0",
+  "ignore": [
+    "package.json"
+  ],
+  "_release": "2.4.28",
+  "_resolution": {
+    "type": "version",
+    "tag": "v2.4.28",
+    "commit": "0f90508eef61581089a4b410e7c1f95ca661cc91"
+  },
+  "_source": "https://github.com/smilefam/SendBird-SDK-JavaScript.git",
+  "_target": "~2.4",
+  "_originalSource": "sendbird",
+  "_direct": true
+}

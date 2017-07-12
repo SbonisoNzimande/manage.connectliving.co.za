@@ -111,14 +111,14 @@
 								<tr>
 									<th width="1%">#</th>
 									<th width="20%">Question Text</th>
-									<th>Question Options</th>
 									<th>Question Type</th>
+									<th>Question Options</th>
 									<th>Mandatory</th>
 									<th></th>
 								</tr>
 							</thead>
 							<tbody>
-								<tr>
+								<tr id="question_list">
 									<td >
 										<input type="text" class="form-control" id="QuestionNumber" name="QuestionNumber[]" placeholder="Question Number" style="width:50px">
 									</td>
@@ -126,10 +126,6 @@
 										<!-- <input type="text" class="form-control" id="QuestionText" name="QuestionText[]" placeholder="Question Text"> -->
 
 										<textarea class="form-control" id="QuestionText" name="QuestionText[]" placeholder="Question Text" cols="50" rows="5"></textarea>
-									</td>
-
-									<td>
-										<input type="text" class="form-control" id="QuestionOptions" name="QuestionOptions[]" placeholder="Question Options" data-role="tagsinput">
 									</td>
 
 									<td>
@@ -146,16 +142,25 @@
 											<option value="star_rating">Star Rating</option>
 										</select>
 									</td>
+
+									<td>
+										<input type="text" class="form-control QuestionOptions" id="QuestionOptions" name="QuestionOptions[]" placeholder="Question Options" data-role="tagsinput">
+									</td>
+
+									
 									<td>
 										<select class="form-control" name="QuestionMandatory[]" id="QuestionMandatory" placeholder="Question Mandatory">
-											<option value="false" selected="true">No</option>
+											<option value="false">No</option>
 											<option value="true">Yes</option>
 										</select>
 									</td>
 									<td>
-										<button type="button" class="btn btn-default" id="addmore">Add More</button>
+										<button type="button" class="btn btn-default addmore" id="addmore">Add</button>
+										<button type="button" class="btn btn-default dubplicateq" id="dubplicateq">Clone</button>
+										<button type="button" class="btn btn-default" id="removemore">Remove</button>
 									</td>
 								</tr>
+								
 
 							</tbody>
 						</table>
@@ -205,8 +210,8 @@
 								<tr>
 									<th class="col-md-2">#</th>
 									<th>Question Text</th>
-									<th>Question Options</th>
 									<th>Question Type</th>
+									<th>Question Options</th>
 									<th>Mandatory</th>
 									<th></th>
 								</tr>
@@ -248,6 +253,25 @@
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">No</button>
 					<button type="button" class="btn btn-primary" id="DeleteForm">Yes</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="DeleteResponceModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<input type="hidden" name="DeleteResponceID" id="DeleteResponceID" />
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">Delete Response</h4>
+				</div>
+				<div class="modal-body">
+					<div id="delete_responses_err"></div>
+					<p>Are you sure you want to delete this response?</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+					<button type="button" class="btn btn-primary" id="DeleteResponses">Yes</button>
 				</div>
 			</div>
 		</div>
@@ -401,7 +425,7 @@
 									</div>
 
 									<table data-toggle="table"
-									data-url="http://manage.connectliving.co.za/Forms/GetTable"
+									data-url="Forms/GetTable"
 									data-query-params="prop_id=<?=$data['prop_id'];?>"
 									data-search="true"
 									data-show-refresh="true"
@@ -431,7 +455,7 @@
 							<div role="tabpanel" class="tab-pane animated fadeInDown" id="submit_tab">
 
 								<table data-toggle="table"
-								data-url="http://manage.connectliving.co.za/Forms/GetResponcesByGroup"
+								data-url="Forms/GetResponcesByGroup"
 								data-query-params="prop_id=<?=$data['prop_id'];?>"
 								data-search="true"
 								data-show-refresh="true"

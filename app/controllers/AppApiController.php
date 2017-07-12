@@ -65,7 +65,7 @@ class AppApiController
 
 			case 'GetRulesDocument':
 				$property_id 		= self::$app_controller->sanitise_string($request->parameters['property_id']);
-				$table 			= self::$app_controller->get_properties_by_city ($property_id);
+				$table 				= self::$app_controller->get_properties_by_city ($property_id);
 
 				return json_encode($table);
 			break;
@@ -140,6 +140,28 @@ class AppApiController
 				return json_encode ($suppliers);
 			break;
 
+			case 'GetVeneList':
+				$prop_id 		= self::$app_controller->sanitise_string ($request->parameters['prop_id']);
+				$company_id 	= self::$app_controller->sanitise_string ($request->parameters['company_id']);
+				$suppliers   	= self::set_venue_list ($prop_id, $company_id);
+
+				return json_encode ($suppliers);
+			break;
+
+			case 'GetVenueDetails':
+				$venue_id 		= self::$app_controller->sanitise_string ($request->parameters['venue_id']);
+				$venues   		= self::set_venue_time_details ($venue_id);
+
+				return json_encode ($venues);
+			break;
+
+			case 'GetVenueBookings':
+				$venue_id 		= self::$app_controller->sanitise_string ($request->parameters['venue_id']);
+				$venues   		= self::set_venue_booking_details ($venue_id);
+
+				return json_encode ($venues);
+			break;
+
 			case 'GetJobByID':
 				$prop_id 		= self::$app_controller->sanitise_string ($request->parameters['property_id']);
 				$company_id 	= self::$app_controller->sanitise_string ($request->parameters['company_id']);
@@ -208,11 +230,21 @@ class AppApiController
 				$device			= self::$app_controller->get_app_registration_by_device ($device_token);
 
 				if (count($device) > 0) {
-					$return 	= array_merge(array('status' => true), $device[0]);
-					return json_encode($return);
+					$return 	= array_merge (array('status' => true), $device[0]);
+					self::$app_controller->write_to_log_file ('Device Valid ID: ' . $device[0]['a_user_id'] . ' - ' . $device[0]['userFullname']);
+					return json_encode ($return);
 				}else{
-					return json_encode(array('status' => false));
+					self::$app_controller->write_to_log_file ('Device Invalid Token: ' .$device_token);
+					return json_encode (array ('status' => false));
 				}
+			break;
+
+			case 'GetAppUserByID':
+				$user_id 	= self::$app_controller->sanitise_string($request->parameters['user_id']);
+				$device		= self::$app_controller->get_app_registration_by_userid ($user_id);
+
+				$return 	= $device[0];
+				return json_encode($return);
 			break;
 		}
 	}
@@ -232,7 +264,9 @@ class AppApiController
 		switch ($subRequest) {
 			case 'SaveFormData':
 				$form_data 	= array_map(self::$app_controller->sanitise_string, $request->parameters);
-				$form 		= self::submit_form ($form_data);
+				$image_data = array_map(self::$app_controller->sanitise_string, $_FILES);
+
+				$form 		= self::submit_form ($form_data, $image_data);
 			return json_encode($form);
 			break;
 
@@ -243,9 +277,13 @@ class AppApiController
 				$first_name 	= self::$app_controller->sanitise_string($request->parameters['first_name']);
 				$surname 		= self::$app_controller->sanitise_string($request->parameters['surname']);
 				$cellphone 		= self::$app_controller->sanitise_string($request->parameters['cellphone']);
+				$email 			= self::$app_controller->sanitise_string($request->parameters['email']);
 				$user_type 		= self::$app_controller->sanitise_string($request->parameters['user_type']);
 				$device_token	= self::$app_controller->sanitise_string($request->parameters['device_token']);				
-				$player_id		= self::$app_controller->sanitise_string($request->parameters['player_id']);				
+				$player_id		= self::$app_controller->sanitise_string($request->parameters['player_id']);	
+
+
+				self::$app_controller->write_to_log_file ('Registering User: ' . $first_name . ' ' .$surname. ' - ' . $device_token);			
 
 				$save 			= self::submit_user (
 									$company_id,
@@ -254,36 +292,52 @@ class AppApiController
 									$first_name,
 									$surname,
 									$cellphone,
+									$email,
 									$user_type,
 									$device_token,
 									$player_id
 								);
 				return json_encode($save);
 				break;
+			case 'RequestPropertyAccess':
+				$property_name 	= self::$app_controller->sanitise_string($request->parameters['property_name']);
+				$address 		= self::$app_controller->sanitise_string($request->parameters['address']);
+				$full_name 		= self::$app_controller->sanitise_string($request->parameters['full_name']);
+				$user_email 	= self::$app_controller->sanitise_string($request->parameters['user_email']);
+								
+
+				$save 			= self::submit_request (
+									$property_name,
+									$address,
+									$full_name,
+									$user_email
+								);
+				return json_encode($save);
+				break;
 
 				case 'SaveMaintanceQuery':
-					$device_token 	= self::$app_controller->sanitise_string($request->parameters['device_token']);
-					$company_id 	= self::$app_controller->sanitise_string($request->parameters['company_id']);
-					$property_id 	= self::$app_controller->sanitise_string($request->parameters['property_id']);
-					$unit_number 	= self::$app_controller->sanitise_string($request->parameters['unit_number']);
-					$query_type 	= self::$app_controller->sanitise_string($request->parameters['query_type']);
-					$query_detail 	= self::$app_controller->sanitise_string($request->parameters['query_detail']);
-					$user_name 		= self::$app_controller->sanitise_string($request->parameters['user_name']);
-					$cell_phone 	= self::$app_controller->sanitise_string($request->parameters['cell_phone']);
+					$device_token 	= self::$app_controller->sanitise_string ($request->parameters['device_token']);
+					$company_id 	= self::$app_controller->sanitise_string ($request->parameters['company_id']);
+					$property_id 	= self::$app_controller->sanitise_string ($request->parameters['property_id']);
+					$user_id 		= self::$app_controller->sanitise_string ($request->parameters['user_id']);
+					$unit_number 	= self::$app_controller->sanitise_string ($request->parameters['unit_number']);
+					$query_type 	= self::$app_controller->sanitise_string ($request->parameters['query_type']);
+					$query_detail 	= self::$app_controller->sanitise_string ($request->parameters['query_detail']);
+					$user_name 		= self::$app_controller->sanitise_string ($request->parameters['user_name']);
+					$cell_phone 	= self::$app_controller->sanitise_string ($request->parameters['cell_phone']);
 
 					$file_upload 	= false;
 
 					if (isset($_FILES['file'])) {// Test if file upload
 						$file_upload = $_FILES['file'];
 					}
-
-					// var_dump($_FILE['file']);
 								
 
 					$save 			= self::submit_query (
 											$device_token,
 											$company_id,
 											$property_id,
+											$user_id,
 											$unit_number,
 											$query_type,
 											$query_detail,
@@ -298,9 +352,50 @@ class AppApiController
 				case 'DeleteProperty':
 					
 					$property_id 	= self::$app_controller->sanitise_string($request->parameters['property_id']);
+					$device_token 	= self::$app_controller->sanitise_string($request->parameters['device_token']);
 					
 					$save 			= self::remove_property (
-											$property_id
+											$property_id,
+											$device_token
+										);
+
+				return json_encode($save);
+				break;
+
+				case 'UpdateProfileInfo':
+					
+					$user_id 		= self::$app_controller->sanitise_string($request->parameters['user_id']);
+					$full_name 		= self::$app_controller->sanitise_string($request->parameters['full_name']);
+					$email 			= self::$app_controller->sanitise_string($request->parameters['email']);
+					$mobile_number	= self::$app_controller->sanitise_string($request->parameters['mobile_number']);
+					$unit_number	= self::$app_controller->sanitise_string($request->parameters['unit_number']);
+					
+					$save 			= self::validate_app_user (
+											$user_id,
+											$full_name,
+											$email,
+											$mobile_number,
+											$unit_number
+										);
+
+				return json_encode($save);
+				break;
+
+				case 'EmailDocument':
+					
+					$email 			= self::$app_controller->sanitise_string($request->parameters['email']);
+					$full_name 		= self::$app_controller->sanitise_string($request->parameters['full_name']);
+					$url 			= self::$app_controller->sanitise_string($request->parameters['url']);
+					$to_name 		= self::$app_controller->sanitise_string($request->parameters['to_name']);
+					$from_email		= self::$app_controller->sanitise_string($request->parameters['from_email']);
+
+
+					$save 			= self::send_document_to_user (
+											$email,
+											$full_name,
+											$url,
+											$to_name,
+											$from_email
 										);
 
 				return json_encode($save);
@@ -324,8 +419,6 @@ class AppApiController
 					if (isset($_FILES['file'])) {// Test if file upload
 						$file_upload = $_FILES['file'];
 					}
-
-					// var_dump($_FILE['file']);
 								
 
 					$save 			= self::submit_service_on_demand (
@@ -346,6 +439,25 @@ class AppApiController
 				return json_encode($save);
 				break;
 
+			case 'BookAVenue':
+				$VenueID 			= self::$app_controller->sanitise_string($request->parameters['VenueID']);
+				$NumberOfAttendees 	= self::$app_controller->sanitise_string($request->parameters['NumberOfAttendees']);
+				$BookingDate 		= self::$app_controller->sanitise_string($request->parameters['BookingDate']);
+				$BookingTimeFrom 	= self::$app_controller->sanitise_string($request->parameters['BookingTimeFrom']);
+				$BookingTimeTo 		= self::$app_controller->sanitise_string($request->parameters['BookingTimeTo']);
+				$Requirements 		= self::$app_controller->sanitise_string($request->parameters['Requirements']);
+
+				$save 			= self::submit_booking_on_demand (
+											$VenueID,
+											$NumberOfAttendees,
+											$BookingDate,
+											$BookingTimeFrom,
+											$BookingTimeTo,
+											$Requirements
+										);
+
+				return json_encode($save);
+			break;
 			case 'LogToFile':
 					$content 	= self::$app_controller->sanitise_string ($request->parameters['content']);
 					$rite 		= self::$app_controller->write_to_log_file ($content);
@@ -360,11 +472,12 @@ class AppApiController
 	}
 
 	static public function remove_property (
-											$property_id
+											$property_id,
+											$device_token
 										) {
 
 
-		$property = self::$app_controller->get_app_registration_by_property ($property_id);
+		$property = self::$app_controller->get_app_registration_by_id ($device_token, $property_id);
 
 		if (count($property) === 0) {
 			return array('status'  => false, 'text' => 'Invalid Property');
@@ -372,13 +485,95 @@ class AppApiController
 
 
 		$save 		= self::$app_controller->delete_app_reg (
+								$device_token,
 								$property_id
 							);
 
 		if ($save === true) {
-			return array('status' => true, 'text' => 'Property Deleted'. $save);
+			return array('status' => true, 'text' => 'Property Deleted, '. $save);
 		}else{
-			return array('status' => false, 'text' => 'Failed to delete, ' . $save);
+			return array('status' => false, 'text' => 'Failed To Delete, ' . $save);
+		}
+	}
+
+	static public function send_document_to_user (
+											$email,
+											$full_name,
+											$url,
+											$to_name,
+											$from_email
+										) {
+
+
+		if (!self::$app_controller->validate_variables ($email, 10)) {
+			return array('status'  => false, 'text' => 'Invalid Email'.$email);
+		}
+
+		// if (!self::$app_controller->validate_variables ($to_name, 3)) {
+		// 	return array('status'  => false, 'text' => 'Invalid Email To Name');
+		// }
+
+		if (filter_var($url, FILTER_VALIDATE_URL) !== false){
+			return array('status'  => false, 'text' => 'Invalid Document URL');
+		}
+
+		$html_email 	= self::$app_controller->get_email_document_email (
+								$full_name,
+								$to_name
+							);
+
+		$emails[] 		= array(
+							'email' => $email,
+							'full_name' => $to_name
+							);
+
+		$attachment 			= array(
+									'filename' => 'filename', 
+									'path' => $url,
+									'encoding' => 'base64'
+									);
+
+
+// send_emails ($Message, $Subject, $From, $emails, $attachment = array())
+		$emailsend 			= self::$app_controller->send_emails ($html_email, "connectLiving Document", 'support@connectliving.co.za', $emails, $attachment);
+
+		// print_r($emailsend);
+		// die();
+		if ($email) {
+			return array('status' => true, 'text' => 'Email Sent');
+		}else{
+			return array('status' => false, 'text' => 'Failed To Send Document, ' . $save);
+		}
+	}
+
+	static public function validate_app_user (
+										$user_id,
+										$full_name,
+										$email,
+										$mobile_number,
+										$unit_number
+									) {
+
+
+		$users = self::$app_controller->get_app_registration_by_userid ($user_id);
+
+		if (count($users) === 0) {
+			return array('status'  => false, 'text' => 'Invalid User');
+		}
+
+
+		$save 		= self::$app_controller->updated_app_user (
+								$user_id,
+								$full_name,
+								$email,
+								$mobile_number,
+								$unit_number
+							);
+
+		if ($save === true) {
+			return array('status' => true, 'text' => 'Information updated');
+		}else{
+			return array('status' => false, 'text' => 'Failed To Update, ' . $save);
 		}
 	}
 
@@ -725,6 +920,88 @@ class AppApiController
 		return $return_array;
 	}
 
+	/**
+	 * @param
+	 * @return
+	 */
+	static public function set_venue_list ($prop_id, $company_id) {
+		$venues   	= self::$app_controller->get_all_prop_venues ($prop_id);
+
+		// die(var_dump($venues));
+
+		$return_array 	= array();
+		$dir 			= 'http://connectliving.co.za/companies/' . $company_id .'/properties/' . $prop_id .'/';
+
+		foreach ($venues as $s) {
+
+			if (!empty($s['image'])) {
+				$file 		= $dir.$s['image'];
+			}else{
+				$file 		= 'img/placeholder.png';
+			}
+
+
+			$return_array[] = array(
+					'id' => $s['id'],
+					'venue_name' => $s['name'],
+					'days_open' => $s['days_open'],
+					'image' => $file,
+					'created' => $s['created']
+				);
+		}
+
+		return $return_array;
+	}
+
+	/**
+	 * @param
+	 * @return
+	 */
+	static public function set_venue_time_details ($venue_id) {
+		$venues   		= self::$app_controller->get_venue_details ($venue_id);
+		$return_array 	= array();
+		
+
+		foreach ($venues as $s) {
+
+		
+
+
+			$return_array[] = array(
+					'day_name' => $s['day'],
+					'time_open' => $s['time_open'],
+					'time_closed' => $s['time_close']
+				);
+		}
+
+		return $return_array;
+	}
+
+	/**
+	 * @param
+	 * @return
+	 */
+	static public function set_venue_booking_details ($venue_id) {
+		$venues   		= self::$app_controller->get_venue_bookings ($venue_id);
+		$return_array 	= array();
+		
+
+		foreach ($venues as $s) {
+
+			$return_array[] = array(
+					'venue_id' => $s['venue_id'],
+					'number_attendees' => $s['number_attendees'],
+					'booking_date' => $s['booking_date'],
+					'booking_time_from' => $s['booking_time_from'],
+					'booking_time_to' => $s['booking_time_to'],
+					'requirements' => $s['requirements'],
+					'created' => $s['created']
+				);
+		}
+
+		return $return_array;
+	}
+
 	
 
 	/**
@@ -737,11 +1014,19 @@ class AppApiController
 		// $forms 			= self::$app_controller->get_form_by_id ($form_id);
 
 		// decode questions object
-		array_walk ( $forms, function (&$key) { $key["questions"] = json_decode($key['questions'], true); } );
+		// array_walk ( $forms, function (&$key) { $key["form_instruction"] = htmlspecialchars($key['form_instruction']); } );
+		array_walk ( $forms, function (&$key) { $key["questions"] = json_decode(preg_replace('/\s+/', ' ', $key['questions']), true); } );
+		
 		
 		foreach ($forms as $s) {
 
 			$questions = $s['questions'];
+
+			// if ($s['id'] == 178) {
+			// 	die(var_dump($s));
+			// }
+
+			// die(var_dump($questions));
 
 			// Format option to an array
 			array_walk ( $questions, function (&$key) { $key['q_option'] = explode( ',', $key['q_option']); } );
@@ -788,8 +1073,10 @@ class AppApiController
 
 	static protected function set_up_dashbord_data ($company_id, $property_id) {
 		$notices 			= self::$app_controller->get_property_notification ($company_id, $property_id);
+		$property 			= self::$app_controller->get_property_byid ($property_id);
 		
 		$image 				= self::set_get_image ($company_id, $property_id);
+		$marketing_link 	= $property[0]['marketing_link'];
 
 		$return_array 		= array();
 		foreach ($notices as $n) {
@@ -798,12 +1085,17 @@ class AppApiController
 			$showDateTo 	= $n['showDateTo'];
 			$mood 			= $n['mood'];
 		}
+
+		
 		$return_array  		= array(
 								'message' => $message,
 								'date' => $showDateFrom,
 								'showDateTo' => $showDateTo,
 								'mood' => $mood,
-								'image' => $image
+								'image' => $image['home_image'],
+								'company_logo' => $image['company_logo'],
+								'marketing_link' => $marketing_link
+
 								);
 
 		return $return_array;
@@ -860,26 +1152,22 @@ class AppApiController
 
 	static public function set_get_image ($company_id, $prop_id){
 
-		$homeimage 	= 'http://connectliving.co.za/companies/' . $company_id .'/properties/' . $prop_id .'/homeImage.jpg';
+		$homeimage 		= 'http://connectliving.co.za/companies/' . $company_id .'/properties/' . $prop_id .'/homeImage.jpg';
+		$company_logo 	= 'http://connectliving.co.za/companies/' . $company_id .'/properties/' . $prop_id .'/logo.jpg';
 
-		// $cpant 		= $dir.'/logo.jpg';
-		// $cdata 		= file_get_contents($cpant);
-		// $epant 		= $dir.'/homeImage.jpg';
-		// $edata 		= file_get_contents($epant);
+		if (!is_array (getimagesize($homeimage))) {
+			$homeimage  = null;
+		}
 
-		// $cbase64 	= false;
-		// if ($cdata) {
-		// 	$cbase64 	= 'data:image/jpg;base64,' . base64_encode($cdata);
-		// }
-
-
-		// $ebase64 	= false;
-		// if ($edata) {
-		// 	$ebase64 	= 'data:image/jpg;base64,' . base64_encode($edata);
-		// }
+		if (!is_array (getimagesize($company_logo))) {
+			$company_logo = null;
+		}
 	
 
-		return $homeimage;
+		return array (
+				'home_image'=> $homeimage,
+				'company_logo'=> $company_logo
+				);
 	}
 
 
@@ -891,6 +1179,7 @@ class AppApiController
 								$first_name,
 								$surname,
 								$cellphone,
+								$email,
 								$user_type,
 								$device_token,
 								$player_id
@@ -919,7 +1208,11 @@ class AppApiController
 			return array('status'  => false, 'text' => 'Invalid User Type');
 		}
 
-		$device_info 	= self::$app_controller->get_app_registration_by_device ($device_token);
+		// if (!self::$app_controller->validate_variables ($email, 10)) {
+		// 	return array('status'  => false, 'text' => 'Invalid Email');
+		// }
+
+		$device_info 	= self::$app_controller->get_app_registration_by_company ($company_id, $property_id, $unit_number, $device_token);
 
 		// if (count($device_info) === 1) {
 		// 	return array('status'  => false, 'text' => 'Device already registered');
@@ -932,6 +1225,7 @@ class AppApiController
 								$unit_number,
 								$full_name,
 								$cellphone,
+								$email,
 								$user_type,
 								$device_token,
 								$player_id
@@ -945,10 +1239,74 @@ class AppApiController
 	}
 
 	/*** save query ***/
+	static public function submit_request (
+									$property_name,
+									$address,
+									$full_name,
+									$user_email
+								) {
+
+		
+		if (!self::$app_controller->validate_variables ($property_name, 3)) {
+			return array('status'  => false, 'text' => 'Invalid Property Name');
+		}
+
+		if (!self::$app_controller->validate_variables ($address, 3)) {
+			return array('status'  => false, 'text' => 'Invalid Address');
+		}
+
+		if (!self::$app_controller->validate_variables ($full_name, 3)) {
+			return array('status'  => false, 'text' => 'Invalid Fullname');
+		}
+
+		if (!self::$app_controller->validate_variables ($user_email, 10)) {
+			return array('status'  => false, 'text' => 'Invalid Email');
+		}
+
+		$info_email 	= "sboniso@weareconnect.co.za";
+		$propert_html  	= self::$app_controller->get_property_request_email (
+								$property_name, 
+								$address, 
+								$full_name, 
+								$user_email
+							);
+
+		$send  			= self::$app_controller->send_email ($propert_html, 'connectLiving Property Request', $info_email, $full_name);
+
+		if ($send == true) {
+			return array('status' => true, 'text'  => 'Request Sent');
+		}else{
+			return array('status' => false, 'text' => 'Failed to send, ' . $send);
+		}
+
+		// Send email to info@weareconnect.co.za
+		// Send tank you email to user
+
+		
+		// $save 		= self::$app_controller->insert_app_reg (
+		// 						$company_id,
+		// 						$property_id,
+		// 						$unit_number,
+		// 						$full_name,
+		// 						$cellphone,
+		// 						$user_type,
+		// 						$device_token,
+		// 						$player_id
+		// 					);
+
+		// if ($save['status'] === true) {
+		// 	return array('status' => true, 'text' => 'User Registered', $save);
+		// }else{
+		// 	return array('status' => false, 'text' => 'Failed to insert, ' . $save);
+		// }
+	}
+
+	/*** save query ***/
 	static public function submit_query (
 									$device_token,
 									$company_id,
 									$property_id,
+									$user_id,
 									$unit_number,
 									$query_type,
 									$query_detail,
@@ -960,7 +1318,7 @@ class AppApiController
 		$device_info 	= self::$app_controller->get_app_registration_by_device ($device_token);
 
 		if (count($device_info) < 1) {
-			return array('status'  => false, 'text' => 'Device Not Registered');
+			return array('status'  => false, 'text' => 'Device Not Registered - 1');
 		}
 
 		$property_info 	= self::$app_controller->get_property_info_byid ($property_id);
@@ -989,7 +1347,7 @@ class AppApiController
 			$create 					= self::$app_controller->created_directory ($dir);
 			$file_name 					= self::$app_controller->upload_file ($file_upload, $dir);
 			// die(var_dump($name));
-			$query_image 					= 'http://connectliving.co.za/companies/'.$company_id. '/properties/'.$property_id.'/queries/'.$file_name;
+			$query_image 				= 'http://connectliving.co.za/companies/'.$company_id. '/properties/'.$property_id.'/queries/'.$file_name;
 		}
 
 		$property_name 					= $property_info[0]['propertyName'];
@@ -1015,6 +1373,7 @@ class AppApiController
 		$save 		= self::$app_controller->insert_app_query (
 								$device_token,
 								$property_id,
+								$user_id,
 								$unit_number,
 								$query_type,
 								$query_detail,
@@ -1028,9 +1387,9 @@ class AppApiController
 
 
 		if ($save === true) {
-			$send  = self::$app_controller->send_email ($get_email, 'connectLIVING Query Details', $building_manager_email1, $building_manager_name);
+			$send  = self::$app_controller->send_email ($get_email, $property_name . ' - Query Details', $building_manager_email1, $building_manager_name);
 
-			$send2  = self::$app_controller->send_email ($get_email, 'connectLIVING Query Details', $building_manager_email2, $building_manager_name);
+			$send2  = self::$app_controller->send_email ($get_email, $property_name . '- Query Details', $building_manager_email2, $building_manager_name);
 			return array ('status' => true, 'text' => 'Query Submitted');
 		}else{
 			return array ('status' => false, 'text' => 'Failed to insert, ' . $save);
@@ -1100,10 +1459,109 @@ class AppApiController
 		}
 	}
 
-	static public function submit_form ($form_data) {
+	/*** save booking on demand ***/
+	static public function submit_booking_on_demand (
+											$VenueID,
+											$NumberOfAttendees,
+											$BookingDate,
+											$BookingTimeFrom,
+											$BookingTimeTo,
+											$Requirements
+										) {
+
+
+		$venue_info   		= self::$app_controller->get_venue_details ($VenueID);
+
+
+		if (count($venue_info) < 1) {
+			return array('status'  => false, 'text' => 'Venue Does Not Exists');
+		}
+
+
+		if (!is_numeric($NumberOfAttendees)) {
+			return array('status'  => false, 'text' => 'Please Enter Valid Number of Attendees');
+		}
+
+		if (!preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $BookingDate)) {
+			return array('status'  => false, 'text' => 'Please Enter Valid Date (YYYY-MM-DD)');
+		}
+
+		if (!preg_match("/(2[0-4]|[01][1-9]|10):([0-5][0-9])/", $BookingTimeFrom)) {
+			return array('status'  => false, 'text' => 'Please Enter Valid Time From (HH-MM)');
+		}
+
+		if (!preg_match("/(2[0-4]|[01][1-9]|10):([0-5][0-9])/", $BookingTimeTo)) {
+			return array('status'  => false, 'text' => 'Please Enter Valid Time To (HH-MM)');
+		}
+
+
+		if (empty($Requirements)) {
+			return array('status'  => false, 'text' => 'Please Enter Valid Requirements');
+		}
+
+
+		// Validate if future date
+		$current_date = date('Y-m-d');
+
+		if ($BookingDate <= $current_date) {
+		  // not open yet!
+			return array('status'  => false, 'text' => 'Please Enter Future Date');
+		}
+
+
+		$venue_bookings   		= self::$app_controller->get_venue_booking_date ($VenueID, $BookingDate, $BookingTimeFrom, $BookingTimeTo);
+
+		//-- check if the venue is already booked --//
+		if (count($venue_bookings) > 0) {
+			return array('status'  => false, 'text' => 'Already Booked For This Day');
+		}
+
+		// get day of week
+		$day_week   = date('l', strtotime($BookingDate));
+
+
+
+		//- check if venue is open day -//
+		$days_open 	= self::$app_controller->get_venue_days_open ($VenueID, $day_week);
+
+
+		if (count($days_open) === 0) {
+			return array('status'  => false, 'text' => 'Venue Closed On ' . $day_week);
+		}
+
+		// -- Validate time -- //
+		if (!($BookingTimeFrom < $BookingTimeTo)) {
+			return array('status'  => false, 'text' => 'Time From Must Be Less That Time To');
+		}
+
+		// -- Validate Date Open -- //
+		$TimeOpenFrom 	= $days_open[0]['booking_time_from'];
+		if (!($BookingTimeFrom >= $TimeOpenFrom)) {
+			return array('status'  => false, 'text' => 'Time From Must Be From ' . $TimeOpenFrom);
+		}
+
+		
+		$save 		= self::$app_controller->insert_booking_on_demand (
+								$VenueID,
+								$NumberOfAttendees,
+								$BookingDate,
+								$BookingTimeFrom,
+								$BookingTimeTo,
+								$Requirements
+							);
+
+		if ($save === true) {
+			return array('status' => true, 'text' => 'Venue Successfully Booked');
+		}else{
+			return array('status' => false, 'text' => 'Failed to insert, ' . $save);
+		}
+	}
+
+	static public function submit_form ($formData, $imageData) {
 		
 		$return_array 	=  array();
 		/*** merge form data with image data ***/
+		$form_data 		= array_merge ($formData, $imageData);
 		
 
 		if (empty($form_data['form_id'])) {
@@ -1141,7 +1599,9 @@ class AppApiController
 		
 		$directory 	= '../companies/' . $comp_id .'/properties/' . $prop_id . '/form_submission_files/';
 		
-		self::$app_controller->created_directory($directory);		
+		self::$app_controller->created_directory($directory);
+
+		// die(var_dump($form_data));		
 
 		foreach ($questions as $s) {
 			$q_num 		 = $s['q_num'];
@@ -1152,6 +1612,8 @@ class AppApiController
 			$q_type 	 = $s['q_type'];
 			$q_mandatory = $s['q_mandatory'];
 
+			// die(var_dump(isset($q_mandatory)));
+
 			if (	
 					(empty($form_data[$q_name]) OR  !isset($form_data[$q_name]))
 					AND ($q_mandatory == 'true')
@@ -1159,41 +1621,88 @@ class AppApiController
 				$errors   .= 'Please answer question ' .$q_num. '<br />';
 			}else{
 
-				if (is_array($form_data[$q_name])) {// Checkbox or Multiple fields
-					$responce  = implode(',', $form_data[$q_name]);
-				}elseif ($q_type  	== 'signature') {
-					/* Check if signature */
+				switch ($q_type) {
+					case 'checkbox':
+						$responce  	= implode(',', $form_data[$q_name]);
+						break;
+					case 'file_upload':
+						$upload 		 = self::$app_controller->upload_form_file ($form_data[$q_name], $directory);
 
-					$base_str 	   = str_replace('data:image/png;base64,', '', $form_data[$q_name]);
-					$responce  	   = 'singiture_' . uniqid().'.png';// siniture file name
-					$basestr   	   = base64_decode ($base_str);// get singiture string
+						if ($upload) {
+							$responce 	 = $upload;
+						}else{
+							$errors   	.= 'Please answer question ' .$q_num. '<br />';
+						}
+					break;
+					case 'signature':
+						// die(var_dump($form_data[$q_name]));
+						if (strpos($form_data[$q_name], 'data:image/png;base64,') !== false) {
+							$base_str 	   = str_replace('data:image/png;base64,', '', $form_data[$q_name]);
+							$responce  	   = 'signature_' . uniqid().'.png';// siniture file name
+							$basestr   	   = base64_decode ($base_str, true);// get singiture string
 
-					// echo $basestr;
-					// die($basestr);
+							$filename_path = $directory . $responce;// image path
+							file_put_contents ($filename_path, $basestr);// Save sigature to path
+						}else{
+							$errors   .= 'Please answer question ' .$q_num. '<br />';
+						}
+						
+						break;
+					
+					case 'star_rating':
+					case 'radio':
+					case 'free_text':
+					case 'number_text':
+					case 'date':
+					case 'select':
+						$responce  = $form_data[$q_name];
 
-					$filename_path = $directory . $responce;// image path
-
-					file_put_contents ($filename_path, $basestr);// Save sigature to path
-
-				}elseif ($q_type == 'file_upload') {
-					/* Check if signature */
-
-					$base_str 	   = str_replace('data:image/jpeg;base64,', '', $form_data[$q_name]);
-					$responce  	   = 'fileupload_' . uniqid().'.jpeg';// image file name
-					$basestr   	   = base64_decode ($base_str);// get image string
-
-					$filename_path = $directory . $responce;// image path
-
-					file_put_contents ($filename_path, $basestr);// Save sigature to path
-
-				}else{
-					$responce  = $form_data[$q_name];
+						// die(var_dump($q_num));
+						break;
 				}
+
+				// if ($q_type 	== 'checkbox') {// Checkbox or Multiple fields
+
+				// 	$responce  	= implode(',', $form_data[$q_name]);
+
+				// }elseif ($q_type  	== 'signature') {
+				// 	/* Check if signature */
+
+				// 	$base_str 	   = str_replace('data:image/png;base64,', '', $form_data[$q_name]);
+				// 	$responce  	   = 'signature_' . uniqid().'.png';// siniture file name
+				// 	$basestr   	   = base64_decode ($base_str, true);// get singiture string
+
+				// 	// echo $basestr;
+				// 	// die(var_dump($form_data[$q_name]));
+
+				// 	$filename_path = $directory . $responce;// image path
+
+				// 	file_put_contents ($filename_path, $basestr);// Save sigature to path
+
+				// }elseif ($q_type == 'file_upload') {
+				// 	/* Check if file upload */
+
+				// 	$upload 		 = self::$app_controller->upload_form_file ($form_data[$q_name], $directory);
+
+				// 	if ($upload) {
+				// 		$responce 	 = $upload;
+				// 	}else{
+				// 		$errors   	.= 'Please answer question ' .$q_num. '<br />';
+				// 	}
+					
+
+				// }else{
+				// 	$responce  = $form_data[$q_name];
+
+				// 	die(var_dump($responce));
+				// }
 
 				// /* Check if signature */
 				// if ($q_type == 'signature') {
 				// 	# code...
 				// }
+
+
 
 				$save_array[] = array(
 					'form_id'	=> $form_id,
@@ -1268,7 +1777,7 @@ class AppApiController
 				
 			}
 
-			$return_array 	= array('status' => true);
+			$return_array 	= array('status' => true, 'text' => 'Form Submitted');
 		}
 
 		return $return_array;

@@ -4,7 +4,7 @@ $(document).ready(function(){
 
 	var form_data 	= {'store_id': store_id};
 
-	$.get(host + 'SurveySetup/GetSurveysByStoreID', form_data, function(response){
+	$.get('SurveySetup/GetSurveysByStoreID', form_data, function(response){
 
 			// Build select
         	var survey_list = '<h5>Survey\'s to Complete</h5>';

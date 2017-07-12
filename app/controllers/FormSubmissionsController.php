@@ -208,9 +208,9 @@ class FormSubmissionsController
 		/*** merge form data with image data ***/
 		$form_data 		= array_merge($formData, $imageData);
 
-
-
 		
+
+
 
 		if (empty($form_data['FormID'])) {
 			return array('status'  => false, 'text' => 'No from selected');
@@ -251,12 +251,14 @@ class FormSubmissionsController
 
 		foreach ($questions as $s) {
 			$q_num 		 = $s['q_num'];
+
 			$q_num2 	 = str_replace('.', '_', $s['q_num']);
 
 			$q_id 		 = $s['id'];
 			$q_name		 = 'question' . $q_num2;
 			$q_type 	 = $s['q_type'];
 			$q_mandatory = $s['q_mandatory'];
+
 
 			if (	
 					(empty($form_data[$q_name]) OR  !isset($form_data[$q_name]))
@@ -265,23 +267,43 @@ class FormSubmissionsController
 				$errors   .= 'Please answer question ' .$q_num. '<br />';
 			}else{
 
-				if (is_array($form_data[$q_name])) {// Checkbox or Multiple fields
+				if (is_array($form_data[$q_name]) AND !($q_type == 'file_upload')) {// Checkbox or Multiple fields
+					// die(var_dump($form_data[$q_name]));
 					$responce  = implode(',', $form_data[$q_name]);
 				}elseif ($q_type  	== 'signature') {
 					/* Check if signature */
 
 					$base_str 	   = str_replace('image/png;base64,', '', $form_data[$q_name]);
-					$responce  	   = 'singiture_' . uniqid().'.png';// siniture file name
+					$responce  	   = 'signature_' . uniqid().'.png';// siniture file name
 					$basestr   	   = base64_decode($base_str);// get singiture string
-
-					// echo $basestr;
-					// die($basestr);
 
 					$filename_path = $directory . $responce;// image path
 
 					file_put_contents ($filename_path, $basestr);// Save sigature to path
 
+				}elseif ($q_type == 'file_upload') {
 
+					// $q_num 	    = $s['q_num'];
+					// $q_name	    = 'question' . $q_num;
+					// $q_name	    = $form_data['survey-form'];
+
+					$responce 		= self::$app_controller->upload_file ($form_data[$q_name], $directory);
+
+					// $filename 	= $form_data[$q_name]["name"];
+					// $tmp_name 	= $form_data[$q_name]["tmp_name"];
+					// $ext 		= pathinfo($filename, PATHINFO_EXTENSION);
+
+					// $responce 	= 'image_'  .
+					// 			  $q_num    . '_' .
+					// 			  $prop_id  . '_' .
+					// 			  $comp_id  . '.' .
+					// 			  uniqid()  .
+					// 			  $ext;
+
+					// move_uploaded_file ($file["tmp_name"], getcwd(). '/' .$dir .'/'. $name);
+					// move_uploaded_file($form_data[$q_name]["tmp_name"], $directory. '/' . $filename);
+
+					
 				}else{
 					$responce  = $form_data[$q_name];
 				}

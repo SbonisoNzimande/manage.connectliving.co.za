@@ -341,6 +341,117 @@ abstract class AppModel
 	 * @param  
 	 * @return 
 	 */
+	static public function get_all_prop_venues_db ($prop_id) {
+
+		$query 		= "SELECT 
+						  *
+						FROM
+						  `property_venues`
+
+						WHERE prop_id = '".$prop_id."';";
+
+						// echo $query;
+
+		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
+
+		$results    = self::fetch_assoc_arr ($stmt);
+
+		return $results;
+	}
+
+	/**
+	 * @param  
+	 * @return 
+	 */
+	static public function get_venue_details_db ($venue_id) {
+
+		$query 		= "SELECT 
+						  * 
+						FROM
+						  `property_venues` AS pv 
+						  INNER JOIN `venues_days_open` AS vdo 
+						    ON vdo.`venue_id` = pv.`id` 
+						WHERE pv.`id` = '".$venue_id."';";
+
+						// echo $query;
+
+		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
+
+		$results    = self::fetch_assoc_arr ($stmt);
+
+		return $results;
+	}
+
+	/**
+	 * @param  
+	 * @return 
+	 */
+	static public function get_venue_bookings_db ($venue_id) {
+
+		$query 		= "SELECT 
+						  * 
+						FROM
+						  `venue_bookings` AS vb 
+						WHERE vb.`venue_id` = '".$venue_id."';";
+
+						// echo $query;
+
+		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
+
+		$results    = self::fetch_assoc_arr ($stmt);
+
+		return $results;
+	}
+
+	/**
+	 * @param  
+	 * @return 
+	 */
+	static public function get_venue_booking_date_db ($VenueID, $BookingDate, $BookingTimeFrom, $BookingTimeTo) {
+
+		$query 		= "SELECT 
+						  * 
+						FROM
+						  `venue_bookings` AS vb 
+						WHERE vb.`venue_id` = '".$VenueID."'
+							AND vb.`booking_date` = '".$BookingDate."' 
+							AND (vb.`booking_time_from` = '".$BookingTimeFrom."' OR  vb.`booking_time_to` = '".$BookingTimeTo."') ;";
+
+						// echo $query;
+
+		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
+
+		$results    = self::fetch_assoc_arr ($stmt);
+
+		return $results;
+	}
+
+	/**
+	 * @param  
+	 * @return 
+	 */
+	static public function get_venue_days_open_db ($VenueID, $day_week) {
+
+		$query 		= "SELECT 
+						  * 
+						FROM
+						  `venues_days_open` AS dop 
+						WHERE dop.`venue_id` = '".$VenueID."'
+							AND dop.`day` = '".$day_week."' ;";
+
+						// echo $query;
+
+		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
+
+		$results    = self::fetch_assoc_arr ($stmt);
+
+		return $results;
+	}
+
+	/**
+	 * @param  
+	 * @return 
+	 */
 	static public function get_all_service_types_db () {
 
 		$query 		= "SELECT 
@@ -389,6 +500,8 @@ abstract class AppModel
 						    ON p.`propertyID` = r.`prop_id` 
 						WHERE r.prop_id = '" .$prop_id. "'
 						ORDER BY r.created DESC;";
+
+						// echo $query;
 
 
 		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
@@ -520,6 +633,8 @@ abstract class AppModel
 						  INNER JOIN properties AS pr 
 						    ON pr.`propertyID` = ar.`propertyID` 
 						WHERE ar.`propertyID`  = '" .stripslashes($property_id). "'
+						
+
 						ORDER BY `registeredDate` DESC ;";
 
 		
@@ -717,6 +832,7 @@ abstract class AppModel
 	static public function get_app_registration_by_device_db ($device_token) {
 
 		$query 		= "SELECT 
+						  ar.id AS a_user_id,
 						  ar.*,
 						  pr.`propertyName` AS property_name,
 						  pr.`buildingManagerName`,
@@ -729,6 +845,60 @@ abstract class AppModel
 						  INNER JOIN properties AS pr 
 						    ON pr.`propertyID` = ar.`propertyID` 
 						WHERE ar.userDeviceToken = '" .stripslashes($device_token). "'
+						AND  ar.userStatus = 'active'
+
+						ORDER BY `registeredDate` DESC ;";
+
+
+		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
+		$results    = self::fetch_assoc_arr ($stmt);
+
+		return $results;
+	}
+
+	/**
+	 * @param  
+	 * @return 
+	 */
+	static public function job_quotes_by_jobid_db ($job_id) {
+
+		$query 		= "SELECT 
+						  *
+						FROM
+						  job_quotes
+						WHERE  job_id = '" .stripslashes($job_id). "';";
+
+
+		$stmt   	= self::$mysqli->query ($query) or die ('Failed to prepare: ' . self::$mysqli->error());
+		$results    = self::fetch_assoc_arr ($stmt);
+
+		return $results;
+	}
+
+	/**
+	 * @param  
+	 * @return 
+	 */
+	static public function get_app_registration_by_company_db ($company_id, $property_id, $unit_number, $device_token) {
+
+		$query 		= "SELECT 
+						  ar.id AS a_user_id,
+						  ar.*,
+						  pr.`propertyName` AS property_name,
+						  pr.`buildingManagerName`,
+						  pr.`buildingManagerEmail`,
+						  pr.`buildingManagerPhone`,
+						  pr.`propertyAddress`,
+						  pr.`modules` 
+						FROM
+						  app_registrations AS ar 
+						  INNER JOIN properties AS pr 
+						    ON pr.`propertyID` = ar.`propertyID` 
+						WHERE ar.userDeviceToken = '" .stripslashes($device_token). "' 
+						  AND ar.`userStatus` = 'active' 
+						  AND ar.`companyID`  = '".stripslashes($company_id)."' 
+						  AND ar.`propertyID` = '".$property_id."' 
+						  AND ar.`unitNo` 	  = '".$unit_number."' 
 						ORDER BY `registeredDate` DESC ;";
 
 
@@ -771,7 +941,7 @@ abstract class AppModel
 	 * @param  
 	 * @return 
 	 */
-	static public function get_app_registration_by_id_db ($id) {
+	static public function get_app_registration_by_id_db ($device_token, $property_id) {
 
 		$query 		= "SELECT 
 						  ar.*,
@@ -785,7 +955,8 @@ abstract class AppModel
 						  app_registrations AS ar 
 						  INNER JOIN properties AS pr 
 						    ON pr.`propertyID` = ar.`propertyID` 
-						WHERE ar.id = '" .stripslashes($id). "'
+						WHERE ar.userDeviceToken = '" .stripslashes($device_token). "' 
+							AND ar.`id` = '".$property_id."'
 						ORDER BY `registeredDate` DESC ;";
 
 
@@ -794,6 +965,36 @@ abstract class AppModel
 
 		return $results;
 	}
+
+	/**
+	 * @param  
+	 * @return 
+	 */
+	static public function get_app_registration_by_userid_db ($user_id) {
+
+		$query 		= "SELECT 
+						  ar.*,
+						  pr.`propertyName` AS property_name,
+						  pr.`buildingManagerName`,
+						  pr.`buildingManagerEmail`,
+						  pr.`buildingManagerPhone`,
+						  pr.`propertyAddress`,
+						  pr.`modules`
+						FROM
+						  app_registrations AS ar 
+						  INNER JOIN properties AS pr 
+						    ON pr.`propertyID` = ar.`propertyID` 
+						WHERE ar.`id` = '".$user_id."'
+						ORDER BY `registeredDate` DESC ;";
+
+
+		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
+		$results    = self::fetch_assoc_arr ($stmt);
+
+		return $results;
+	}
+
+	
 
 	/**
 	 * @param  
@@ -1112,6 +1313,66 @@ abstract class AppModel
 	}
 
 	/**
+	 * @param  
+	 * @return 
+	 */
+	static public function updated_app_user_db (
+								$user_id,
+								$full_name,
+								$email,
+								$mobile_number,
+								$unit_number
+							) {
+
+		$query 		= "UPDATE 
+						    `app_registrations` 
+						  SET
+						    userFullname 	= '".$full_name."',
+						    userEmail 		= '".$email."',
+						    userCellphone	= '".$mobile_number."',
+						    unitNo			= '".$unit_number."'
+						  WHERE id = '" .$user_id. "';";
+
+		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
+
+		return $stmt;
+	}
+
+	/**
+	 * @param  
+	 * @return 
+	 */
+	static public function bock_user_db ($ID) {
+
+		$query 		= "UPDATE 
+						    `app_registrations` 
+						  SET
+						    userStatus = 'blocked'
+						  WHERE id = '" .$ID. "';";
+
+		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
+
+		return $stmt;
+	}
+
+	/**
+	 * @param  
+	 * @return 
+	 */
+	static public function unbock_user_db ($ID) {
+
+		$query 		= "UPDATE 
+						    `app_registrations` 
+						  SET
+						    userStatus = 'active'
+						  WHERE id = '" .$ID. "';";
+
+		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
+
+		return $stmt;
+	}
+
+	/**
 	 * update_user_info_db
 	 * @param  
 	 * @return 
@@ -1153,13 +1414,17 @@ abstract class AppModel
 	 */
 	static public function save_job_status_db (
 									$JobID,
-									$JobStatus
+									$JobStatus,
+									$datedone = ''
 								) {
+
+		
 
 		$query 		= "UPDATE 
 						    `query_jobs` 
 						  SET
-						    status = '".$JobStatus."'
+						    status = '".$JobStatus."',
+						    job_done_date = '".$datedone."'
 						  WHERE id = '" .$JobID. "';";
 
 		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
@@ -1179,6 +1444,25 @@ abstract class AppModel
 						    `res_id` 		  = '".$ResID."',
 						    `unit_no` 		  = '".$UnitNumber."'
 						  WHERE `submit_id`   = '" .$SubmissionID. "';";
+
+						  // echo $query ;
+
+		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
+
+		return $stmt;
+	}
+
+	/**
+	 * @param  
+	 * @return 
+	 */
+	static public function update_app_user_type_db ($ID, $UserType) {
+
+		$query 		= "UPDATE 
+						    `app_registrations` 
+						  SET
+						    `userType` 	= '".$UserType."'
+						  WHERE `id`   	= '" .$ID. "';";
 
 						  // echo $query ;
 
@@ -1369,6 +1653,37 @@ abstract class AppModel
 	 * @param  
 	 * @return 
 	 */
+	static public function duplicate_emergency_contact_db ($ContactID, $PropertyName) {
+
+		$query 		= "INSERT INTO `emergency_contacts` (
+						  `propertyId`,
+						  `contact_name`,
+						  `contact_type`,
+						  `contact_phone`,
+						  `contact_icon`,
+						  `contact_color`
+						)
+						SELECT 
+							  ".$PropertyName.",
+							  `contact_name`,
+							  `contact_type`,
+							  `contact_phone`,
+							  `contact_icon`,
+							  `contact_color` 
+							FROM
+							  `emergency_contacts` 
+							WHERE id = '" .$ContactID. "';";
+
+							
+		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
+
+		return $stmt;
+	}
+
+	/**
+	 * @param  
+	 * @return 
+	 */
 	static public function copy_document_db ($DocumentID, $PropertyName) {
 
 		$query 		= "INSERT INTO `documents` (
@@ -1416,6 +1731,22 @@ abstract class AppModel
 						FROM
 						  `resident_forms` 
 						WHERE id = '" .$ID. "';";
+
+		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
+
+		return $stmt;
+	}
+
+	/**
+	 * @param  
+	 * @return 
+	 */
+	static public function delete_response_bysubmitid_db ($ID) {
+
+		$query 		= "DELETE 
+						FROM
+						  `form_submissions` 
+						WHERE submit_id = '" .$ID. "';";
 
 		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
 
@@ -1750,6 +2081,7 @@ abstract class AppModel
 	 */
 	static public function convert_query_to_job_db (
 							$JobQueryID,
+							$UserID,
 							$JobProperty,
 							$JobSupplier,
 							$JobUnitNo,
@@ -1764,6 +2096,7 @@ abstract class AppModel
 
 		$query 		= "INSERT INTO `query_jobs` (
 						  `query_id`,
+						  `user_id`,
 						  `prop_id`,
 						  `supplier_id`,
 						  `unit_number`,
@@ -1778,6 +2111,7 @@ abstract class AppModel
 						VALUES
 						  (
 						    '".$JobQueryID."',
+						    '".$UserID."',
 						    '".$JobProperty."',
 						    '".$JobSupplier."',
 						    '".$JobUnitNo."',
@@ -1790,6 +2124,39 @@ abstract class AppModel
 						    '".$JobImageName."'
 						  );";
 
+
+		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
+
+		return $stmt;
+	}
+
+	/**
+	 * @param  
+	 * @return 
+	 */
+	static public function do_convert_user_db ($user_id,
+											$company_id,
+											$property_id,
+											$unit_no,
+											$fullname,
+											$cellphone,
+											$email) {
+
+		$query 		= "INSERT INTO `residents` (
+						  `propertyID`,
+						  `unitNumber`,
+						  `residentName`,
+						  `residentCellphone`,
+						  `residentNotifyEmail`)
+						VALUES
+						  (
+						    '".$property_id."',
+						    '".$unit_no."',
+						    '".$fullname."',
+						    '".$cellphone."',
+						    '".$email."'
+						  );";
+						  // echo $query;
 
 		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
 
@@ -2219,6 +2586,7 @@ abstract class AppModel
 	static public function insert_app_query_db (
 							$device_token,
 							$property_id,
+							$user_id,
 							$unit_number,
 							$query_type,
 							$query_detail,
@@ -2230,6 +2598,7 @@ abstract class AppModel
 		$query 		= "INSERT INTO `queries` (
 						  `deviceID`,
 						  `propertyID`,
+						  `userID`,
 						  `unitNo`,
 						  `queryType`,
 						  `queryInput`,
@@ -2242,6 +2611,7 @@ abstract class AppModel
 						  (
 						    '".$device_token."',
 						    '".$property_id."',
+						    '".$user_id."',
 						    '".$unit_number."',
 						    '".$query_type."',
 						    '".$query_detail."',
@@ -2367,23 +2737,40 @@ abstract class AppModel
 	}
 
 	/**
-	 * @param  
+	 * @param  insert_job_quote ($JobID, $FileName)
 	 * @return 
 	 */
-	static public function insert_job_comment_db ($Comment, $JobID, $UserID, $FileName){
+	static public function insert_job_quote_db ($job_id, $filename) {
 
-		$query 		= "INSERT INTO `job_comments` (
+		$query 		= "INSERT INTO `job_qoutes_details` (
 						  `job_id`,
-						  `user_id`,
-						  `comment_text`,
-						  `file`
+						  `file_name`
 						) 
 						VALUES
 						  (
-						    '".$JobID."',
-						    '".$UserID."',
-						    '".$Comment."',
-						    '".$FileName."'
+						    '".$job_id."',
+						    '".$filename."'
+						  );";
+
+		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
+
+		return $stmt;
+	}
+
+	/**
+	 * @param  insert_job_chart_url_db ($job_id, $chat_url)
+	 * @return 
+	 */
+	static public function insert_job_chart_url_db ($job_id, $chat_url) {
+
+		$query 		= "INSERT INTO `job_quotes` (
+						  `job_id`,
+						  `chat_url`
+						) 
+						VALUES
+						  (
+						    '".$job_id."',
+						    '".$chat_url."'
 						  );";
 
 		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
@@ -2401,6 +2788,7 @@ abstract class AppModel
 								$unit_number,
 								$full_name,
 								$cellphone,
+								$email,
 								$user_type,
 								$device_token,
 								$player_id){
@@ -2411,6 +2799,7 @@ abstract class AppModel
 						  `unitNo`,
 						  `userFullname`,
 						  `userCellphone`,
+						  `userEmail`,
 						  `userDeviceToken`,
 						  `userType`,
 						  `userPlayerID`
@@ -2422,6 +2811,7 @@ abstract class AppModel
 						    '".$unit_number."',
 						    '".$full_name."',
 						    '".$cellphone."',
+						    '".$email."',
 						    '".$device_token."',
 						    '".$user_type."',
 						    '".$player_id."'
@@ -2456,6 +2846,42 @@ abstract class AppModel
 		}
 
 		return $Type;
+	}
+
+	/**
+	 * @param  
+	 * @return 
+	 */
+	static public function insert_booking_on_demand_db (
+								$VenueID,
+								$NumberOfAttendees,
+								$BookingDate,
+								$BookingTimeFrom,
+								$BookingTimeTo,
+								$Requirements
+							){
+
+		$query 		= "INSERT INTO `venue_bookings` (
+						  `venue_id`,
+						  `number_attendees`,
+						  `booking_date`,
+						  `booking_time_from`,
+						  `booking_time_to`,
+						  `requirements`
+						) 
+						VALUES
+						  (
+						    '".$VenueID."',
+						    '".$NumberOfAttendees."',
+						    '".$BookingDate."',
+						    '".$BookingTimeFrom."',
+						    '".$BookingTimeTo."',
+						    '".$Requirements."'
+						  );";
+
+		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
+
+		return $stmt;
 	}
 
 	/**
@@ -2535,6 +2961,52 @@ abstract class AppModel
 						ON DUPLICATE KEY UPDATE
 						`credits` = credits + '".$credit_number."'
 						;";
+
+		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
+
+		return $stmt;
+	}
+
+	/**
+	 * @param  
+	 * @return 
+	 */
+	static public function vote_up_db ($user_id, $qoute_id){
+
+		$query 		= "UPDATE 
+						  `job_qoutes_details` 
+						SET
+						  `vote_up` 		= vote_up + 1,
+						  `last_vote_date` 	= NOW(),
+						  `vote_up_by` 		= CONCAT_WS(',',vote_up_by, '$user_id')
+						  
+						WHERE `id` 			= '".$qoute_id."';";
+
+
+						
+
+		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
+
+		return $stmt;
+	}
+
+	/**
+	 * @param  
+	 * @return 
+	 */
+	static public function vote_down_db ($user_id, $qoute_id){
+
+		$query 		= "UPDATE 
+						  `job_qoutes_details` 
+						SET
+						  `vote_down` 		= vote_down + 1,
+						  `last_vote_date` 	= NOW(),
+						  `vote_down_by` 	= CONCAT_WS(',',vote_down_by, '$user_id')
+						  
+						WHERE `id` 			= '".$qoute_id."';";
+
+
+						
 
 		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
 
@@ -2736,12 +3208,26 @@ abstract class AppModel
 	 * @param  
 	 * @return 
 	 */
+	static public function set_utf8 () {
+
+		$query 		= "SET CHARACTER SET utf8;";
+
+		$stmt   	= self::$mysqli->query ($query) or die('Failed to prepare: ' . self::$mysqli->error());
+
+		return $stmt;
+	}
+
+	/**
+	 * @param  
+	 * @return 
+	 */
 	static public function mark_query_done_db ($ID) {
 
 		$query 		= "UPDATE 
 						  `queries`
 						  SET
-						  queryStatus = 'done'
+						  queryStatus = 'done',
+						  queryDoneTime = NOW()
 						WHERE queryID = " .$ID. ";";
 
 
@@ -2760,6 +3246,24 @@ abstract class AppModel
 						  `queries`
 						  SET
 						  queryStatus = 'materials required'
+						WHERE queryID = " .$ID. ";";
+
+
+		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
+
+		return $stmt;
+	}
+
+	/**
+	 * @param  
+	 * @return 
+	 */
+	static public function mark_query_insurance_claim_db ($ID) {
+
+		$query 		= "UPDATE 
+						  `queries`
+						  SET
+						  queryStatus = 'insurance claim'
 						WHERE queryID = " .$ID. ";";
 
 
@@ -2809,12 +3313,31 @@ abstract class AppModel
 	 * @param  
 	 * @return 
 	 */
-	static public function delete_app_reg_db ($property_id) {
+	static public function delete_delete_venue_db ($ID) {
+
+		$query 		= "DELETE 
+						FROM
+						  `property_venues` 
+						WHERE id = '" .$ID. "';";
+
+						// echo $query;
+
+		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
+
+		return $stmt;
+	}
+
+	/**
+	 * @param  
+	 * @return 
+	 */
+	static public function delete_app_reg_db ($device_token, $property_id) {
 
 		$query 		= "DELETE 
 						FROM
 						  `app_registrations` 
-						WHERE propertyID = '" .$property_id. "';";
+						WHERE id = '" .$property_id. "'
+						AND userDeviceToken = '" .$device_token. "';";
 
 		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
 
@@ -3145,6 +3668,7 @@ abstract class AppModel
 
 		$query 		= "SELECT 
 						  p.`propertyName` AS complex_name,
+						  s.created AS date_submited,
 						  s.*,
 						  f.*
 						FROM
@@ -3504,6 +4028,67 @@ abstract class AppModel
 		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
 
 		return $stmt;
+	}
+
+	/**
+	 * @param  
+	 * @return 
+	 */
+	static public function insert_new_venue_times_db (
+										$venue_id,
+										$day,
+										$timeopen,
+										$timeclose
+									) {
+
+		$query 		= "INSERT INTO `venues_days_open` (
+						  `venue_id`,
+						  `day`,
+						  `time_open`,
+						  `time_close`
+						) 
+						VALUES
+						  (
+						    '".$venue_id."',
+						    '".$day."',
+						    '".$timeopen."',
+						    '".$timeclose."'
+						  );";
+
+
+		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
+
+		return $stmt;
+	}
+
+	/**
+	 * @param  
+	 * @return 
+	 */
+	static public function insert_new_venue_db (
+										$prop_id,
+										$file_name,
+										$VenueName
+									) {
+
+		$query 		= "INSERT INTO `property_venues` (
+						  `prop_id`,
+						  `name`,
+						  `image`
+						) 
+						VALUES
+						  (
+						    '".$prop_id."',
+						    '".$VenueName."',
+						    '".$file_name."'
+						  );";
+
+
+		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
+
+		$id 		= self::$mysqli->insert_id();
+
+		return $id;
 	}
 
 	/**
@@ -4096,10 +4681,20 @@ abstract class AppModel
 	 * @param  
 	 * @return 
 	 */
-	static public function get_all_queries_company_db ($company_id, $properties, $query_type) {
+	static public function get_all_queries_company_db ($company_id, $properties, $query_type, $date_from, $date_to) {
 
 		if ($company_id) {
 		    $sql[]  = " p.companyID = '".$company_id."' ";
+		}
+
+
+		if (!empty($date_from) AND !empty($date_to)) {
+		    $sql[]  = " q.queryDate BETWEEN '".$date_from."' AND '".$date_to."'";
+		}
+// queryDate BETWEEN '2016-03-01 00:00:00' AND '2016-03-02 00:00:00' 
+
+		if ($properties) {
+		    $sql[]  = " q.propertyID IN (".$properties.") ";
 		}
 
 		if ($query_type) {
@@ -4204,8 +4799,16 @@ abstract class AppModel
 	 * @param  
 	 * @return 
 	 */
-	static public function get_filtered_queries_db ($properties = NULL, $status, $query_type) {
+	static public function get_filtered_queries_db ($company_id, $properties, $status, $query_type, $date_from, $date_to) {
 
+		if (!empty($date_from) AND !empty($date_to)) {
+		    $sql[]  = " q.queryDate BETWEEN '".$date_from."' AND '".$date_to."'";
+		}
+
+
+		if ($company_id) {
+		    $sql[]  = " p.companyID = '".$company_id."' ";
+		}
 
 		if ($properties) {
 		    $sql[]  = " q.propertyID IN(".$properties.") ";
@@ -4219,12 +4822,16 @@ abstract class AppModel
 		    $sql[]  = " q.queryType = '".$query_type."' ";
 		}
 
-		$query 		= " SELECT
+		$query 		= " SELECT 
 						  q.*,
-						  CONCAT_WS(' ',a.firstName,a.lastName) AS assignee_name
-						FROM queries AS q
-						  LEFT OUTER JOIN admin_managers AS a
-						    ON a.adminID = q.queryAssignee ";
+						  p.`propertyName`,
+						  CONCAT_WS(' ', a.firstName, a.lastName) AS assignee_name 
+						FROM
+						  queries AS q 
+						  INNER JOIN `properties` AS p 
+						    ON p.`propertyID` = q.`propertyID` 
+						  LEFT OUTER JOIN admin_managers AS a 
+						    ON a.adminID = q.queryAssignee  ";
 
 		if (!empty($sql)) {
 		    $query  .= ' WHERE ' . implode(' AND ', $sql);
@@ -4442,6 +5049,23 @@ abstract class AppModel
 						  *
 						FROM email_properties_coms AS e
 						WHERE e.id = '".$id."';";
+
+		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
+		$results    = self::fetch_assoc_arr ($stmt);
+
+		return $results;
+	}
+
+	/**
+	 * @param  
+	 * @return 
+	 */
+	static public function get_property_byid_db ($id) {
+
+		$query 		= "SELECT
+						  *
+						FROM `properties` AS e
+						WHERE e.propertyID = '".$id."';";
 
 		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
 		$results    = self::fetch_assoc_arr ($stmt);
@@ -4800,6 +5424,23 @@ abstract class AppModel
 						  SET
 						  `purchase_status` 	= 'active'
 						WHERE transaction_id = '" .$transaction_id. "';";
+
+		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
+
+		return $stmt;
+	}
+
+	/**
+	 * @param  
+	 * @return 
+	 */
+	static public function update_markting_url_db ($prop_id, $marketing_url) {
+
+		$query 		= "UPDATE 
+						  `properties`
+						  SET
+						  `marketing_link` 	= '".$marketing_url."'
+						WHERE propertyID = '" .$prop_id. "';";
 
 		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
 
@@ -5580,10 +6221,74 @@ abstract class AppModel
 	static public function get_queries_byid_db ($id) {
 
 		$query 		= "SELECT 
-						  *
+						  r.id AS user_id,
+						  q.* 
 						FROM
-						  queries
+						  queries AS q 
+						  INNER JOIN app_registrations AS r 
+						    ON q.`deviceID` = r.`userDeviceToken` 
+						    AND r.`propertyID` = q.`propertyID` 
 						WHERE queryID = '" .$id. "';";
+		// Prepare
+		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
+		$results    = self::fetch_assoc_arr ($stmt);
+
+		return $results;
+	}
+
+	/**
+	 * @param  
+	 * @return 
+	 */
+	static public function get_just_queries_byid_db ($id) {
+
+		$query 		= "SELECT 
+						  q.* 
+						FROM
+						  queries AS q
+						WHERE queryID = '" .$id. "';";
+		// Prepare
+		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
+		$results    = self::fetch_assoc_arr ($stmt);
+
+		return $results;
+	}
+
+	/**
+	 * @param  
+	 * @return 
+	 */
+	static public function get_query_byid_db ($id) {
+
+		$query 		= "SELECT 
+						  q.* 
+						FROM
+						  queries AS q
+						WHERE queryID = '" .$id. "';";
+		// Prepare
+		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
+		$results    = self::fetch_assoc_arr ($stmt);
+
+		return $results;
+	}
+
+	/**
+	 * @param  
+	 * @return 
+	 */
+	static public function get_get_appreg_byid_db ($id) {
+
+		$query 		= "SELECT 
+						  j.*,
+						  r.*,
+						  p.`propertyName` 
+						FROM
+						  query_jobs AS j 
+						  INNER JOIN app_registrations AS r 
+						    ON r.`id` = j.`user_id` 
+						  INNER JOIN properties AS p 
+						    ON p.`propertyID` = r.`propertyID`  
+						WHERE j.id =  '" .$id. "';";
 		// Prepare
 		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
 		$results    = self::fetch_assoc_arr ($stmt);
@@ -5602,7 +6307,8 @@ abstract class AppModel
 						  *,
 						  j.status AS job_status, 
 						  j.id AS job_id,
-						  c.id AS supplier_id
+						  c.id AS supplier_id,
+						  j.`prop_id` AS property_id
 						FROM
 						  `query_jobs` AS j 
 						  LEFT OUTER JOIN queries AS q 
@@ -5612,6 +6318,31 @@ abstract class AppModel
 						  LEFT OUTER JOIN constructors AS c 
 						    ON c.id = j.`supplier_id` 
 						WHERE j.`id` = '" .$id. "';";
+
+						// echo $query;
+		// Prepare
+		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
+		$results    = self::fetch_assoc_arr ($stmt);
+
+		return $results;
+	}
+
+	/**
+	 * @param  
+	 * @return 
+	 */
+	static public function get_query_details_by_jobid_db ($id) {
+
+		$query 		= "SELECT 
+						  j.*,
+						  r.`userCellphone` AS phone_number
+						FROM
+						  `query_jobs` AS j 
+						  INNER JOIN `app_registrations` AS r
+						    ON r.`id` = j.`user_id` 
+						WHERE j.`id` =  '" .$id. "';";
+
+						// echo $query;
 		// Prepare
 		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
 		$results    = self::fetch_assoc_arr ($stmt);
@@ -5653,6 +6384,81 @@ abstract class AppModel
 	 * @param  
 	 * @return 
 	 */
+	static public function get_all_job_list_db ($prop_id) {
+
+		$query 		= "SELECT 
+						  *,
+						  j.`created_date` AS job_date,
+						  j.status AS job_status,
+						  j.id AS job_id,
+						  c.id AS supplier_id,
+						  j.`prop_id` AS property_id
+						FROM
+						  `query_jobs` AS j 
+						  INNER JOIN `properties` AS p 
+						    ON p.`propertyID` = j.`prop_id` 
+						  LEFT OUTER JOIN constructors AS c 
+						    ON c.id = j.`supplier_id` 
+						GROUP BY j.id 
+						ORDER BY j.created_date DESC ;";
+
+						// echo $query;
+		// Prepare
+		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
+		$results    = self::fetch_assoc_arr ($stmt);
+
+		return $results;
+	}
+
+	/**
+	 * @param  
+	 * @return 
+	 */
+	static public function get_company_job_list_db ($prop_array, $company_id) {
+
+		if ($company_id) {
+		    $sql[]  = " p.companyID = '".$company_id."' ";
+		}
+
+		if ($prop_array) {
+		    $sql[]  = " j.`prop_id` IN(".$prop_array.") ";
+		}
+
+		$query 		= " SELECT 
+						  *,
+						  j.`created_date` AS job_date,
+						  j.status AS job_status,
+						  j.id AS job_id,
+						  c.id AS supplier_id,
+						  j.`prop_id` AS property_id
+						FROM
+						  `query_jobs` AS j 
+						  INNER JOIN `properties` AS p 
+						    ON p.`propertyID` = j.`prop_id` 
+						  LEFT OUTER JOIN constructors AS c 
+						    ON c.id = j.`supplier_id` 
+						
+						 ";
+
+		if (!empty($sql)) {
+		    $query  .= ' WHERE ' . implode(' AND ', $sql);
+		}
+
+		$query 		.= " GROUP BY j.id  ";
+		$query 		.= " ORDER BY j.created_date DESC  ";
+
+		// echo $query;
+		// Prepare
+		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
+		$results    = self::fetch_assoc_arr ($stmt);
+
+		return $results;
+	}
+
+	/**
+	 * @param  
+	 * @return 
+	 */
 	static public function get_job_list_per_status_db ($prop_id, $JobStatus) {
 
 		$query 		= "SELECT 
@@ -5677,6 +6483,34 @@ abstract class AppModel
 
 		return $results;
 	}
+	
+	/**
+	 * @param  
+	 * @return 
+	 */
+	static public function get_all_job_list_per_status_db ($prop_id, $JobStatus) {
+
+		$query 		= "SELECT 
+						  *,
+							j.`created_date` AS job_date,
+						  j.status AS job_status, 
+						  j.id AS job_id,
+						  c.id AS supplier_id
+						FROM
+						  `query_jobs` AS j 
+						  INNER JOIN `properties` AS p 
+						    ON p.`propertyID` = j.`prop_id` 
+						  LEFT OUTER JOIN constructors AS c 
+						    ON c.id = j.`supplier_id` 
+						WHERE j.status ='".$JobStatus."';";
+
+						// echo $JobStatus;
+		// Prepare
+		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
+		$results    = self::fetch_assoc_arr ($stmt);
+
+		return $results;
+	}
 
 	/**
 	 * @param  
@@ -5689,6 +6523,67 @@ abstract class AppModel
 						FROM
 						  `query_jobs` AS j
 						WHERE j.`id` = '" .$job_id. "';";
+
+						// echo $query;
+		// Prepare
+		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
+		$results    = self::fetch_assoc_arr ($stmt);
+
+		return $results;
+	}
+
+	/**
+	 * @param  
+	 * @return 
+	 */
+	static public function get_qoute_byid_db ($qoute_id) {
+
+		$query 		= "SELECT 
+						  *
+						FROM
+						  `job_qoutes_details` AS j
+						WHERE j.`id` = '" .$qoute_id. "';";
+
+						// echo $query;
+		// Prepare
+		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
+		$results    = self::fetch_assoc_arr ($stmt);
+
+		return $results;
+	}
+
+	/**
+	 * @param  
+	 * @return 
+	 */
+	static public function get_property_trustees_db ($prop_id) {
+
+		$query 		= "SELECT 
+						  *
+						FROM
+						  `residents` AS r
+						WHERE r.`propertyID`  = '" .$prop_id. "' 
+						AND r.residentTrustee = 'yes';";
+
+						// echo $query;
+		// Prepare
+		$stmt   	= self::$mysqli->query($query) or die('Failed to prepare: ' . self::$mysqli->error());
+		$results    = self::fetch_assoc_arr ($stmt);
+
+		return $results;
+	}
+
+	/**
+	 * @param  
+	 * @return 
+	 */
+	static public function get_job_quotes_by_id_db ($job_id) {
+
+		$query 		= "SELECT 
+						  *
+						FROM
+						  `job_qoutes_details` AS j
+						WHERE j.`job_id` = '" .$job_id. "';";
 
 						// echo $query;
 		// Prepare
@@ -6202,6 +7097,7 @@ abstract class AppModel
 						  u.lastName     AS last_name,
 						  u.contactEmail AS email,
 						  u.password     AS password,
+						  u.passwordText AS passwordText,
 						  p.*
 						FROM admin_managers AS u
 						  INNER JOIN `admin_permissions` AS p
@@ -6385,7 +7281,7 @@ abstract class AppModel
 			/* fetch value */
 			while($row = $result->fetch_array (MYSQLI_ASSOC)){
 				// Push results in array
-				array_push($results, $row);
+				array_push ($results, $row);
 				$count++;
 			}
 			return $results;

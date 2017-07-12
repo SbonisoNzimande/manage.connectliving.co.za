@@ -7,6 +7,59 @@ $(document).ready(function(){
 	$('[id=cp2]').colorpicker();
 
 
+	$('#DuplicateContactModal').on('show.bs.modal', function(e) {// on modal open
+		var id 			= $(e.relatedTarget).data('contact-id'); 
+		var data        = 'ContactID='+id;
+		$("#ContactID").val(id);
+
+		// PropertyName
+
+		get_properties('#PropertyName');
+
+
+	});
+
+	$("#DuplicateContactForm").on( 'submit', function(ev) {
+		ev.preventDefault();
+
+		var form_data = $("#DuplicateContactForm").serialize();
+
+		console.log('Duplicating: ' + form_data);
+		
+	 	$.post('EmergencyContacts/DuplicateContact', form_data, function(response){
+
+	 		if(response.status == false){
+	 		    output = '<div class="alert alert-danger"><p>'+response.text+'</p></div>';
+	 		}else if(response.status == true){
+	 		    output = '<div class="alert alert-success"><p>Saved</p></div>';
+	 		}
+
+	 		$("#duplicate_error").html(output).fadeIn('slow').delay(3000).fadeOut('fast', function(){ 
+	 	 		$('#table-emergecy').bootstrapTable('refresh', {
+	 				silent: true
+	 			});
+	 		});
+
+
+	     }, 'json');// End post
+	 	return false;
+
+	});
+
+	function get_properties(iddiv){
+		$.get('UserPermissions/GetPropertyList', '', function(response){
+			
+			var level_select = '<option></option>';
+			        	
+			$.each(response, function(key, value){
+				level_select += '<option value="' +value.propertyID+ '">' +value.propertyName+ '</option>';
+			});
+
+			$(iddiv).html(level_select);
+		});
+	}
+
+
 	
 
 	$("#CreateContactForm").on( 'submit', function(ev) {

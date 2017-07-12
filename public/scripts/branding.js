@@ -51,6 +51,32 @@ $(document).ready(function(){
 
 	});
 
+
+	$("#UpdateMarketingLinkForm").on( 'submit', function(ev) {
+		ev.preventDefault();
+
+		var form_data = $("#UpdateMarketingLinkForm").serialize();
+		
+		
+
+	 	$.post('Branding/SaveMarketingLink', form_data, function(response){
+
+	 		if(response.status == false){
+	 		    output = '<div class="alert alert-danger"><p>'+response.text+'</p></div>';
+	 		}else if(response.status == true){
+	 		    output = '<div class="alert alert-success"><p>'+response.text+'</p></div>';
+	 		}
+
+	 		$("#error_marketin_link").html(output).fadeIn('slow').delay(3000).fadeOut('fast', function(){ 
+	 	 		get_images(data);
+	 		});
+
+
+	     }, 'json');// End post
+	 	return false;
+
+	});
+
 	$("#UploadEstateLogoForm").on( 'submit', function(ev) {
 		ev.preventDefault();
 
@@ -107,6 +133,10 @@ $(document).ready(function(){
 
 			if (response.estate_image) {
 				$('#imgestate').attr('src',response.estate_image);
+			}
+
+			if (response.marketing_link) {
+				$('#marketing_link').html(response.marketing_link);
 			}
 
 			
